@@ -26,7 +26,7 @@ const Footer = () => {
           <div className="flex flex-col items-center md:items-end">
             <div className="flex space-x-4 mb-4">
               <a
-                href="https://github.com/luiscarlos"
+                href="https://github.com/LuisCarlos01"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-text-light hover:text-primary transition-colors"
@@ -35,7 +35,7 @@ const Footer = () => {
                 <FaGithub size={22} />
               </a>
               <a
-                href="https://linkedin.com/in/luiscarlos"
+                href="https://www.linkedin.com/in/luis-carlos-vitoriano-neto-56a58321b/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-text-light hover:text-primary transition-colors"
@@ -53,7 +53,7 @@ const Footer = () => {
                 <FaTwitter size={22} />
               </a>
               <a
-                href="mailto:contato@luiscarlos.dev"
+                href="mailto:luizvitorianoneto@gmail.com"
                 className="text-text-light hover:text-primary transition-colors"
                 aria-label="Email"
               >

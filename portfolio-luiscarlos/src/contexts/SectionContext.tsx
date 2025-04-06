@@ -121,15 +121,17 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
           // Atualizar estado da seção ativa
           setActiveSection(sectionId);
 
-          // Ocultar todas as seções, exceto a que vamos mostrar
+          // Ajustar a visibilidade das seções, mas mantendo todas acessíveis
           document.querySelectorAll(".section-container").forEach((section) => {
             if (section.id !== targetSectionId) {
-              console.log(`SectionContext: Ocultando seção ${section.id}`);
+              console.log(
+                `SectionContext: Ajustando visibilidade de ${section.id}`
+              );
+              // Agora apenas reduzimos a opacidade e z-index, mas mantemos a seção acessível
               gsap.set(section, {
-                opacity: 0,
-                display: "none",
+                opacity: 0.1, // Opacidade baixa em vez de 0
                 zIndex: "0",
-                visibility: "hidden",
+                // Não definimos mais display: "none" ou visibility: "hidden"
               });
               // Remover classe de transição
               section.classList.remove("transitioning");
@@ -201,19 +203,17 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
       // Fallback se o overlay não estiver disponível
       setActiveSection(sectionId);
 
-      // Ocultar todas as seções, exceto a que vamos mostrar
+      // Ajustar visibilidade das seções sem ocultar completamente
       document.querySelectorAll(".section-container").forEach((section) => {
         if (section.id !== targetSectionId) {
-          console.log(`SectionContext: Ocultando seção ${section.id}`);
+          console.log(
+            `SectionContext: Ajustando seção ${section.id} (fallback)`
+          );
           gsap.to(section, {
-            opacity: 0,
+            opacity: 0.1, // Opacidade baixa em vez de 0
             y: 20,
             duration: 0.3,
-            onComplete: () => {
-              (section as HTMLElement).style.display = "none";
-              (section as HTMLElement).style.zIndex = "0";
-              (section as HTMLElement).style.visibility = "hidden";
-            },
+            // Não mais ocultamos completamente as seções
           });
         }
       });
@@ -227,6 +227,11 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
         targetSection.style.display = "block";
         targetSection.style.zIndex = "1";
         targetSection.style.visibility = "visible";
+        gsap.to(targetSection, {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+        });
 
         // Rolar para a seção
         const headerHeight =
@@ -789,6 +794,33 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
       section.style.opacity = "1";
       section.style.zIndex = "1";
       section.style.visibility = "visible";
+      section.style.position = "relative";
+
+      // Garantir que todos os elementos da seção estejam visíveis
+      const allElements = section.querySelectorAll(
+        "h2, p, button, .tab-button, .resume-item, img, .btn-primary"
+      );
+      allElements.forEach((element) => {
+        const el = element as HTMLElement;
+        el.style.display =
+          ["BUTTON", "A"].includes(element.tagName) ||
+          element.classList.contains("tab-button")
+            ? "flex"
+            : "block";
+        el.style.visibility = "visible";
+        el.style.opacity = "1";
+      });
+
+      // Garantir especificamente que os elementos problemáticos estejam visíveis
+      const problematicElements = section.querySelectorAll(
+        "h2.text-4xl, .text-text-light, a.btn-primary, img.w-full, p.mb-4, p.mb-8"
+      );
+      problematicElements.forEach((element) => {
+        const el = element as HTMLElement;
+        el.style.display = element.tagName === "A" ? "flex" : "block";
+        el.style.visibility = "visible";
+        el.style.opacity = "1";
+      });
 
       // Animar cabeçalho
       const headerElements = section.querySelectorAll(
@@ -798,7 +830,20 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
         gsap.fromTo(
           headerElements,
           { opacity: 0, y: 30 },
-          { opacity: 1, y: 0, duration: 0.7, ease: "power2.out", stagger: 0.2 }
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: "power2.out",
+            stagger: 0.2,
+            onComplete: () => {
+              // Garantir visibilidade após a animação
+              headerElements.forEach((el) => {
+                (el as HTMLElement).style.visibility = "visible";
+                (el as HTMLElement).style.opacity = "1";
+              });
+            },
+          }
         );
       }
 
@@ -816,6 +861,14 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
             stagger: 0.15,
             ease: "back.out(1.7)",
             delay: 0.3,
+            onComplete: () => {
+              // Garantir visibilidade após a animação
+              tabButtons.forEach((el) => {
+                (el as HTMLElement).style.visibility = "visible";
+                (el as HTMLElement).style.opacity = "1";
+                (el as HTMLElement).style.display = "flex";
+              });
+            },
           }
         );
       }
@@ -833,9 +886,35 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
             duration: 0.5,
             ease: "power1.out",
             delay: 0.4,
+            onComplete: () => {
+              // Garantir visibilidade após a animação
+              resumeItems.forEach((el) => {
+                (el as HTMLElement).style.visibility = "visible";
+                (el as HTMLElement).style.opacity = "1";
+                (el as HTMLElement).style.display = "block";
+              });
+            },
           }
         );
       }
+
+      // Garantir visibilidade após um curto atraso para dar tempo às animações
+      setTimeout(() => {
+        // Verificar todos os elementos novamente
+        const allElementsAgain = section.querySelectorAll(
+          "h2, p, button, .tab-button, .resume-item, img, .btn-primary"
+        );
+        allElementsAgain.forEach((element) => {
+          const el = element as HTMLElement;
+          el.style.display =
+            ["BUTTON", "A"].includes(element.tagName) ||
+            element.classList.contains("tab-button")
+              ? "flex"
+              : "block";
+          el.style.visibility = "visible";
+          el.style.opacity = "1";
+        });
+      }, 1000);
     }
   };
 
@@ -914,11 +993,10 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
             animateHomeSection();
           }
         } else {
-          // Ocultar outras seções
-          (section as HTMLElement).style.display = "none";
-          (section as HTMLElement).style.opacity = "0";
+          // Reduzir a visibilidade de outras seções sem ocultá-las completamente
+          (section as HTMLElement).style.opacity = "0.1";
           (section as HTMLElement).style.zIndex = "0";
-          (section as HTMLElement).style.visibility = "hidden";
+          // Não mais definimos display: "none" ou visibility: "hidden"
         }
       });
     };
@@ -936,6 +1014,17 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
         homeSection.style.visibility = "visible";
         animateHomeSection();
       }
+
+      // Garantir que todas as seções sejam pelo menos parcialmente visíveis
+      document.querySelectorAll(".section-container").forEach((section) => {
+        const sectionElement = section as HTMLElement;
+        if (getComputedStyle(sectionElement).display === "none") {
+          sectionElement.style.display = "block";
+          sectionElement.style.opacity = "0.1";
+          sectionElement.style.zIndex = "0";
+          sectionElement.style.visibility = "visible";
+        }
+      });
     }, 1000);
   }, []);
 

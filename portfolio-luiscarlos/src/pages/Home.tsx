@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -15,6 +15,25 @@ const ContactSection = lazy(() => import("../components/ContactSection"));
 const TestimonialsSection = lazy(
   () => import("../components/TestimonialsSection")
 );
+
+// Componente customizado para atrasar a exibição do spinner
+const DelayedSpinner = ({ delay = 300 }) => {
+  const [showSpinner, setShowSpinner] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSpinner(true);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [delay]);
+
+  if (!showSpinner) {
+    return null;
+  }
+
+  return <LoadingSpinner size="small" color="primary" />;
+};
 
 const Home = () => {
   // Efeito para garantir que todas as seções estejam visíveis na carga inicial
@@ -41,9 +60,32 @@ const Home = () => {
             section.style.display = "flex";
             section.style.opacity = "1";
             section.style.zIndex = "1";
+            section.style.visibility = "visible";
+          } else {
+            // Garante que outras seções estejam visíveis, mas com menos destaque
+            // Não oculta completamente as seções, apenas reduz sua visibilidade
+            if (getComputedStyle(section).display === "none") {
+              section.style.display = "block";
+            }
+            if (getComputedStyle(section).visibility === "hidden") {
+              section.style.visibility = "visible";
+              section.style.opacity = "0.1"; // Visível, mas com baixa opacidade
+              section.style.zIndex = "0";
+            }
           }
         } else {
           console.warn(`Seção com ID ${id} não encontrada no DOM`);
+        }
+      });
+
+      // Força uma verificação final em todas as seções, mesmo que não estejam na lista
+      document.querySelectorAll(".section-container").forEach((element) => {
+        const section = element as HTMLElement;
+        if (getComputedStyle(section).display === "none") {
+          console.log(`Corrigindo visibilidade da seção ${section.id}`);
+          section.style.display = "block";
+          section.style.visibility = "visible";
+          section.style.opacity = "0.1";
         }
       });
     };
@@ -51,8 +93,14 @@ const Home = () => {
     // Executar a verificação após um pequeno atraso para garantir que o DOM esteja pronto
     const timer = setTimeout(checkSectionsVisibility, 1000);
 
+    // Executar novamente após 3 segundos para garantir que tudo esteja visível
+    const secondTimer = setTimeout(checkSectionsVisibility, 3000);
+
     // Limpar o timer quando o componente for desmontado
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(secondTimer);
+    };
   }, []);
 
   // Adiciona estilos na página para garantir que o scroll funcione corretamente
@@ -60,6 +108,25 @@ const Home = () => {
     // Garantir que o overflow esteja ativado para permitir scroll
     document.body.style.overflowY = "auto";
     document.body.style.overflowX = "hidden";
+
+    // Pré-carregar todos os componentes para evitar spinners
+    const preloadComponents = async () => {
+      try {
+        // Pré-carregar todos os componentes em paralelo
+        await Promise.all([
+          import("../components/AboutSection"),
+          import("../components/SkillsSection"),
+          import("../components/PortfolioSection"),
+          import("../components/ResumeSection"),
+          import("../components/TestimonialsSection"),
+          import("../components/ContactSection"),
+        ]);
+      } catch (error) {
+        console.error("Erro ao pré-carregar componentes:", error);
+      }
+    };
+
+    preloadComponents();
 
     return () => {
       // Limpar estilos quando o componente for desmontado
@@ -74,27 +141,27 @@ const Home = () => {
       <main className="space-y-24">
         <HeroSection />
 
-        <Suspense fallback={<LoadingSpinner />}>
+        <Suspense fallback={<DelayedSpinner />}>
           <AboutSection />
         </Suspense>
 
-        <Suspense fallback={<LoadingSpinner />}>
+        <Suspense fallback={<DelayedSpinner />}>
           <SkillsSection />
         </Suspense>
 
-        <Suspense fallback={<LoadingSpinner />}>
+        <Suspense fallback={<DelayedSpinner />}>
           <PortfolioSection />
         </Suspense>
 
-        <Suspense fallback={<LoadingSpinner />}>
+        <Suspense fallback={<DelayedSpinner />}>
           <ResumeSection />
         </Suspense>
 
-        <Suspense fallback={<LoadingSpinner />}>
+        <Suspense fallback={<DelayedSpinner />}>
           <TestimonialsSection />
         </Suspense>
 
-        <Suspense fallback={<LoadingSpinner />}>
+        <Suspense fallback={<DelayedSpinner />}>
           <ContactSection />
         </Suspense>
       </main>

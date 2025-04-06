@@ -1,101 +1,80 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, memo } from "react";
 import gsap from "gsap";
 
 interface PreloaderProps {
   onComplete: () => void;
 }
 
+// Reduzir o número de saudações para melhorar o desempenho
 const greetings = [
   { text: "Olá", language: "Português" },
   { text: "Hello", language: "English" },
   { text: "Hola", language: "Español" },
   { text: "Bonjour", language: "Français" },
-  { text: "Ciao", language: "Italiano" },
   { text: "こんにちは", language: "Japanese" },
   { text: "안녕하세요", language: "Korean" },
-  { text: "Hallo", language: "Deutsch" },
-  { text: "你好", language: "Chinese" },
-  { text: "Привет", language: "Russian" },
-  { text: "مرحبا", language: "Arabic" },
-  { text: "नमस्ते", language: "Hindi" },
 ];
 
-const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
+const Preloader = ({ onComplete }: PreloaderProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [loadingProgress, setLoadingProgress] = useState(0);
   const preloaderRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const languageRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
-  const logoRef = useRef<HTMLDivElement>(null);
 
-  // Efeito para animar a transição entre as saudações
+  // Carregar recursos essenciais em segundo plano durante o preloader
   useEffect(() => {
+    // Lista de recursos para carregar imediatamente
+    const preloadResources = () => {
+      // Pré-carregar a fonte principal (já incluída no head, mas garantir)
+      const fontLink = document.createElement("link");
+      fontLink.rel = "preload";
+      fontLink.href =
+        "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap";
+      fontLink.as = "style";
+      document.head.appendChild(fontLink);
+
+      // Pré-carregar a imagem de perfil e principais imagens
+      const criticalImages = ["/assets/profile.jpg"];
+      criticalImages.forEach((url) => {
+        const img = new Image();
+        img.src = url;
+      });
+    };
+
+    preloadResources();
+  }, []);
+
+  // Efeito para animar a transição entre as saudações - usar CSS sempre que possível em vez de GSAP
+  useEffect(() => {
+    // Reduzir o tempo entre mudanças para encurtar a duração do preloader
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % greetings.length);
-    }, 800);
+    }, 600); // Reduzido de 800ms para 600ms
 
     return () => clearInterval(interval);
   }, []);
 
-  // Efeito para animar o carregamento
+  // Efeito para finalizar o preloader - reduzido para melhorar o tempo de carregamento
   useEffect(() => {
-    // Simular progresso de carregamento
-    let progress = 0;
-    const duration = 4000; // 4 segundos
-    const interval = 30; // atualizar a cada 30ms
-    const increment = (100 * interval) / duration;
+    // Tempo reduzido para melhorar a experiência do usuário
+    const duration = 1800; // Reduzido de 2500ms para 1800ms (1.8 segundos)
 
-    const timer = setInterval(() => {
-      progress += increment;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(timer);
+    // Timer para finalizar o preloader após a duração
+    const timer = setTimeout(() => {
+      animatePreloaderExit();
+    }, duration);
 
-        // Animar saída do preloader após o carregamento
-        animatePreloaderExit();
-      }
-      setLoadingProgress(progress);
-    }, interval);
-
-    return () => clearInterval(timer);
+    return () => clearTimeout(timer);
   }, [onComplete]);
 
-  // Animar texto a cada mudança
-  useEffect(() => {
-    if (textRef.current && languageRef.current) {
-      gsap.fromTo(
-        textRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
-      );
-
-      gsap.fromTo(
-        languageRef.current,
-        { opacity: 0, y: 10 },
-        { opacity: 0.6, y: 0, duration: 0.5, delay: 0.1, ease: "power2.out" }
-      );
-    }
-  }, [currentIndex]);
-
-  // Animar saída do preloader
+  // Animar saída do preloader - simplificado para melhor desempenho
   const animatePreloaderExit = () => {
     if (preloaderRef.current) {
-      // Primeiro, animar o logo crescendo
-      if (logoRef.current) {
-        gsap.to(logoRef.current, {
-          scale: 1.2,
-          duration: 0.5,
-          ease: "power2.out",
-        });
-      }
-
-      // Depois, fazer o fade out do preloader
+      // Fazer o fade out do preloader diretamente, sem animações intermediárias
       gsap.to(preloaderRef.current, {
         opacity: 0,
-        duration: 0.8,
-        delay: 0.5,
-        ease: "power2.inOut",
+        duration: 0.6, // Reduzido de 0.8 para 0.6
+        ease: "power2.out",
         onComplete: () => {
           onComplete();
         },
@@ -108,37 +87,23 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
       ref={preloaderRef}
       className="fixed inset-0 flex flex-col items-center justify-center bg-bg-dark z-[9999]"
     >
-      <div ref={logoRef} className="mb-12">
-        <div className="font-bold text-5xl text-primary">
-          Luis<span className="text-text-light">Carlos</span>
-        </div>
-      </div>
-
-      <div className="text-center mb-12">
+      <div className="text-center">
         <div
           ref={textRef}
-          className="text-5xl md:text-7xl font-bold text-text-light mb-2"
+          className="text-5xl md:text-6xl font-bold text-text-light mb-2 transition-opacity duration-300 ease-out opacity-100 transform transition-transform animate-fadeIn"
         >
           {greetings[currentIndex].text}
         </div>
-        <div ref={languageRef} className="text-sm text-text-light opacity-60">
+        <div
+          ref={languageRef}
+          className="text-sm text-text-light opacity-60 transition-all duration-300 ease-out"
+        >
           {greetings[currentIndex].language}
         </div>
-      </div>
-
-      <div className="w-64 h-1 bg-bg-light rounded-full overflow-hidden">
-        <div
-          ref={progressRef}
-          className="h-full bg-primary transition-all duration-300 ease-out"
-          style={{ width: `${loadingProgress}%` }}
-        ></div>
-      </div>
-
-      <div className="mt-4 text-text-light text-sm">
-        {Math.round(loadingProgress)}%
       </div>
     </div>
   );
 };
 
-export default Preloader;
+// Usar memo para prevenir renderizações desnecessárias
+export default memo(Preloader);

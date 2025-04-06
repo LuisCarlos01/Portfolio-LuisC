@@ -219,7 +219,7 @@ const HomeSection = () => {
                 <FaLinkedin />
               </a>
               <a
-                href="mailto:contato@luiscarlos.dev"
+                href="mailto:luizcarosvitorianoneto@gmail.com"
                 aria-label="Email"
                 className="text-white hover:text-primary transition-colors duration-300 text-2xl"
               >

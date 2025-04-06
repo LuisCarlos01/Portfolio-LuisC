@@ -4,15 +4,44 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Configurações de cache e performance -->
+    <meta http-equiv="Cache-Control" content="max-age=86400, public" />
+    <meta http-equiv="Expires" content="86400" />
+
+    <!-- Preload de fontes críticas -->
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap"
+      as="style"
+      crossorigin="anonymous"
+    />
+
+    <!-- Preconexão com APIs externas -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Preload da imagem do perfil -->
+    <link rel="preload" href="/assets/profile.jpg" as="image" />
+
+    <!-- Principal CSS com ordem de carregamento otimizada -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap"
+    />
+
+    <!-- Meta tags para SEO -->
     <meta
       name="description"
-      content="Portfólio de Luis Carlos - Desenvolvedor Frontend & Fullstack"
+      content="Portfolio de Luís Carlos - Desenvolvedor Web Frontend e Fullstack"
     />
-    <title>Luis Carlos | Desenvolvedor Web</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Dancing+Script:wght@400;700&display=swap"
-      rel="stylesheet"
+    <meta
+      name="keywords"
+      content="desenvolvedor, portfolio, react, frontend, web development"
     />
+    <meta name="author" content="Luís Carlos" />
+
+    <title>Luís Carlos | Desenvolvedor Web</title>
   </head>
   <body>
     <div id="root"></div>

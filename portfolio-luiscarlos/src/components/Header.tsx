@@ -131,12 +131,28 @@ const Header: React.FC<HeaderProps> = () => {
       <div className="container mx-auto px-4 flex justify-between items-center">
         <a href="#home" onClick={(e) => handleNavigation(e, "home")}>
           <div className="font-bold text-2xl text-primary">
-            Luis<span className="text-text-light">Carlos</span>
+            <div
+              className="copyright-wrapper"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.reload();
+              }}
+              title="Clique para atualizar a página"
+            >
+              <span
+                className="copyright-symbol text-primary"
+                aria-label="Atualizar página"
+              >
+                ©
+              </span>
+              <span className="hidden-text">code by LuísC</span>
+            </div>
           </div>
         </a>
 
         {/* Links de navegação para desktop */}
-        <nav className="hidden md:flex space-x-8">
+        <nav className="hidden md:flex space-x-8 ml-auto">
           {Object.entries(sectionIdMap).map(([section, id]) => (
             <a
               key={id}
@@ -178,7 +194,7 @@ const Header: React.FC<HeaderProps> = () => {
           {/* Links sociais para desktop */}
           <div className="hidden md:flex space-x-4">
             <a
-              href="https://github.com/luiscarlos"
+              href="https://github.com/LuisCarlos01"
               target="_blank"
               rel="noopener noreferrer"
               className="text-text-light hover:text-primary transition-colors"
@@ -187,7 +203,7 @@ const Header: React.FC<HeaderProps> = () => {
               <FaGithub size={20} />
             </a>
             <a
-              href="https://linkedin.com/in/luiscarlos"
+              href="https://www.linkedin.com/in/luis-carlos-vitoriano-neto-56a58321b/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-text-light hover:text-primary transition-colors"
@@ -245,7 +261,7 @@ const Header: React.FC<HeaderProps> = () => {
           {/* Links sociais para o menu móvel */}
           <div className="flex space-x-6 mt-8">
             <a
-              href="https://github.com/luiscarlos"
+              href="https://github.com/LuisCarlos01"
               target="_blank"
               rel="noopener noreferrer"
               className="text-text-light hover:text-primary transition-colors"
@@ -254,7 +270,7 @@ const Header: React.FC<HeaderProps> = () => {
               <FaGithub size={24} />
             </a>
             <a
-              href="https://linkedin.com/in/luiscarlos"
+              href="https://github.com/LuisCarlos01"
               target="_blank"
               rel="noopener noreferrer"
               className="text-text-light hover:text-primary transition-colors"
