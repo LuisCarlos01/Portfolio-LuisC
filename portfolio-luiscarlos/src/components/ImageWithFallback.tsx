@@ -16,7 +16,7 @@ interface ImageWithFallbackProps {
 
 const ImageWithFallback = ({
   src,
-  fallbackSrc = "/assets/placeholder.jpg",
+  fallbackSrc = "/assets/placeholder.svg",
   alt,
   className = "",
   style = {},

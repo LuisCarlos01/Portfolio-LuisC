@@ -515,7 +515,7 @@ const ResumeSection = () => {
           >
             <span className="relative z-10 flex items-center">
               <FaDownload className="mr-2 group-hover:animate-bounce" />{" "}
-              Download CV
+            Download CV
               <FaArrowRight className="ml-2 opacity-0 -translate-x-3 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0" />
             </span>
             <span className="absolute inset-0 bg-primary/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
@@ -592,8 +592,8 @@ const ResumeSection = () => {
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <h3 className="text-xl font-bold text-white group-hover:text-primary transition-colors">
-                          {item.title}
-                        </h3>
+                  {item.title}
+                </h3>
                         <div className="flex flex-wrap items-center text-text-light mt-2">
                           <div className="flex items-center mr-4 mb-2">
                             <FaBuilding className="text-primary text-sm mr-2" />
@@ -633,13 +633,13 @@ const ResumeSection = () => {
                       </div>
                     </div>
 
-                    <p className="text-text-light mb-4">{item.description}</p>
+                <p className="text-text-light mb-4">{item.description}</p>
 
-                    {item.achievements && item.achievements.length > 0 && (
+                {item.achievements && item.achievements.length > 0 && (
                       <div className="mt-4">
                         <h4 className="text-primary font-medium mb-2">
                           Conquistas:
-                        </h4>
+                    </h4>
                         <ul className="space-y-2">
                           {item.achievements.map((achievement, i) => (
                             <li key={i} className="flex items-start">
@@ -648,10 +648,10 @@ const ResumeSection = () => {
                                 {achievement}
                               </span>
                             </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                      ))}
+                    </ul>
+                  </div>
+                )}
                   </div>
 
                   {/* Linha do tempo visual */}

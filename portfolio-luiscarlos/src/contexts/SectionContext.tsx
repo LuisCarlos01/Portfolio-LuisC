@@ -143,19 +143,78 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
           );
 
           // Mostrar a seção alvo
-          const targetSection = document.getElementById(targetSectionId);
-          if (targetSection) {
+          let targetSection = document.getElementById(targetSectionId);
+
+          // Verificar se a seção existe, caso contrário, tentar encontrá-la novamente
+          if (!targetSection) {
+            console.warn(
+              `Seção ${targetSectionId} não encontrada. Tentando novamente...`
+            );
+
+            // Tentar encontrar a seção após um breve delay para permitir que o lazy loading conclua
+            let retryCount = 0;
+            const maxRetries = 5;
+
+            const findSection = () => {
+              targetSection = document.getElementById(targetSectionId);
+              if (targetSection) {
+                console.log(
+                  `Seção ${targetSectionId} encontrada após retry ${
+                    retryCount + 1
+                  }`
+                );
+                // Continuar com a animação
+                showTargetSection(targetSection);
+              } else {
+                retryCount++;
+                if (retryCount < maxRetries) {
+                  console.log(
+                    `Tentativa ${
+                      retryCount + 1
+                    } para encontrar seção ${targetSectionId}`
+                  );
+                  setTimeout(findSection, 300);
+                } else {
+                  console.error(
+                    `Não foi possível encontrar a seção ${targetSectionId} após ${maxRetries} tentativas`
+                  );
+                  setIsTransitioning(false);
+
+                  // Fallback: Tente mostrar a seção home se a seção alvo não for encontrada
+                  const homeSection = document.getElementById("home");
+                  if (homeSection && targetSectionId !== "home") {
+                    console.log("Usando seção home como fallback");
+                    showTargetSection(homeSection);
+                    setActiveSection("home");
+                  } else {
+                    if (overlay) {
+                      overlay.style.display = "none";
+                    }
+                  }
+                }
+              }
+            };
+
+            // Iniciar tentativas de retry
+            setTimeout(findSection, 100);
+          } else {
+            // Se a seção for encontrada imediatamente, continuar com a animação
+            showTargetSection(targetSection);
+          }
+
+          // Função para mostrar a seção alvo quando ela for encontrada
+          function showTargetSection(section: HTMLElement) {
             console.log(
               `SectionContext: Encontrada seção alvo ${targetSectionId}`
             );
 
             // Garantir que a seção esteja visível antes de animar
-            targetSection.style.display = "block";
-            targetSection.style.zIndex = "1";
-            targetSection.style.visibility = "visible";
+            section.style.display = "block";
+            section.style.zIndex = "1";
+            section.style.visibility = "visible";
 
             // Preparar para animação de entrada
-            gsap.set(targetSection, {
+            gsap.set(section, {
               opacity: 0,
               // Adicionar força de hardware acceleration para melhorar performance
               transform: "translateZ(0)",
@@ -164,7 +223,7 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
             // Rolar para a seção
             const headerHeight =
               document.querySelector("header")?.offsetHeight || 0;
-            const sectionTop = targetSection.offsetTop - headerHeight;
+            const sectionTop = section.offsetTop - headerHeight;
 
             window.scrollTo({
               top: sectionTop,
@@ -182,20 +241,15 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
                 overlay.className = "page-transition-overlay";
 
                 // Animar a entrada da seção
-                animateSectionEntrance(sectionId, targetSection);
+                animateSectionEntrance(sectionId, section);
 
                 // Finalizar a transição após um curto delay para dar tempo às animações
                 setTimeout(() => {
-                  targetSection.classList.remove("transitioning");
+                  section.classList.remove("transitioning");
                   setIsTransitioning(false);
                 }, 500);
               },
             });
-          } else {
-            console.error(
-              `SectionContext: Seção com ID ${targetSectionId} não encontrada!`
-            );
-            setIsTransitioning(false);
           }
         },
       });
@@ -221,13 +275,65 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
       console.log(`SectionContext: Procurando seção com ID ${targetSectionId}`);
 
       // Mostrar a seção alvo (fallback)
-      const targetSection = document.getElementById(targetSectionId);
-      if (targetSection) {
-        console.log(`SectionContext: Encontrada seção alvo ${targetSectionId}`);
-        targetSection.style.display = "block";
-        targetSection.style.zIndex = "1";
-        targetSection.style.visibility = "visible";
-        gsap.to(targetSection, {
+      let targetSection = document.getElementById(targetSectionId);
+
+      if (!targetSection) {
+        console.warn(
+          `[Fallback] Seção ${targetSectionId} não encontrada. Tentando novamente...`
+        );
+
+        // Tentar encontrar a seção com retry
+        let retryCount = 0;
+        const maxRetries = 5;
+
+        const findSection = () => {
+          targetSection = document.getElementById(targetSectionId);
+          if (targetSection) {
+            console.log(
+              `[Fallback] Seção ${targetSectionId} encontrada após retry ${
+                retryCount + 1
+              }`
+            );
+            showTargetSectionFallback(targetSection);
+          } else {
+            retryCount++;
+            if (retryCount < maxRetries) {
+              console.log(
+                `[Fallback] Tentativa ${
+                  retryCount + 1
+                } para encontrar seção ${targetSectionId}`
+              );
+              setTimeout(findSection, 300);
+            } else {
+              console.error(
+                `[Fallback] Não foi possível encontrar a seção ${targetSectionId} após ${maxRetries} tentativas`
+              );
+              setIsTransitioning(false);
+
+              // Fallback para home se a seção alvo não for encontrada
+              const homeSection = document.getElementById("home");
+              if (homeSection && targetSectionId !== "home") {
+                console.log("[Fallback] Usando seção home como alternativa");
+                showTargetSectionFallback(homeSection);
+                setActiveSection("home");
+              }
+            }
+          }
+        };
+
+        // Iniciar tentativas
+        setTimeout(findSection, 100);
+      } else {
+        showTargetSectionFallback(targetSection);
+      }
+
+      // Função para mostrar a seção no modo fallback
+      function showTargetSectionFallback(section: HTMLElement) {
+        console.log(`[Fallback] Seção alvo ${targetSectionId} encontrada`);
+        section.style.display = "block";
+        section.style.zIndex = "1";
+        section.style.visibility = "visible";
+        gsap.to(section, {
           opacity: 1,
           y: 0,
           duration: 0.5,
@@ -236,7 +342,7 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
         // Rolar para a seção
         const headerHeight =
           document.querySelector("header")?.offsetHeight || 0;
-        const sectionTop = targetSection.offsetTop - headerHeight;
+        const sectionTop = section.offsetTop - headerHeight;
 
         window.scrollTo({
           top: sectionTop,
@@ -244,17 +350,12 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
         });
 
         // Fallback para animação simples
-        animateSectionEntrance(sectionId, targetSection);
+        animateSectionEntrance(sectionId, section);
 
         // Finalizar a transição
         setTimeout(() => {
           setIsTransitioning(false);
-        }, 800);
-      } else {
-        console.error(
-          `SectionContext: Seção com ID ${targetSectionId} não encontrada!`
-        );
-        setIsTransitioning(false);
+        }, 500);
       }
     }
   };
@@ -608,6 +709,48 @@ export const SectionProvider: React.FC<{ children: React.ReactNode }> = ({
       section.style.opacity = "1";
       section.style.zIndex = "1";
       section.style.visibility = "visible";
+
+      // Animar título
+      const title = section.querySelector("h2");
+      if (title) {
+        gsap.fromTo(
+          title,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }
+        );
+      }
+
+      // Animar os contadores de estatísticas
+      const statValues = section.querySelectorAll(".stat-value");
+      if (statValues.length > 0) {
+        console.log(
+          `Encontrados ${statValues.length} valores estatísticos para animar`
+        );
+
+        statValues.forEach((el) => {
+          const target = parseInt(el.getAttribute("data-value") || "0");
+
+          // Garantir que o valor seja visível
+          el.textContent = target.toString();
+
+          // Animar o contador
+          gsap.fromTo(
+            el,
+            { textContent: 0 },
+            {
+              textContent: target,
+              duration: 2,
+              ease: "power2.inOut",
+              onUpdate: function () {
+                // Arredondar para inteiro durante a animação
+                el.textContent = Math.round(
+                  parseFloat(el.textContent || "0")
+                ).toString();
+              },
+            }
+          );
+        });
+      }
     }
   };
 

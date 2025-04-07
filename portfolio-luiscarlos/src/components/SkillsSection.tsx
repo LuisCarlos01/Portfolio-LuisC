@@ -18,6 +18,8 @@ import {
   FaWordpress,
   FaSass,
   FaChevronRight,
+  FaPython,
+  FaRocket,
 } from "react-icons/fa";
 import {
   SiTypescript,
@@ -26,7 +28,26 @@ import {
   SiNextdotjs,
   SiVite,
   SiFigma,
+  SiCplusplus,
+  SiCsharp,
+  SiGreensock,
+  SiReactrouter,
 } from "react-icons/si";
+import { AiFillHtml5 } from "react-icons/ai";
+import {
+  DiCss3Full,
+  DiSass,
+  DiReact,
+  DiJavascript1,
+  DiNodejsSmall,
+  DiNpm,
+  DiDocker,
+  DiMysql,
+  DiGit,
+} from "react-icons/di";
+import { HiArrowSmDown } from "react-icons/hi";
+import { useTranslation } from "react-i18next";
+import { FaTimes } from "react-icons/fa";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -46,85 +67,94 @@ interface Skill {
   }[];
 }
 
-// Interface para partículas decorativas
-interface Particle {
-  x: number;
-  y: number;
-  size: number;
-  color: string;
-  delay: number;
-}
-
 // Componente para renderizar cada habilidade individual (memoizado)
 const SkillCard = memo(
-  ({ skill, onClick }: { skill: Skill; onClick: (skill: Skill) => void }) => {
+  ({
+    skill,
+    onClick,
+    isActive,
+  }: {
+    skill: Skill;
+    onClick: (skill: Skill) => void;
+    isActive: boolean;
+  }) => {
+    // Usamos useRef para obter uma referência à barra de progresso
+    const progressRef = useRef<HTMLDivElement>(null);
+    const cardRef = useRef<HTMLDivElement>(null);
+    const { t } = useTranslation();
+
+    // Efeito para definir a largura inicial como 0 e depois animar
+    useEffect(() => {
+      if (progressRef.current) {
+        // Inicialmente definir como 0
+        progressRef.current.style.width = "0%";
+
+        // Depois de um pequeno delay, animar para o valor correto
+        setTimeout(() => {
+          gsap.to(progressRef.current, {
+            width: `${skill.level}%`,
+            duration: 1,
+            ease: "power2.out",
+          });
+        }, 300);
+      }
+    }, [skill.level]);
+
     return (
       <div
-        className="skill-card bg-card-bg rounded-lg p-4 shadow-md transform transition-all duration-300 cursor-pointer"
+        ref={cardRef}
+        className={`relative bg-card-bg dark:bg-card-bg-dark p-4 rounded-lg shadow-md 
+                    transition-all duration-300 transform hover:scale-105 
+                    hover:shadow-lg cursor-pointer ${
+                      isActive ? "scale-110 z-20" : ""
+                    }`}
         onClick={() => onClick(skill)}
-        style={{ "--random": Math.random() } as React.CSSProperties}
+        data-level={skill.level}
+        aria-label={`${skill.name} - ${skill.level}% ${t("proficiency")}`}
       >
-        <div className="flex items-center mb-4">
-          <div
-            className="icon-wrapper p-3 rounded-full mr-3"
-            style={{ backgroundColor: `${skill.color}20` }}
-          >
-            <div style={{ color: skill.color }}>{skill.icon}</div>
+        <div className="flex items-center mb-2">
+          <div className="mr-3 text-3xl" style={{ color: skill.color }}>
+            {skill.icon}
           </div>
-          <h3 className="text-lg font-semibold">{skill.name}</h3>
+          <div>
+            <h3 className="text-lg font-bold text-text-primary dark:text-text-primary-dark">
+              {skill.name}
+            </h3>
+            <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
+              {skill.category}
+            </p>
+          </div>
         </div>
-        <div className="progress-container bg-gray-700 bg-opacity-20 h-2 rounded-full overflow-hidden">
+
+        <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mt-3">
           <div
-            className="progress-inner h-full rounded-full"
+            ref={progressRef}
+            className="h-full rounded-full"
             style={{
-              width: `${skill.level}%`,
               backgroundColor: skill.color,
+              width: "0%", // Inicia com 0 e será animado via useEffect
             }}
           ></div>
         </div>
-        <div className="mt-2 text-sm text-text-light">
-          {skill.level}% proficiency
-        </div>
+
+        <p className="text-right text-sm mt-1 text-text-secondary dark:text-text-secondary-dark">
+          {skill.level}%
+        </p>
       </div>
     );
   }
 );
 SkillCard.displayName = "SkillCard";
 
-// Componente memoizado para decoração com partículas
-const ParticlesDecoration = memo(({ particles }: { particles: Particle[] }) => {
-  return (
-    <div className="particles-container absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((particle, index) => (
-        <div
-          key={`particle-${index}`}
-          className="particle absolute rounded-full"
-          style={{
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-            backgroundColor: particle.color,
-            opacity: 0.3,
-            animationDelay: `${particle.delay}s`,
-          }}
-        ></div>
-      ))}
-    </div>
-  );
-});
-ParticlesDecoration.displayName = "ParticlesDecoration";
-
 const SkillsSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const skillsRef = useRef<HTMLDivElement>(null);
-  const particlesRef = useRef<HTMLDivElement>(null);
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [isVisible, setIsVisible] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
-  const [particles, setParticles] = useState<Particle[]>([]);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const { t } = useTranslation();
 
   // Lista de habilidades com cores oficiais, descrições e ícones mais precisos
   const skills: Skill[] = [
@@ -192,7 +222,7 @@ const SkillsSection = () => {
     {
       name: "HTML5",
       level: 95,
-      icon: <FaHtml5 size={32} />,
+      icon: <AiFillHtml5 />,
       category: "frontend",
       color: "#E34F26",
       description:
@@ -201,7 +231,7 @@ const SkillsSection = () => {
     {
       name: "CSS3",
       level: 90,
-      icon: <FaCss3Alt size={32} />,
+      icon: <DiCss3Full />,
       category: "frontend",
       color: "#1572B6",
       description:
@@ -210,7 +240,7 @@ const SkillsSection = () => {
     {
       name: "Node.js",
       level: 80,
-      icon: <FaNodeJs size={32} />,
+      icon: <DiNodejsSmall />,
       category: "backend",
       color: "#339933",
       description:
@@ -219,7 +249,7 @@ const SkillsSection = () => {
     {
       name: "Git",
       level: 85,
-      icon: <FaGitAlt size={32} />,
+      icon: <DiGit />,
       category: "other",
       color: "#F05032",
       description:
@@ -228,7 +258,7 @@ const SkillsSection = () => {
     {
       name: "NPM",
       level: 85,
-      icon: <FaNpm size={36} />,
+      icon: <DiNpm />,
       category: "other",
       color: "#CB3837",
       description:
@@ -236,8 +266,8 @@ const SkillsSection = () => {
     },
     {
       name: "Docker",
-      level: 70,
-      icon: <FaDocker size={36} />,
+      level: 30,
+      icon: <DiDocker />,
       category: "backend",
       color: "#2496ED",
       description:
@@ -245,17 +275,17 @@ const SkillsSection = () => {
     },
     {
       name: "SQL",
-      level: 70,
-      icon: <SiPostgresql size={28} />,
+      level: 40,
+      icon: <DiMysql />,
       category: "backend",
-      color: "#336791",
+      color: "#4479A1",
       description:
         "Linguagem de consulta estruturada para gerenciar e consultar bancos de dados relacionais.",
     },
     {
       name: "Tailwind CSS",
       level: 85,
-      icon: <SiTailwindcss size={28} />,
+      icon: <SiTailwindcss />,
       category: "frontend",
       color: "#06B6D4",
       description:
@@ -273,7 +303,7 @@ const SkillsSection = () => {
     {
       name: "Next.js",
       level: 75,
-      icon: <SiNextdotjs size={28} />,
+      icon: <SiNextdotjs />,
       category: "frontend",
       color: "#000000",
       description:
@@ -291,7 +321,7 @@ const SkillsSection = () => {
     {
       name: "Sass",
       level: 85,
-      icon: <FaSass size={32} />,
+      icon: <DiSass />,
       category: "frontend",
       color: "#CC6699",
       description:
@@ -308,8 +338,8 @@ const SkillsSection = () => {
     },
     {
       name: "Figma",
-      level: 80,
-      icon: <SiFigma size={28} />,
+      level: 25,
+      icon: <SiFigma />,
       category: "frontend",
       color: "#F24E1E",
       description:
@@ -317,7 +347,7 @@ const SkillsSection = () => {
     },
     {
       name: "WordPress",
-      level: 75,
+      level: 50,
       icon: <FaWordpress size={32} />,
       category: "frontend",
       color: "#21759B",
@@ -327,35 +357,74 @@ const SkillsSection = () => {
     {
       name: "Vite",
       level: 80,
-      icon: <SiVite size={28} />,
+      icon: <SiVite />,
       category: "frontend",
       color: "#646CFF",
       description:
         "Ferramenta de build moderna que oferece uma experiência de desenvolvimento mais rápida e eficiente para projetos web.",
     },
+    {
+      name: "Python",
+      level: 30,
+      icon: <FaPython size={32} />,
+      category: "backend",
+      color: "#3776AB",
+      description:
+        "Linguagem de programação de alto nível, interpretada e de propósito geral, com foco em legibilidade de código e produtividade.",
+    },
+    {
+      name: "C++",
+      level: 30,
+      icon: <SiCplusplus />,
+      category: "backend",
+      color: "#00599C",
+      description:
+        "Linguagem de programação de propósito geral que oferece um alto nível de controle sobre a gestão de memória e recursos do sistema.",
+    },
+    {
+      name: "C#",
+      level: 30,
+      icon: <SiCsharp />,
+      category: "backend",
+      color: "#239120",
+      description:
+        "Linguagem de programação moderna, orientada a objetos, desenvolvida pela Microsoft como parte da plataforma .NET.",
+    },
+    {
+      name: "GSAP",
+      level: 75,
+      icon: <SiGreensock size={28} />,
+      category: "frontend",
+      color: "#88CE02",
+      description: t("gsap_description"),
+      relatedProjects: [
+        {
+          id: 5,
+          title: "Website Responsivo",
+          description:
+            "Site institucional responsivo com animações suaves e otimizado para SEO.",
+          image: "/assets/Responsive web design.jpeg",
+        },
+      ],
+    },
+    {
+      name: "React Router",
+      level: 85,
+      icon: <SiReactrouter size={28} />,
+      category: "frontend",
+      color: "#CA4245",
+      description: t("react_router_description"),
+      relatedProjects: [
+        {
+          id: 3,
+          title: "Dashboard Analytics",
+          description:
+            "Painel administrativo para visualização de dados e métricas de desempenho de negócios.",
+          image: "/assets/project3.jpg",
+        },
+      ],
+    },
   ];
-
-  // Gerar partículas decorativas
-  useEffect(() => {
-    const generateParticles = () => {
-      const newParticles: Particle[] = [];
-      const colors = ["#9b59b6", "#8e44ad", "#c39bd3", "#a66bbe"];
-
-      for (let i = 0; i < 12; i++) {
-        newParticles.push({
-          x: Math.random() * 100,
-          y: Math.random() * 100,
-          size: Math.random() * 6 + 2,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          delay: Math.random() * 5,
-        });
-      }
-
-      setParticles(newParticles);
-    };
-
-    generateParticles();
-  }, []);
 
   // Filtrar habilidades com base na categoria ativa
   const filteredSkills = useCallback(() => {
@@ -364,18 +433,47 @@ const SkillsSection = () => {
       : skills.filter((skill) => skill.category === activeCategory);
   }, [activeCategory]);
 
-  // Animação para barras de progresso
+  // Função para animar as barras de progresso
   const animateProgressBars = useCallback(() => {
-    gsap.fromTo(
-      ".progress-inner",
-      { width: 0 },
-      {
-        width: "var(--progress-width)",
-        duration: 1,
-        ease: "power2.inOut",
-        stagger: 0.1,
-      }
+    if (!skillsRef.current) return;
+    console.log("Iniciando animação das barras de progresso");
+
+    const progressBars = skillsRef.current.querySelectorAll(".progress-inner");
+    const skillCards = skillsRef.current.querySelectorAll(".skill-card");
+
+    console.log(
+      `Encontradas ${progressBars.length} barras de progresso e ${skillCards.length} cards`
     );
+
+    if (progressBars.length > 0) {
+      progressBars.forEach((bar, index) => {
+        if (index < skillCards.length) {
+          const skillLevel =
+            skillCards[index].getAttribute("data-level") || "0";
+
+          // Reset para garantir animação limpa
+          gsap.set(bar, { width: "0%" });
+
+          // Animar para o valor correto
+          gsap.to(bar, {
+            width: `${skillLevel}%`,
+            duration: 1,
+            ease: "power2.out",
+            delay: 0.1 * index,
+            onStart: () => {
+              console.log(`Animando barra ${index} para ${skillLevel}%`);
+            },
+            onComplete: () => {
+              console.log(`Barra ${index} animada para ${skillLevel}%`);
+              // Garantir que a barra tenha a largura correta após a animação
+              (bar as HTMLElement).style.width = `${skillLevel}%`;
+            },
+          });
+        }
+      });
+    } else {
+      console.log("Nenhuma barra de progresso encontrada");
+    }
   }, []);
 
   // Efeito para garantir visibilidade da seção (otimizado)
@@ -398,26 +496,6 @@ const SkillsSection = () => {
         if (entry.isIntersecting) {
           // Animação quando a seção entrar no viewport
           animateProgressBars();
-
-          // Animar partículas
-          if (particlesRef.current) {
-            const particleElements =
-              particlesRef.current.querySelectorAll(".particle");
-            particleElements.forEach((particle, index) => {
-              // Limitar a quantidade de animações GSAP para melhorar o desempenho
-              if (index < 8) {
-                gsap.to(particle, {
-                  y: `random(-30, 30)`,
-                  x: `random(-30, 30)`,
-                  duration: `random(3, 8)`,
-                  delay: index * 0.1,
-                  repeat: -1,
-                  yoyo: true,
-                  ease: "sine.inOut",
-                });
-              }
-            });
-          }
         }
       },
       { threshold: 0.1 }
@@ -429,51 +507,6 @@ const SkillsSection = () => {
       observer.unobserve(section);
     };
   }, [animateProgressBars]);
-
-  // Efeito para rastrear posição do mouse para iluminação interativa (otimizado)
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!sectionRef.current) return;
-
-      // Usar requestAnimationFrame para limitar as atualizações
-      requestAnimationFrame(() => {
-        const sectionRect = sectionRef.current!.getBoundingClientRect();
-        const x = ((e.clientX - sectionRect.left) / sectionRect.width) * 100;
-        const y = ((e.clientY - sectionRect.top) / sectionRect.height) * 100;
-        setMousePosition({ x, y });
-
-        // Limitar a quantidade de cards que podem ser afetados pelo efeito de iluminação
-        const cards = document.querySelectorAll(".skill-card");
-        const visibleCards = Array.from(cards).slice(0, 8); // Limitar a 8 cards
-
-        visibleCards.forEach((card) => {
-          const cardRect = card.getBoundingClientRect();
-          const cardX = ((e.clientX - cardRect.left) / cardRect.width) * 100;
-          const cardY = ((e.clientY - cardRect.top) / cardRect.height) * 100;
-
-          if (cardX >= 0 && cardX <= 100 && cardY >= 0 && cardY <= 100) {
-            (card as HTMLElement).style.setProperty("--x", `${cardX}%`);
-            (card as HTMLElement).style.setProperty("--y", `${cardY}%`);
-          }
-        });
-      });
-    };
-
-    // Usar um throttle para o evento mousemove
-    let ticking = false;
-    const throttledMouseMove = (e: MouseEvent) => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          handleMouseMove(e);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener("mousemove", throttledMouseMove);
-    return () => window.removeEventListener("mousemove", throttledMouseMove);
-  }, []);
 
   // Função para mudar a categoria ativa com animação aprimorada
   const handleCategoryChange = useCallback(
@@ -515,72 +548,71 @@ const SkillsSection = () => {
     [animateProgressBars]
   );
 
-  // Função para mostrar detalhes da habilidade
-  const handleSkillClick = useCallback((skill: Skill) => {
-    setSelectedSkill(skill);
+  // Função para mostrar detalhes da habilidade de forma mais suave
+  const handleSkillClick = (skill: Skill) => {
+    console.log(`Clicado na habilidade ${skill.name}`);
 
-    // Animar a exibição do modal com detalhes - usando uma timeline mais simples
-    if (document.getElementById("skill-detail-modal")) {
-      // Timeline para animar os elementos do modal em sequência
-      const tl = gsap.timeline();
+    // Efeito de zoom suave no card clicado
+    const cards = document.querySelectorAll(".skill-card");
+    cards.forEach((card) => {
+      if (card.querySelector("h3")?.textContent === skill.name) {
+        gsap.to(card, {
+          scale: 1.05,
+          boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      } else {
+        gsap.to(card, {
+          opacity: 0.6,
+          duration: 0.3,
+        });
+      }
+    });
 
-      tl.fromTo(
-        "#skill-detail-modal",
-        {
-          opacity: 0,
-          y: 20,
-          scale: 0.95,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.4,
-          ease: "back.out(1.7)",
-        }
-      )
-        .fromTo(
-          "#skill-icon",
-          {
-            opacity: 0,
-            scale: 0.5,
-          },
-          {
-            opacity: 1,
+    // Pequeno atraso para melhorar a experiência
+    setTimeout(() => {
+      setSelectedSkill(skill);
+
+      // Adiciona classe para efeito de transição suave na página toda
+      document.body.classList.add("modal-transition");
+
+      // Remove os efeitos após um tempo
+      setTimeout(() => {
+        document.body.classList.remove("modal-transition");
+        cards.forEach((card) => {
+          gsap.to(card, {
             scale: 1,
-            duration: 0.4,
-          },
-          "-=0.2"
-        )
-        .fromTo(
-          "#skill-progress",
-          {
-            width: "0%",
-            opacity: 0,
-          },
-          {
-            width: `${skill.level}%`,
             opacity: 1,
-            duration: 1,
-          },
-          "-=0.2"
-        );
-    }
-  }, []);
+            boxShadow: "none",
+            duration: 0.3,
+          });
+        });
+      }, 800);
+    }, 300);
+  };
 
   // Função para fechar o modal
   const handleCloseModal = useCallback(() => {
-    // Animar o fechamento do modal
-    gsap.to("#skill-detail-modal", {
-      opacity: 0,
-      y: 20,
-      scale: 0.95,
-      duration: 0.3,
-      ease: "power2.in",
-      onComplete: () => {
-        setSelectedSkill(null);
-      },
-    });
+    const modal = document.getElementById("skill-detail-modal");
+
+    if (modal) {
+      // Animar o fechamento do modal
+      gsap.to("#skill-detail-modal", {
+        opacity: 0,
+        y: 20,
+        scale: 0.95,
+        duration: 0.3,
+        ease: "power2.in",
+        onComplete: () => {
+          setSelectedSkill(null);
+          // Restaurar a rolagem normal da página
+          document.body.style.overflow = "auto";
+          // Remover a classe de rolagem suave após o fechamento do modal
+          document.documentElement.classList.remove("smooth-scroll");
+        },
+      });
+    }
   }, []);
 
   // Função para navegar para um projeto específico
@@ -617,10 +649,248 @@ const SkillsSection = () => {
     };
   }, [selectedSkill]);
 
+  // Adicione esta função auxiliar antes do return final do componente
+  const getApplicationAreas = (skill: Skill) => {
+    // Definir áreas de aplicação comuns para cada habilidade
+    const commonAreas = {
+      frontend: [
+        {
+          title: "Interfaces de Usuário",
+          description:
+            "Desenvolvimento de componentes interativos e responsivos",
+        },
+        {
+          title: "Animações",
+          description: "Criação de efeitos visuais e transições suaves",
+        },
+        {
+          title: "Otimização",
+          description: "Melhoria de performance e experiência do usuário",
+        },
+      ],
+      backend: [
+        {
+          title: "APIs",
+          description: "Desenvolvimento de serviços web e endpoints",
+        },
+        {
+          title: "Banco de Dados",
+          description: "Manipulação e otimização de dados",
+        },
+        {
+          title: "Segurança",
+          description: "Implementação de autenticação e autorização",
+        },
+      ],
+      other: [
+        {
+          title: "Produtividade",
+          description: "Ferramentas para agilizar o desenvolvimento",
+        },
+        {
+          title: "DevOps",
+          description: "Integração e entrega contínua",
+        },
+        {
+          title: "Colaboração",
+          description: "Ferramentas para trabalho em equipe",
+        },
+      ],
+    };
+
+    // Áreas específicas para tecnologias mais populares
+    const specificAreas: Record<
+      string,
+      Array<{ title: string; description: string }>
+    > = {
+      React: [
+        {
+          title: "Componentes",
+          description: "Criação e gerenciamento de componentes reutilizáveis",
+        },
+        {
+          title: "Hooks",
+          description: "Utilização de estados e efeitos para lógica funcional",
+        },
+        {
+          title: "Context API",
+          description: "Gerenciamento de estado global na aplicação",
+        },
+      ],
+      JavaScript: [
+        { title: "DOM", description: "Manipulação de elementos da página" },
+        {
+          title: "Assíncrono",
+          description: "Promises, async/await e callbacks",
+        },
+        {
+          title: "APIs Browser",
+          description: "WebSockets, LocalStorage, Service Workers",
+        },
+      ],
+      TypeScript: [
+        {
+          title: "Type Safety",
+          description: "Desenvolvimento com segurança de tipos",
+        },
+        {
+          title: "Interfaces",
+          description: "Definição clara de contratos de dados",
+        },
+        {
+          title: "Generics",
+          description: "Componentes e funções reutilizáveis com tipagem",
+        },
+      ],
+      "Node.js": [
+        {
+          title: "Servidores",
+          description: "Desenvolvimento de aplicações server-side",
+        },
+        {
+          title: "Módulos",
+          description: "Criação e utilização de pacotes npm",
+        },
+        { title: "Streams", description: "Processamento eficiente de dados" },
+      ],
+    };
+
+    // Verificar se existem áreas específicas para esta habilidade
+    if (specificAreas[skill.name]) {
+      return specificAreas[skill.name];
+    }
+
+    // Caso contrário, retornar áreas comuns para a categoria
+    return commonAreas[skill.category];
+  };
+
+  // Adicionar um useEffect para animar o modal após ele ser renderizado
+  useEffect(() => {
+    if (selectedSkill && document.getElementById("skill-detail-modal")) {
+      console.log("Modal renderizado, iniciando animação");
+
+      // Timeline para animar os elementos do modal em sequência
+      const tl = gsap.timeline();
+
+      tl.fromTo(
+        "#skill-detail-modal",
+        {
+          opacity: 0,
+          y: 20,
+          scale: 0.95,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.4,
+          ease: "back.out(1.7)",
+        }
+      )
+        .fromTo(
+          "#skill-icon",
+          {
+            opacity: 0,
+            rotate: -30,
+            scale: 0.5,
+          },
+          {
+            opacity: 1,
+            rotate: 0,
+            scale: 1,
+            duration: 0.4,
+            ease: "back.out(1.7)",
+          },
+          "-=0.2"
+        )
+        .fromTo(
+          "#skill-info > *",
+          {
+            opacity: 0,
+            x: -20,
+          },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.3,
+            stagger: 0.1,
+            ease: "power2.out",
+          },
+          "-=0.2"
+        )
+        .fromTo(
+          "#skill-progress",
+          {
+            width: "0%",
+            opacity: 0,
+          },
+          {
+            width: `${selectedSkill.level}%`,
+            opacity: 1,
+            duration: 1,
+            ease: "power2.inOut",
+          },
+          "-=0.2"
+        )
+        .fromTo(
+          "#related-projects .project-item",
+          {
+            opacity: 0,
+            y: 20,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.1,
+            duration: 0.4,
+            ease: "power2.out",
+          },
+          "-=0.5"
+        );
+
+      // Foca no modal para melhorar acessibilidade
+      const modalElement = document.getElementById("skill-detail-modal");
+      if (modalElement) {
+        modalElement.focus();
+
+        // Impede scrolling da página principal
+        document.body.style.overflow = "hidden";
+      }
+    }
+
+    return () => {
+      // Restaura scrolling quando o modal é fechado
+      document.body.style.overflow = "auto";
+    };
+  }, [selectedSkill]);
+
+  // Função para rolar o modal para baixo
+  const handleScrollDown = () => {
+    const modal = document.getElementById("skill-detail-modal");
+    if (modal) {
+      // Obter a posição atual de rolagem
+      const currentScroll = modal.scrollTop;
+
+      // Definir a quantidade de pixels para rolar (300px para baixo)
+      const targetScroll = currentScroll + 300;
+
+      // Animar a rolagem com GSAP para uma experiência suave
+      gsap.to(modal, {
+        scrollTop: targetScroll,
+        duration: 0.8,
+        ease: "power2.out",
+      });
+
+      console.log("Rolando o modal de", currentScroll, "para", targetScroll);
+    } else {
+      console.warn("Modal não encontrado para rolagem");
+    }
+  };
+
   // Renderização com React.memo e componentes otimizados
   return (
     <section
-      id="skills"
+      id="skills-section"
       ref={sectionRef}
       className="section-container bg-background relative overflow-hidden"
     >
@@ -692,26 +962,318 @@ const SkillsSection = () => {
               key={`skill-${index}`}
               skill={skill}
               onClick={handleSkillClick}
+              isActive={selectedSkill === skill}
             />
           ))}
         </div>
-
-        {/* Contêiner de partículas */}
-        <div ref={particlesRef}>
-          <ParticlesDecoration particles={particles} />
-        </div>
       </div>
 
-      {/* Modal de detalhes da habilidade */}
+      {/* Modal de detalhes da habilidade - Melhorias na navegação */}
       {selectedSkill && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-70">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-70 backdrop-blur-sm modal-overlay overflow-y-auto"
+          onClick={(e) => {
+            // Fechar o modal ao clicar fora dele
+            if ((e.target as Element).classList.contains("modal-overlay")) {
+              handleCloseModal();
+            }
+          }}
+        >
           <div
             id="skill-detail-modal"
-            className="bg-card-bg rounded-xl p-6 max-w-4xl w-full opacity-0 transform styled-scrollbar"
-            style={{ maxHeight: "80vh", overflowY: "auto" }}
+            className="bg-card-bg rounded-2xl p-8 max-w-4xl w-full opacity-0 transform styled-scrollbar shadow-xl border border-primary/10 my-10 relative"
+            style={{
+              maxHeight: "80vh",
+              overflowY: "auto",
+              background: `linear-gradient(135deg, var(--color-card-bg), var(--color-card-bg) 60%, ${selectedSkill.color}10, var(--color-card-bg))`,
+              boxShadow: `0 20px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px ${selectedSkill.color}20, 0 0 20px ${selectedSkill.color}15`,
+            }}
           >
-            {/* Conteúdo do modal */}
-            {/* ... o resto é mantido igual ... */}
+            {/* Elementos decorativos - Restaurados */}
+            <div
+              className="absolute top-0 right-0 w-40 h-40 opacity-10 rounded-full pointer-events-none"
+              style={{
+                background: `radial-gradient(circle, ${selectedSkill.color}, transparent 70%)`,
+                filter: "blur(30px)",
+              }}
+            ></div>
+            <div
+              className="absolute bottom-0 left-10 w-60 h-60 opacity-5 rounded-full pointer-events-none"
+              style={{
+                background: `radial-gradient(circle, ${selectedSkill.color}, transparent 70%)`,
+                filter: "blur(40px)",
+              }}
+            ></div>
+
+            {/* Indicador de rolagem para melhorar a usabilidade */}
+            <div
+              className="absolute bottom-4 right-4 text-text-light text-xs scroll-indicator opacity-70 z-10 cursor-pointer hover:opacity-100 transition-opacity"
+              onClick={handleScrollDown}
+            >
+              <div className="flex flex-col items-center p-2 bg-gray-800 bg-opacity-50 rounded-full hover:bg-opacity-70 transition-all">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 mb-1 animate-bounce"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                  />
+                </svg>
+                <span>Rolar para ver mais</span>
+              </div>
+            </div>
+
+            {/* Botão flutuante para fechar o modal - mais visível */}
+            <button
+              onClick={handleCloseModal}
+              className="modal-close-btn fixed top-4 right-4 z-50"
+              aria-label="Fechar modal"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+
+            {/* Cabeçalho do modal */}
+            <div className="flex flex-col md:flex-row items-start md:items-center mb-8 gap-6 relative z-10">
+              {/* Ícone da habilidade */}
+              <div
+                id="skill-icon"
+                className="p-6 rounded-2xl shadow-xl relative w-24 h-24 flex items-center justify-center"
+                style={{
+                  backgroundColor: `${selectedSkill.color}15`,
+                  border: `1px solid ${selectedSkill.color}40`,
+                  boxShadow: `0 5px 15px ${selectedSkill.color}20, inset 0 0 20px ${selectedSkill.color}10`,
+                }}
+              >
+                {/* Efeito de brilho animado */}
+                <div className="absolute inset-0 rounded-2xl overflow-hidden">
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background: `radial-gradient(circle at 30% 30%, ${selectedSkill.color}30, transparent 70%)`,
+                      animation: "pulse 3s infinite ease-in-out",
+                    }}
+                  ></div>
+
+                  {/* Reflexo na borda */}
+                  <div
+                    className="absolute inset-0 opacity-50"
+                    style={{
+                      background: `linear-gradient(135deg, ${selectedSkill.color}30, transparent 50%)`,
+                      filter: "blur(5px)",
+                    }}
+                  ></div>
+                </div>
+
+                {/* Partículas decorativas dentro do ícone */}
+                <div className="absolute inset-0 overflow-hidden rounded-2xl">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div
+                      key={i}
+                      className="absolute w-1.5 h-1.5 rounded-full animate-ping-slow"
+                      style={{
+                        backgroundColor: selectedSkill.color,
+                        left: `${Math.random() * 80 + 10}%`,
+                        top: `${Math.random() * 80 + 10}%`,
+                        animationDelay: `${i * 0.5}s`,
+                        opacity: 0.7,
+                        filter: `blur(${Math.random() > 0.7 ? 1 : 0}px)`,
+                      }}
+                    ></div>
+                  ))}
+                </div>
+
+                <div
+                  className="text-4xl relative z-10"
+                  style={{ color: selectedSkill.color }}
+                >
+                  {selectedSkill.icon}
+                </div>
+              </div>
+
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold mb-3 flex items-center">
+                  {selectedSkill.name}
+                  <span
+                    className="ml-3 text-xs px-3 py-1 rounded-full text-white inline-flex items-center"
+                    style={{
+                      background: `linear-gradient(135deg, ${selectedSkill.color}, ${selectedSkill.color}80)`,
+                    }}
+                  >
+                    {selectedSkill.category === "frontend"
+                      ? "Frontend"
+                      : selectedSkill.category === "backend"
+                      ? "Backend"
+                      : "Outras Ferramentas"}
+                  </span>
+                </h3>
+
+                {/* Barra de progresso extremamente aprimorada */}
+                <div className="mb-8">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-text-light font-medium">
+                      Nível de Proficiência
+                    </span>
+                    <div className="flex items-center">
+                      <div
+                        className="w-3 h-3 rounded-full mr-2"
+                        style={{ backgroundColor: selectedSkill.color }}
+                      ></div>
+                      <span
+                        className="font-bold text-lg"
+                        style={{ color: selectedSkill.color }}
+                      >
+                        {selectedSkill.level}%
+                      </span>
+                    </div>
+                  </div>
+                  <div className="h-3 bg-gray-700 rounded-full overflow-hidden">
+                    <div
+                      id="skill-progress"
+                      className="h-full rounded-full"
+                      style={{
+                        backgroundColor: selectedSkill.color,
+                        width: "0%", // Inicialmente com largura 0, será animado pelo GSAP
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Descrição da habilidade */}
+            <div className="mb-10 skill-content-section">
+              <h4 className="text-lg font-semibold mb-3 flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-2 text-primary"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Descrição
+              </h4>
+              <div className="p-5 rounded-xl bg-gray-800 bg-opacity-30 border border-gray-700">
+                <p
+                  className="text-text-light leading-relaxed"
+                  style={{ textShadow: "0 1px 2px rgba(0,0,0,0.2)" }}
+                >
+                  {selectedSkill.description}
+                </p>
+              </div>
+            </div>
+
+            {/* Áreas de aplicação */}
+            <div className="mb-10 skill-content-section">
+              <h4 className="text-lg font-semibold mb-4 flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-2 text-primary"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z" />
+                </svg>
+                Áreas de Aplicação
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {getApplicationAreas(selectedSkill).map((area, index) => (
+                  <div
+                    key={index}
+                    className="p-4 rounded-xl border border-gray-700 bg-gray-800 bg-opacity-30 hover:border-primary/30 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg group"
+                    style={{
+                      borderLeft: `3px solid ${selectedSkill.color}`,
+                    }}
+                  >
+                    <div className="text-lg font-medium mb-1 group-hover:text-primary transition-colors">
+                      {area.title}
+                    </div>
+                    <p className="text-text-light text-sm">
+                      {area.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Projetos Relacionados */}
+            {selectedSkill.relatedProjects &&
+              selectedSkill.relatedProjects.length > 0 && (
+                <div className="skill-content-section">
+                  <h4 className="text-lg font-semibold mb-4 flex items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 mr-2 text-primary"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    Projetos Relacionados
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {selectedSkill.relatedProjects.map((project) => (
+                      <div
+                        key={project.id}
+                        className="group relative overflow-hidden rounded-xl border border-gray-700 bg-gray-800 bg-opacity-20 transition-all duration-300 hover:border-primary/30 hover:shadow-xl cursor-pointer transform hover:-translate-y-1"
+                        onClick={() => navigateToProject(project.id)}
+                      >
+                        <div className="aspect-video overflow-hidden">
+                          <ImageWithFallback
+                            src={project.image}
+                            alt={project.title}
+                            fallbackSrc="/assets/placeholder.jpg"
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent opacity-90"></div>
+                        <div className="absolute bottom-0 left-0 p-4 w-full">
+                          <h5 className="text-white font-bold mb-2 group-hover:text-primary transition-colors duration-300">
+                            {project.title}
+                          </h5>
+                          <p className="text-gray-300 text-sm line-clamp-2 mb-3">
+                            {project.description}
+                          </p>
+                          <div
+                            className="flex items-center justify-center text-xs font-medium px-3 py-1.5 rounded-full w-max text-white transition-transform duration-300 group-hover:scale-105"
+                            style={{ backgroundColor: selectedSkill.color }}
+                          >
+                            Ver Projeto{" "}
+                            <FaChevronRight className="ml-1.5" size={8} />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
           </div>
         </div>
       )}

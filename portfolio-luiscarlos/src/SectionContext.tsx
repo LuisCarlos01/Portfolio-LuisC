@@ -40,18 +40,18 @@ const animateResumeSection = () => {
     });
   });
 
-  // Animar elementos específicos com GSAP - usando uma única timeline otimizada
+  // Animar elementos específicos com GSAP - usando uma única timeline otimizada e simplificada
   const tl = gsap.timeline({
     defaults: {
       ease: "power2.out",
-      duration: 0.6,
+      duration: 0.5, // Reduzido para animações mais rápidas
     },
   });
 
   // Animar cabeçalho
   const header = resumeSection.querySelector("h2");
   if (header) {
-    tl.fromTo(header, { opacity: 0, y: 30 }, { opacity: 1, y: 0 });
+    tl.fromTo(header, { opacity: 0, y: 20 }, { opacity: 1, y: 0 });
   }
 
   // Animar botões de tab - reduzindo a quantidade de animações
@@ -59,22 +59,22 @@ const animateResumeSection = () => {
   if (tabButtons.length > 0) {
     tl.fromTo(
       tabButtons,
-      { opacity: 0, y: 15 },
-      { opacity: 1, y: 0, stagger: 0.08 },
-      "-=0.3"
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, stagger: 0.05 },
+      "-=0.2"
     );
   }
 
-  // Animar itens do currículo - limitando a quantidade de itens animados para melhorar o desempenho
+  // Animar itens do currículo - limitando a quantidade de itens animados e usando animações mais sutis
   const resumeItems = Array.from(
     resumeSection.querySelectorAll(".resume-item")
-  ).slice(0, 6);
+  ).slice(0, 4); // Limitado a apenas 4 itens para melhor desempenho
   if (resumeItems.length > 0) {
     tl.fromTo(
       resumeItems,
-      { opacity: 0, y: 15 },
-      { opacity: 1, y: 0, stagger: 0.08 },
-      "-=0.2"
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, stagger: 0.05 },
+      "-=0.1"
     );
   }
 };

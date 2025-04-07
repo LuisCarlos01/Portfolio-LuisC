@@ -115,21 +115,21 @@ const ContactSection = () => {
 
     // Animar título com efeito de destaque mais dramático
     if (titleRef.current) {
-      gsap.fromTo(
-        titleRef.current,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
+    gsap.fromTo(
+      titleRef.current,
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
           duration: 0.9,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: titleRef.current,
-            start: "top 80%",
-            toggleActions: "play none none none",
-          },
-        }
-      );
+        scrollTrigger: {
+          trigger: titleRef.current,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+      }
+    );
     }
 
     // Animar informações de contato com efeito de cascata
@@ -138,23 +138,23 @@ const ContactSection = () => {
         contactInfoRef.current.querySelectorAll(".contact-info-item");
 
       if (contactItems.length > 0) {
-        gsap.fromTo(
+    gsap.fromTo(
           contactItems,
           { opacity: 0, x: -40, scale: 0.95 },
-          {
-            opacity: 1,
-            x: 0,
+      {
+        opacity: 1,
+        x: 0,
             scale: 1,
             stagger: 0.15,
             duration: 0.7,
             ease: "back.out(1.4)",
-            scrollTrigger: {
-              trigger: contactInfoRef.current,
-              start: "top 75%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
+        scrollTrigger: {
+          trigger: contactInfoRef.current,
+          start: "top 75%",
+          toggleActions: "play none none none",
+        },
+      }
+    );
       }
     }
 
@@ -186,22 +186,22 @@ const ContactSection = () => {
 
     // Animar formulário com efeito de deslizamento e destaque
     if (formRef.current) {
-      gsap.fromTo(
-        formRef.current,
+    gsap.fromTo(
+      formRef.current,
         { opacity: 0, y: 40, scale: 0.98 },
-        {
-          opacity: 1,
-          y: 0,
+      {
+        opacity: 1,
+        y: 0,
           scale: 1,
           duration: 0.8,
           ease: "power2.out",
-          scrollTrigger: {
-            trigger: formRef.current,
-            start: "top 70%",
-            toggleActions: "play none none none",
-          },
-        }
-      );
+        scrollTrigger: {
+          trigger: formRef.current,
+          start: "top 70%",
+          toggleActions: "play none none none",
+        },
+      }
+    );
     }
 
     // Animar campos do formulário sequencialmente
@@ -209,22 +209,22 @@ const ContactSection = () => {
       const formGroups = formRef.current.querySelectorAll(".form-group");
 
       if (formGroups.length > 0) {
-        gsap.fromTo(
+    gsap.fromTo(
           formGroups,
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            stagger: 0.1,
+      { opacity: 0, y: 20 },
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.1,
             duration: 0.6,
             ease: "power2.out",
-            scrollTrigger: {
-              trigger: formRef.current,
-              start: "top 70%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
+        scrollTrigger: {
+          trigger: formRef.current,
+          start: "top 70%",
+          toggleActions: "play none none none",
+        },
+      }
+    );
       }
     }
   }, []);
@@ -402,8 +402,8 @@ const ContactSection = () => {
         );
 
         // Animar mensagem de status
-        gsap.fromTo(
-          ".status-message",
+      gsap.fromTo(
+        ".status-message",
           { opacity: 0, y: -20, scale: 0.9 },
           {
             opacity: 1,
@@ -512,40 +512,40 @@ const ContactSection = () => {
                       Localização
                     </h4>
                     <p className="text-white">São Paulo, SP - Brasil</p>
-                  </div>
                 </div>
               </div>
+            </div>
 
               <div className="mt-8 pt-6 border-t border-border">
                 <h4 className="text-white font-medium mb-4">Me siga</h4>
                 <div className="flex space-x-3">
-                  <a
-                    href="https://github.com/LuisCarlos01"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                <a
+                  href="https://github.com/LuisCarlos01"
+                  target="_blank"
+                  rel="noopener noreferrer"
                     className="social-icon w-10 h-10 rounded-full bg-card-bg flex items-center justify-center border border-border hover:bg-primary/10 hover:border-primary transition-all duration-300"
-                    aria-label="GitHub"
-                  >
+                  aria-label="GitHub"
+                >
                     <FaGithub className="text-text-light hover:text-primary transition-colors" />
-                  </a>
-                  <a
-                    href="https://linkedin.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                </a>
+                <a
+                    href="https://www.linkedin.com/in/luis-carlos-vitoriano-neto-56a58321b/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                     className="social-icon w-10 h-10 rounded-full bg-card-bg flex items-center justify-center border border-border hover:bg-primary/10 hover:border-primary transition-all duration-300"
-                    aria-label="LinkedIn"
-                  >
+                  aria-label="LinkedIn"
+                >
                     <FaLinkedin className="text-text-light hover:text-primary transition-colors" />
-                  </a>
-                  <a
+                </a>
+                <a
                     href="https://twitter.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  target="_blank"
+                  rel="noopener noreferrer"
                     className="social-icon w-10 h-10 rounded-full bg-card-bg flex items-center justify-center border border-border hover:bg-primary/10 hover:border-primary transition-all duration-300"
-                    aria-label="Twitter"
-                  >
+                  aria-label="Twitter"
+                >
                     <FaTwitter className="text-text-light hover:text-primary transition-colors" />
-                  </a>
+                </a>
                 </div>
               </div>
             </div>
@@ -566,12 +566,12 @@ const ContactSection = () => {
                 <span className="absolute bottom-0 left-0 w-12 h-[2px] bg-primary"></span>
               </h3>
 
-              {submitStatus.type && (
-                <div
-                  className={`status-message mb-6 p-4 rounded-lg ${
-                    submitStatus.type === "success"
-                      ? "bg-green-500/10 text-green-400"
-                      : "bg-red-500/10 text-red-400"
+                {submitStatus.type && (
+                  <div
+                    className={`status-message mb-6 p-4 rounded-lg ${
+                      submitStatus.type === "success"
+                        ? "bg-green-500/10 text-green-400"
+                        : "bg-red-500/10 text-red-400"
                   } flex items-start space-x-3`}
                 >
                   {submitStatus.type === "success" ? (
@@ -580,8 +580,8 @@ const ContactSection = () => {
                     <FaExclamationCircle className="flex-shrink-0 mt-1" />
                   )}
                   <span>{submitStatus.message}</span>
-                </div>
-              )}
+                  </div>
+                )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div
@@ -620,13 +620,13 @@ const ContactSection = () => {
                       />
                     </div>
                   </div>
-                  {formErrors.name && (
+                    {formErrors.name && (
                     <p className="text-red-400 text-sm mt-1 flex items-center">
                       <FaExclamationCircle className="mr-1 text-xs" />
-                      {formErrors.name}
-                    </p>
-                  )}
-                </div>
+                        {formErrors.name}
+                      </p>
+                    )}
+                  </div>
 
                 <div
                   className={`form-group relative ${
@@ -664,12 +664,12 @@ const ContactSection = () => {
                       />
                     </div>
                   </div>
-                  {formErrors.email && (
+                    {formErrors.email && (
                     <p className="text-red-400 text-sm mt-1 flex items-center">
                       <FaExclamationCircle className="mr-1 text-xs" />
-                      {formErrors.email}
-                    </p>
-                  )}
+                        {formErrors.email}
+                      </p>
+                    )}
                 </div>
 
                 <div
@@ -678,12 +678,12 @@ const ContactSection = () => {
                   }`}
                 >
                   <div className="relative">
-                    <input
-                      type="text"
-                      id="subject"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
+                  <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
                       onFocus={handleFocus}
                       onBlur={handleBlur}
                       className={`w-full bg-bg-dark rounded-lg px-5 py-4 text-white outline-none border-2 transition-all duration-300 ${
@@ -713,11 +713,11 @@ const ContactSection = () => {
                   }`}
                 >
                   <div className="relative">
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
+                  <textarea
+                    id="message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
                       onFocus={handleFocus}
                       onBlur={handleBlur}
                       className={`w-full bg-bg-dark rounded-lg px-5 py-4 text-white outline-none border-2 transition-all duration-300 min-h-[150px] resize-y ${
@@ -729,9 +729,9 @@ const ContactSection = () => {
                           ? "border-primary/50"
                           : "border-border"
                       }`}
-                      placeholder="Sua mensagem"
+                    placeholder="Sua mensagem"
                       aria-required="true"
-                    ></textarea>
+                  ></textarea>
                   </div>
                   {formErrors.message && (
                     <p className="text-red-400 text-sm mt-1 flex items-center">
@@ -762,8 +762,8 @@ const ContactSection = () => {
                     )}
                   </button>
                 </div>
-              </div>
-            </form>
+                </div>
+              </form>
           </div>
         </div>
       </div>

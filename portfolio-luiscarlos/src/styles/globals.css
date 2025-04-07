@@ -1,0 +1,79 @@
+/* Adicionar ao final do arquivo */
+
+/* Estilos para a transição do modal */
+.modal-transition {
+  transition: background 0.3s ease-in-out;
+}
+
+.modal-transition * {
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* Animação de bounce para o ícone de rolagem */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1.5s infinite;
+}
+
+/* Estilização do scrollbar do modal */
+#skill-detail-modal {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) var(--color-card-bg);
+}
+
+#skill-detail-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+#skill-detail-modal::-webkit-scrollbar-track {
+  background: var(--color-card-bg);
+  border-radius: 4px;
+}
+
+#skill-detail-modal::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+  border-radius: 4px;
+  border: 2px solid var(--color-card-bg);
+}
+
+/* Melhorias de acessibilidade */
+#skill-detail-modal:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+/* Efeito de fade-in para o modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-overlay {
+  animation: backdropFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes backdropFadeIn {
+  from {
+    background-color: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0px);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(3px);
+  }
+}

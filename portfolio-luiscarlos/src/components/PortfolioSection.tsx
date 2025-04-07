@@ -141,11 +141,13 @@ const loadImageWithFallbacks = (
           `Não foi possível carregar a imagem do projeto ${projectId} após tentar todos os caminhos possíveis.`
         );
 
-        // Define uma imagem de fallback final
-        imageElement.src =
+        // Define uma imagem de fallback final usando placehold.co
+        const fallbackUrl =
           projectId === 1
-            ? "https://via.placeholder.com/300x200?text=Foodie+E-commerce"
-            : `https://via.placeholder.com/300x200?text=Projeto+${projectId}`;
+            ? "https://placehold.co/300x200/gray/white?text=Foodie+E-commerce"
+            : `https://placehold.co/300x200/gray/white?text=Projeto+${projectId}`;
+
+        imageElement.src = fallbackUrl;
       }
     }
   };
