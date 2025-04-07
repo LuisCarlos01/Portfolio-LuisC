@@ -31,105 +31,154 @@ interface ResumeItem {
 const educationData: ResumeItem[] = [
   {
     id: 1,
-    title: "Bacharelado em Ciência da Computação",
-    organization: "Universidade XYZ",
-    period: "2017 - 2021",
-    location: "São Paulo, SP",
+    title: "Técnico em Informática",
+    organization: "SENAI",
+    period: "Concluído",
+    location: "Brasil",
     description:
-      "Formação em desenvolvimento de software, algoritmos, estruturas de dados e matemática computacional.",
-    achievements: [
-      "Projeto de conclusão em desenvolvimento web usando React",
-      "Participação em maratona de programação",
-      "Monitor de laboratório de programação",
-    ],
+      "Formação técnica com foco em redes de computadores, lógica de programação, sistemas operacionais, desenvolvimento de sistemas web e manutenção de computadores.",
+    achievements: [],
   },
   {
     id: 2,
-    title: "Especialização em Desenvolvimento Frontend",
-    organization: "Instituto de Tecnologia ABC",
-    period: "2022",
+    title: "Técnico em Eletrotécnica",
+    organization: "SENAI",
+    period: "Concluído",
+    location: "Brasil",
+    description:
+      "Curso técnico voltado para projetos, instalação e manutenção de sistemas elétricos industriais, automação predial e comandos elétricos.",
+    achievements: [],
+  },
+  {
+    id: 3,
+    title: "Graduação em Automação Industrial",
+    organization: "Unicesumar",
+    period: "Cursando",
+    location: "Brasil",
+    description:
+      "Curso superior com foco em controle de processos industriais, sistemas automatizados, CLPs, instrumentação, redes industriais e robótica.",
+    achievements: [],
+  },
+  {
+    id: 4,
+    title: "Formações Complementares em Programação",
+    organization: "IFRS, Udemy, Estudonauta, Curso em Vídeo",
+    period: "2022 - Atual",
     location: "Online",
     description:
-      "Curso intensivo focado em tecnologias modernas de frontend e boas práticas de UI/UX.",
-    achievements: [
-      "Projeto final avaliado com nota máxima",
-      "Desenvolvimento de componentes reutilizáveis",
-    ],
+      "Conjunto de formações práticas nas áreas de Front-End, JavaScript, HTML, CSS, lógica de programação e automação de sistemas. Destaques para os cursos:\n- HTML5 e CSS3 (Curso em Vídeo - Gustavo Guanabara)\n- Lógica de Programação (IFRS)\n- JavaScript Moderno (Udemy)\n- Desenvolvimento Web (Estudonauta)\n- Automação de Sistemas Industriais (IFRS)",
+    achievements: [],
   },
 ];
+
 
 // Dados de experiência
 const experienceData: ResumeItem[] = [
   {
     id: 1,
-    title: "Desenvolvedor Frontend Sênior",
-    organization: "Empresa de Tecnologia XYZ",
-    period: "2022 - Presente",
-    location: "São Paulo, SP",
+    title: "Programador Front-End Júnior",
+    organization: "iPass/Climax",
+    period: "2024 - Presente",
+    location: "Varginha, MG ",
     description:
-      "Desenvolvimento e manutenção de aplicações web usando React, TypeScript e ferramentas modernas de frontend.",
+      "Responsável pelo desenvolvimento e manutenção de interfaces web utilizando HTML, CSS, JavaScript e React. Apoio à criação de sistemas automatizados para atendimento ao cliente via WhatsApp, com foco em performance e usabilidade.",
     achievements: [
-      "Liderou a migração de uma aplicação legada para React",
-      "Implementou estratégia de componentes reutilizáveis reduzindo tempo de desenvolvimento em 30%",
-      "Melhorou o desempenho do site principal resultando em aumento de 25% na conversão",
+      "Desenvolvimento de um chatbot inteligente para atendimento de eventos e ingressos",
+      "Implementação de funcionalidades interativas com React e TypeScript",
+      "Aprimoramento contínuo do design e da experiência do usuário com foco em boas práticas de UI/UX",
     ],
   },
   {
     id: 2,
-    title: "Desenvolvedor Web",
-    organization: "Agência Digital ABC",
-    period: "2020 - 2022",
+    title: "Projetos Pessoais em Desenvolvimento Web",
+    organization: "Freelancer / Autônomo",
+    period: "2023 - 2024",
     location: "São Paulo, SP",
     description:
-      "Desenvolvimento de websites e landing pages para diversos clientes usando HTML, CSS, JavaScript e WordPress.",
+      "Criação de páginas web e sistemas interativos para fins de portfólio, estudo e clientes pontuais. Aplicação de metodologias modernas e foco em desenvolvimento responsivo.",
     achievements: [
-      "Desenvolveu mais de 15 sites para clientes de diferentes segmentos",
-      "Implementou metodologia de desenvolvimento que reduziu bugs em produção",
-      "Criou biblioteca interna de componentes para acelerar o desenvolvimento",
+      "Desenvolvimento de um quadro Kanban funcional com HTML, CSS e JavaScript",
+      "Criação de um portfólio online moderno com animações e transições suaves",
+      "Aplicação de boas práticas de acessibilidade e performance em projetos pessoais",
     ],
   },
   {
     id: 3,
-    title: "Estagiário de Desenvolvimento",
-    organization: "Startup XYZ",
-    period: "2019 - 2020",
-    location: "São Paulo, SP",
+    title: "Iniciação em Desenvolvimento de Sistemas",
+    organization: "Cursos Livres e Formação Autodidata",
+    period: "2022 - 2023",
+    location: "Online",
     description:
-      "Estágio em desenvolvimento web com foco em frontend e experiência do usuário.",
+      "Início da jornada na programação com foco em lógica, desenvolvimento web básico e ferramentas de automação.",
     achievements: [
-      "Participou do desenvolvimento de uma aplicação SPA",
-      "Colaborou com a equipe de design na criação de protótipos",
+      "Conclusão de cursos em HTML5, JavaScript, Lógica de Programação e Automação de Sistemas",
+      "Aplicação prática dos conhecimentos em pequenos sistemas e automações pessoais",
+      "Participação em comunidades de desenvolvedores e fóruns de aprendizado",
     ],
   },
 ];
+
 
 // Dados de certificações
 const certificationData: ResumeItem[] = [
   {
     id: 1,
-    title: "Certificação React Developer",
-    organization: "Academia de Tecnologia XYZ",
-    period: "2023",
+    title: "Automação de Sistemas",
+    organization: "IFRS - Instituto Federal",
+    period: "Jul - Nov 2024",
     description:
-      "Certificação avançada em desenvolvimento React, incluindo hooks, Context API e Redux.",
+      "Carga horária: 30h | Aproveitamento: 81,33%\nConteúdo: Automação, Projeto de Sistemas, Robótica, Máquinas e Redes Industriais.",
   },
   {
     id: 2,
-    title: "Certificação em UI/UX Design",
-    organization: "Design Institute",
-    period: "2022",
+    title: "HTML5: Fundamentos para Construção de Páginas Web Modernas",
+    organization: "IFRS - Instituto Federal",
+    period: "Out - Nov 2024",
     description:
-      "Certificação focada em princípios de design, wireframing, prototipagem e testes de usabilidade.",
+      "Carga horária: 40h | Aproveitamento: 94,00%\nConteúdo: Introdução ao HTML5, Estrutura de Documentos, Imagens, Links, Listas, Tabelas e Formulários.",
   },
   {
     id: 3,
-    title: "Certificação JavaScript Avançado",
-    organization: "JS Academy",
-    period: "2021",
+    title: "JavaScript",
+    organization: "IFRS - Instituto Federal",
+    period: "Jul - Nov 2024",
     description:
-      "Certificação em JavaScript ES6+, padrões assíncronos, módulos e otimização de performance.",
+      "Carga horária: 30h | Aproveitamento: 75,00%\nConteúdo: Fundamentos da linguagem, manipulação de DOM, eventos e validação de formulários.",
+  },
+  {
+    id: 4,
+    title: "Lógica de Programação",
+    organization: "IFRS - Instituto Federal",
+    period: "Jul - Nov 2024",
+    description:
+      "Carga horária: 20h | Aproveitamento: 88,50%\nConteúdo: Variáveis, operadores, estruturas condicionais e de repetição utilizando Portugol Studio.",
+  },
+  {
+    id: 5,
+    title: "Curso Completo de JavaScript (do básico ao avançado)",
+    organization: "Udemy",
+    period: "2023",
+    description:
+      "Curso com foco prático no desenvolvimento web com JavaScript moderno (ES6+), incluindo manipulação de DOM, APIs, orientação a objetos e lógica.",
+  },
+  {
+    id: 6,
+    title: "Curso Front-End HTML5, CSS3 e JavaScript",
+    organization: "Estudonauta",
+    period: "2023",
+    description:
+      "Formação prática para desenvolvimento de interfaces modernas com HTML, CSS e JavaScript. Inclui projetos práticos e fundamentos de UX/UI.",
+  },
+  {
+    id: 7,
+    title: "Curso de HTML5 e CSS3 (Módulo 1 ao 5)",
+    organization: "Curso em Vídeo (Gustavo Guanabara)",
+    period: "2022 - 2023",
+    description:
+      "Curso gratuito e completo abordando do básico ao intermediário em HTML e CSS com foco em boas práticas de estrutura, semântica e responsividade.",
   },
 ];
+
 
 const ResumeSection = () => {
   const [activeTab, setActiveTab] = useState<

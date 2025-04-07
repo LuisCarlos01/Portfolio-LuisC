@@ -146,7 +146,7 @@ const Header: React.FC<HeaderProps> = () => {
               >
                 ©
               </span>
-              <span className="hidden-text">code by LuísC</span>
+              <span className="hidden-text">Code by Luís</span>
             </div>
           </div>
         </a>

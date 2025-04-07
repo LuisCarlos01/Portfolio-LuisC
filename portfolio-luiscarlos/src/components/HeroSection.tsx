@@ -206,7 +206,7 @@ const HeroSection = () => {
           <div className="w-full md:w-2/5">
             <div className="hero-image-container relative w-full aspect-square rounded-full overflow-hidden border-4 border-primary/30 shadow-xl shadow-primary/20">
               <img
-                src="/assets/perfil04.JPEG"
+                src="/assets/perfil06.jpg"
                 alt="Luís Carlos"
                 className="w-full h-full object-cover"
                 onError={(e) => {
