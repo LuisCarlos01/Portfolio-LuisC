@@ -371,7 +371,7 @@ const AboutSection = () => {
           <div ref={imageRef} className="relative group">
             <div className="w-full max-w-md mx-auto aspect-square rounded-lg overflow-hidden border-4 border-primary shadow-xl transition-all duration-500 transform group-hover:scale-105">
               <img
-                src="public/assets/perfil02.JPEG"
+                src="/assets/perfil02.JPEG"
                 alt="Luis Carlos"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
