@@ -483,7 +483,7 @@ const ContactSection = () => {
                       href="mailto:contato@luiscarlos.dev"
                       className="text-white hover:text-primary transition-colors"
                     >
-                      contato@luiscarlos.dev
+                      luizcarlosvitoriano@gmail.com
                     </a>
                   </div>
                 </div>
@@ -498,7 +498,7 @@ const ContactSection = () => {
                       href="tel:+5511999999999"
                       className="text-white hover:text-primary transition-colors"
                     >
-                      +55 11 99999-9999
+                      +55 35 99708-0310
                     </a>
                   </div>
                 </div>
@@ -511,7 +511,7 @@ const ContactSection = () => {
                     <h4 className="text-sm text-text-light mb-1">
                       Localização
                     </h4>
-                    <p className="text-white">São Paulo, SP - Brasil</p>
+                    <p className="text-white">Varginha, MG - Brasil</p>
                 </div>
               </div>
             </div>

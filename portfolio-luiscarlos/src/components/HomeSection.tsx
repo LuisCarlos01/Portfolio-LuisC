@@ -133,7 +133,7 @@ const HomeSection = () => {
           <div className="hero-pic md:w-2/5 mb-10 md:mb-0" ref={profileRef}>
             <div className="relative w-64 h-64 md:w-80 md:h-80 mx-auto md:mx-0 rounded-full border-4 border-primary/30 overflow-hidden shadow-xl">
               <img
-                src="/images/photos/perfil.jpg"
+                src="/public/assets/perfil02.JPEG"
                 alt="Luís Carlos"
                 className="w-full h-full object-cover"
                 onError={handleImageError}

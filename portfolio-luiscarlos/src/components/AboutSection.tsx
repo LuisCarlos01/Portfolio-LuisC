@@ -128,20 +128,25 @@ const AboutSection = () => {
           );
 
           // Animar conteúdo com efeito de deslizamento
-          gsap.fromTo(
-            contentRef.current?.querySelectorAll("p, h3, a"),
-            {
-              opacity: 0,
-              x: -30,
-            },
-            {
-              opacity: 1,
-              x: 0,
-              stagger: 0.15,
-              duration: 0.6,
-              ease: "power2.out",
+          if (contentRef.current) {
+            const elements = contentRef.current.querySelectorAll("p, h3, a");
+            if (elements.length > 0) {
+              gsap.fromTo(
+                elements,
+                {
+                  opacity: 0,
+                  x: -30,
+                },
+                {
+                  opacity: 1,
+                  x: 0,
+                  stagger: 0.15,
+                  duration: 0.6,
+                  ease: "power2.out",
+                }
+              );
             }
-          );
+          }
 
           // Animar estatísticas
           animateStats();
@@ -251,60 +256,100 @@ const AboutSection = () => {
 
   // Função para mostrar detalhes do serviço em um modal
   const handleServiceClick = (service: Service) => {
+    // Primeiro, definimos o serviço selecionado para abrir o modal
     setSelectedService(service);
 
-    // Animar a exibição do modal
-    if (document.getElementById("service-detail-modal")) {
-      // Timeline para animar os elementos do modal em sequência
-      const tl = gsap.timeline();
+    // Impedir rolagem do body enquanto o modal estiver aberto
+    document.body.style.overflow = "hidden";
 
-      tl.fromTo(
-        "#service-detail-modal",
-        {
-          opacity: 0,
-          y: 20,
-          scale: 0.95,
-        },
-        {
+    // Precisamos aguardar que o React renderize o modal antes de tentar animá-lo
+    setTimeout(() => {
+      const modalElement = document.getElementById("service-detail-modal");
+
+      if (modalElement) {
+        // Primeiro vamos definir o modal como visível, mas com opacidade 0
+        modalElement.style.opacity = "0";
+        modalElement.style.transform = "scale(0.95) translateY(20px)";
+
+        // Forçar uma rolagem imediata para o modal (sem animação suave)
+        // para garantir que ele esteja visível antes de animar
+        const modalRect = modalElement.getBoundingClientRect();
+        const modalTop = modalRect.top + window.scrollY;
+        const viewportHeight = window.innerHeight;
+
+        // Calcular posição ideal para centralizar o modal na tela
+        const idealScrollPosition =
+          modalTop - (viewportHeight - modalRect.height) / 2;
+
+        // Aplicar a rolagem
+        window.scrollTo(0, idealScrollPosition);
+
+        // Agora podemos animar o modal com GSAP
+        const tl = gsap.timeline();
+
+        tl.to(modalElement, {
           opacity: 1,
           y: 0,
           scale: 1,
           duration: 0.4,
           ease: "back.out(1.7)",
+        })
+          .fromTo(
+            "#service-icon",
+            {
+              opacity: 0,
+              rotate: -30,
+              scale: 0.5,
+            },
+            {
+              opacity: 1,
+              rotate: 0,
+              scale: 1,
+              duration: 0.4,
+              ease: "back.out(1.7)",
+            },
+            "-=0.2"
+          )
+          .fromTo(
+            "#service-content > *",
+            {
+              opacity: 0,
+              x: -20,
+            },
+            {
+              opacity: 1,
+              x: 0,
+              duration: 0.3,
+              stagger: 0.1,
+              ease: "power2.out",
+            },
+            "-=0.2"
+          );
+
+        // Adicionar uma notificação visual para debug em dispositivos móveis
+        if (window.innerWidth <= 768) {
+          const notification = document.createElement("div");
+          notification.style.position = "fixed";
+          notification.style.bottom = "20px";
+          notification.style.left = "50%";
+          notification.style.transform = "translateX(-50%)";
+          notification.style.backgroundColor = "#9b59b6";
+          notification.style.color = "white";
+          notification.style.padding = "8px 16px";
+          notification.style.borderRadius = "20px";
+          notification.style.zIndex = "9999";
+          notification.style.boxShadow = "0 4px 10px rgba(0,0,0,0.3)";
+          notification.textContent = "Modal aberto!";
+
+          document.body.appendChild(notification);
+
+          setTimeout(() => {
+            notification.style.opacity = "0";
+            setTimeout(() => notification.remove(), 300);
+          }, 2000);
         }
-      )
-        .fromTo(
-          "#service-icon",
-          {
-            opacity: 0,
-            rotate: -30,
-            scale: 0.5,
-          },
-          {
-            opacity: 1,
-            rotate: 0,
-            scale: 1,
-            duration: 0.4,
-            ease: "back.out(1.7)",
-          },
-          "-=0.2"
-        )
-        .fromTo(
-          "#service-content > *",
-          {
-            opacity: 0,
-            x: -20,
-          },
-          {
-            opacity: 1,
-            x: 0,
-            duration: 0.3,
-            stagger: 0.1,
-            ease: "power2.out",
-          },
-          "-=0.2"
-        );
-    }
+      }
+    }, 50); // Tempo curto para garantir que o React renderizou o modal
   };
 
   return (
@@ -326,7 +371,7 @@ const AboutSection = () => {
           <div ref={imageRef} className="relative group">
             <div className="w-full max-w-md mx-auto aspect-square rounded-lg overflow-hidden border-4 border-primary shadow-xl transition-all duration-500 transform group-hover:scale-105">
               <img
-                src="public/images/perfil02.JPEG"
+                src="public/assets/perfil02.JPEG"
                 alt="Luis Carlos"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
@@ -482,14 +527,30 @@ const AboutSection = () => {
       {/* Modal de detalhes do serviço */}
       {selectedService && (
         <div
-          className="fixed inset-0 bg-bg-dark/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
-          onClick={() => setSelectedService(null)}
+          className="fixed inset-0 bg-bg-dark/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm modal-overlay"
+          onClick={() => {
+            setSelectedService(null);
+            // Restaurar a rolagem normal da página
+            document.body.style.overflow = "auto";
+          }}
         >
           <div
             id="service-detail-modal"
-            className="bg-card-bg p-8 rounded-xl shadow-2xl max-w-lg w-full transform transition-all duration-300"
+            className="bg-card-bg p-8 rounded-xl shadow-2xl max-w-lg w-full transform transition-all duration-300 relative"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Botão de fechar */}
+            <button
+              onClick={() => {
+                setSelectedService(null);
+                document.body.style.overflow = "auto";
+              }}
+              className="modal-close-btn absolute top-4 right-4 w-8 h-8 rounded-full bg-black/40 flex items-center justify-center text-white hover:bg-primary transition-colors duration-300 z-10"
+              aria-label="Fechar modal"
+            >
+              ✕
+            </button>
+
             <div className="flex items-center mb-8">
               <div
                 id="service-icon"
@@ -561,7 +622,11 @@ const AboutSection = () => {
                   color: selectedService.color,
                   border: `2px solid ${selectedService.color}`,
                 }}
-                onClick={() => setSelectedService(null)}
+                onClick={() => {
+                  setSelectedService(null);
+                  // Restaurar a rolagem normal da página
+                  document.body.style.overflow = "auto";
+                }}
               >
                 Fechar
               </button>

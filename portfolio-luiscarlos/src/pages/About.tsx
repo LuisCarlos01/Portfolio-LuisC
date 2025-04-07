@@ -27,19 +27,27 @@ const About = () => {
       opacity: 0,
       duration: 0.8,
       ease: "power3.out",
-    })
-      .from(
-        contentRef.current?.querySelectorAll("p"),
-        {
-          y: 30,
-          opacity: 0,
-          stagger: 0.2,
-          duration: 0.6,
-          ease: "power3.out",
-        },
-        "-=0.4"
-      )
-      .from(
+    });
+
+    if (contentRef.current) {
+      const paragraphs = contentRef.current.querySelectorAll("p");
+      if (paragraphs.length > 0) {
+        tl.from(
+          paragraphs,
+          {
+            y: 30,
+            opacity: 0,
+            stagger: 0.2,
+            duration: 0.6,
+            ease: "power3.out",
+          },
+          "-=0.4"
+        );
+      }
+    }
+
+    if (imageRef.current) {
+      tl.from(
         imageRef.current,
         {
           x: 50,
@@ -49,6 +57,7 @@ const About = () => {
         },
         "-=0.6"
       );
+    }
 
     return () => {
       tl.kill();

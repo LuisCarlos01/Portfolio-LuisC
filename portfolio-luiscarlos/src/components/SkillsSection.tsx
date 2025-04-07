@@ -577,18 +577,39 @@ const SkillsSection = () => {
       // Adiciona classe para efeito de transição suave na página toda
       document.body.classList.add("modal-transition");
 
-      // Remove os efeitos após um tempo
+      // Aguarda um pouco para o modal ser renderizado antes de rolar até ele
       setTimeout(() => {
-        document.body.classList.remove("modal-transition");
-        cards.forEach((card) => {
-          gsap.to(card, {
-            scale: 1,
-            opacity: 1,
-            boxShadow: "none",
-            duration: 0.3,
+        // Garantir que o modal seja exibido no viewport
+        const modalElement = document.getElementById("skill-detail-modal");
+        if (modalElement) {
+          // Impede scrolling da página principal
+          document.body.style.overflow = "hidden";
+
+          // Rola a página até o centro do modal para garantir visibilidade
+          const modalRect = modalElement.getBoundingClientRect();
+          const modalCenter =
+            modalRect.top + window.scrollY + modalRect.height / 2;
+          const windowCenter = window.innerHeight / 2;
+
+          window.scrollTo({
+            top: modalCenter - windowCenter,
+            behavior: "smooth",
           });
-        });
-      }, 800);
+        }
+
+        // Remove os efeitos após um tempo
+        setTimeout(() => {
+          document.body.classList.remove("modal-transition");
+          cards.forEach((card) => {
+            gsap.to(card, {
+              scale: 1,
+              opacity: 1,
+              boxShadow: "none",
+              duration: 0.3,
+            });
+          });
+        }, 800);
+      }, 100);
     }, 300);
   };
 
@@ -621,15 +642,45 @@ const SkillsSection = () => {
     if (projectSection) {
       setSelectedSkill(null); // Fecha o modal de habilidade
 
+      // Restaurar a rolagem normal da página
+      document.body.style.overflow = "auto";
+
       // Pequeno atraso para garantir que o modal de habilidade esteja fechado
       setTimeout(() => {
+        // Primeiro, rolamos até a seção de portfólio
         projectSection.scrollIntoView({ behavior: "smooth" });
 
-        // Dispara um evento customizado para abrir o modal do projeto
-        const event = new CustomEvent("openProjectModal", {
-          detail: { projectId },
-        });
-        document.dispatchEvent(event);
+        // Então, esperamos a rolagem completar antes de abrir o modal do projeto
+        setTimeout(() => {
+          // Dispara um evento customizado para abrir o modal do projeto
+          const event = new CustomEvent("openProjectModal", {
+            detail: { projectId },
+          });
+          document.dispatchEvent(event);
+
+          // Adicionamos uma notificação visual para indicar que um projeto está sendo aberto
+          const notification = document.createElement("div");
+          notification.className =
+            "fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-primary text-white px-4 py-2 rounded-full shadow-lg z-50";
+          notification.textContent = "Abrindo projeto...";
+          notification.style.opacity = "0";
+          document.body.appendChild(notification);
+
+          // Animação da notificação
+          gsap.to(notification, {
+            opacity: 1,
+            duration: 0.3,
+            onComplete: () => {
+              setTimeout(() => {
+                gsap.to(notification, {
+                  opacity: 0,
+                  duration: 0.3,
+                  onComplete: () => notification.remove(),
+                });
+              }, 1500);
+            },
+          });
+        }, 800); // Tempo suficiente para a rolagem ser concluída
       }, 300);
     }
   };

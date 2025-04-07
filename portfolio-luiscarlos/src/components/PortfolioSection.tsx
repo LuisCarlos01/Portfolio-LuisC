@@ -394,42 +394,113 @@ const PortfolioSection = () => {
     setActiveFilter(filter);
   };
 
-  // Abrir modal com detalhes do projeto
+  // Abrir modal com detalhes do projeto (implementação melhorada)
   const openProjectModal = (project: Project) => {
+    // Primeiro, definimos o projeto selecionado para abrir o modal
     setSelectedProject(project);
     setIsModalOpen(true);
 
     // Impedir rolagem do body enquanto o modal estiver aberto
     document.body.style.overflow = "hidden";
 
-    // Animar entrada do modal
-    if (modalRef.current) {
-      gsap.fromTo(
-        modalRef.current,
-        { opacity: 0, y: 50 },
-        { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }
-      );
-    }
+    // Precisamos aguardar que o React renderize o modal antes de tentar animá-lo
+    setTimeout(() => {
+      const modalElement = modalRef.current;
+
+      if (modalElement) {
+        // Primeiro vamos definir o modal como visível, mas com opacidade 0
+        modalElement.style.opacity = "0";
+        modalElement.style.transform = "translateY(50px)";
+
+        // Forçar uma rolagem imediata para o modal (sem animação suave)
+        // para garantir que ele esteja visível antes de animar
+        const modalRect = modalElement.getBoundingClientRect();
+        const modalTop = modalRect.top + window.scrollY;
+        const viewportHeight = window.innerHeight;
+
+        // Calcular posição ideal para centralizar o modal na tela
+        const idealScrollPosition =
+          modalTop - (viewportHeight - modalRect.height) / 2;
+
+        // Aplicar a rolagem
+        window.scrollTo(0, idealScrollPosition);
+
+        // Agora podemos animar o modal com GSAP
+        gsap.to(modalElement, {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          ease: "power3.out",
+        });
+
+        // Adicionar uma notificação visual para debug em dispositivos móveis
+        if (window.innerWidth <= 768) {
+          const notification = document.createElement("div");
+          notification.style.position = "fixed";
+          notification.style.bottom = "20px";
+          notification.style.left = "50%";
+          notification.style.transform = "translateX(-50%)";
+          notification.style.backgroundColor = "#9b59b6";
+          notification.style.color = "white";
+          notification.style.padding = "8px 16px";
+          notification.style.borderRadius = "20px";
+          notification.style.zIndex = "9999";
+          notification.style.boxShadow = "0 4px 10px rgba(0,0,0,0.3)";
+          notification.style.opacity = "0";
+          notification.textContent = "Projeto aberto!";
+
+          document.body.appendChild(notification);
+
+          // Animar a notificação
+          gsap.to(notification, {
+            opacity: 1,
+            duration: 0.3,
+            onComplete: () => {
+              setTimeout(() => {
+                gsap.to(notification, {
+                  opacity: 0,
+                  duration: 0.3,
+                  onComplete: () => notification.remove(),
+                });
+              }, 2000);
+            },
+          });
+        }
+      }
+    }, 50); // Tempo curto para garantir que o React renderizou o modal
   };
 
-  // Fechar modal
+  // Fechar modal (implementação melhorada)
   const closeModal = () => {
+    // Se temos uma referência ao modal
     if (modalRef.current) {
+      // Animar saída do modal
       gsap.to(modalRef.current, {
         opacity: 0,
         y: 50,
         duration: 0.4,
         ease: "power3.in",
         onComplete: () => {
+          // Redefinir estado para fechar o modal
           setIsModalOpen(false);
           setSelectedProject(null);
-          document.body.style.overflow = ""; // Restaurar rolagem
+          // Restaurar rolagem do body
+          document.body.style.overflow = "";
+
+          // Verificar por notificações criadas e removê-las
+          const notifications = document.querySelectorAll(
+            'div[style*="position: fixed"][style*="bottom: 20px"]'
+          );
+          notifications.forEach((notification) => {
+            notification.remove();
+          });
         },
       });
     } else {
+      // Caso a referência não exista, apenas fechamos o modal
       setIsModalOpen(false);
       setSelectedProject(null);
-      document.body.style.overflow = ""; // Restaurar rolagem
+      document.body.style.overflow = "";
     }
   };
 
@@ -671,8 +742,8 @@ const PortfolioSection = () => {
       {/* Modal com detalhes do projeto e animações aprimoradas */}
       {isModalOpen && selectedProject && (
         <div
-          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
-          onClick={() => setIsModalOpen(false)}
+          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 modal-overlay"
+          onClick={() => closeModal()}
         >
           <div
             className="animate-fadeIn"
@@ -681,8 +752,9 @@ const PortfolioSection = () => {
           >
             <div className="bg-card-bg rounded-xl overflow-hidden max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl relative">
               <button
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/30 flex items-center justify-center text-white hover:bg-primary transition-colors duration-300 z-10"
-                onClick={() => setIsModalOpen(false)}
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/30 flex items-center justify-center text-white hover:bg-primary transition-colors duration-300 z-10 modal-close-btn"
+                onClick={() => closeModal()}
+                aria-label="Fechar modal"
               >
                 ✕
               </button>
@@ -758,15 +830,6 @@ const PortfolioSection = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="p-6 pt-0 border-t border-border flex justify-end">
-                <button
-                  className="px-6 py-2 bg-primary text-white rounded-full hover:bg-primary-dark transition-colors duration-300 flex items-center"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  Fechar
-                </button>
               </div>
             </div>
           </div>
