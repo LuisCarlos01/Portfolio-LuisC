@@ -75,23 +75,23 @@ const ContactSection = () => {
 
     // Número de partículas baseado no tamanho da seção
     const particleCount = Math.min(
-      Math.floor((sectionWidth * sectionHeight) / 45000),
-      15
+      Math.floor((sectionWidth * sectionHeight) / 35000),
+      25
     );
 
     for (let i = 0; i < particleCount; i++) {
       const particle = document.createElement("div");
 
       // Tamanho aleatório
-      const size = Math.random() * 5 + 3;
+      const size = Math.random() * 6 + 3;
 
       // Posição aleatória (evitando bordas)
       const posX = 10 + Math.random() * (sectionWidth - 20);
-      const posY = 100 + Math.random() * (sectionHeight - 200);
+      const posY = 50 + Math.random() * (sectionHeight - 100);
 
       // Variável aleatória para animação
       const randomVar = Math.random();
-
+      
       // Definir estilo da partícula
       particle.className = "particle absolute rounded-full";
       particle.style.width = `${size}px`;
@@ -99,13 +99,45 @@ const ContactSection = () => {
       particle.style.left = `${posX}px`;
       particle.style.top = `${posY}px`;
       particle.style.opacity = (0.1 + Math.random() * 0.3).toString();
+      particle.style.background = i % 3 === 0 ? 'rgba(108, 92, 231, 0.2)' : 'rgba(255, 255, 255, 0.1)';
       particle.style.setProperty("--random", randomVar.toString());
+      particle.style.boxShadow = i % 5 === 0 ? '0 0 10px 2px rgba(108, 92, 231, 0.1)' : '';
 
       // Adicionar delay aleatório para cada partícula
-      particle.style.animationDelay = `${Math.random() * 5}s`;
+      particle.style.animationDelay = `${Math.random() * 8}s`;
+      particle.style.animationDuration = `${15 + Math.random() * 15}s`;
 
       // Adicionar a partícula ao container
       particlesContainer.appendChild(particle);
+    }
+    
+    // Adicionar efeito de movimento parallax suave nas partículas
+    if (sectionRef.current) {
+      const handleMouseMove = (e: MouseEvent) => {
+        const { clientX, clientY } = e;
+        const x = (clientX / window.innerWidth) - 0.5;
+        const y = (clientY / window.innerHeight) - 0.5;
+        
+        const particles = particlesContainer.querySelectorAll('.particle');
+        particles.forEach((particle, index) => {
+          const speed = 0.05 + (index % 4) * 0.01;
+          const elParticle = particle as HTMLElement;
+          gsap.to(elParticle, {
+            x: x * 30 * speed,
+            y: y * 30 * speed,
+            duration: 1,
+            ease: "power1.out"
+          });
+        });
+      };
+      
+      sectionRef.current.addEventListener('mousemove', handleMouseMove);
+      
+      return () => {
+        if (sectionRef.current) {
+          sectionRef.current.removeEventListener('mousemove', handleMouseMove);
+        }
+      };
     }
   }, []);
 
@@ -115,21 +147,34 @@ const ContactSection = () => {
 
     // Animar título com efeito de destaque mais dramático
     if (titleRef.current) {
-    gsap.fromTo(
-      titleRef.current,
-      { opacity: 0, y: 50 },
-      {
-        opacity: 1,
-        y: 0,
-          duration: 0.9,
+      gsap.fromTo(
+        titleRef.current,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
           ease: "power3.out",
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      // Adicionar efeito de brilho ao título após aparecer
+      gsap.to(titleRef.current.querySelector('span'), {
+        width: '100%',
+        delay: 1.2,
+        duration: 1.5,
+        ease: "power2.inOut",
         scrollTrigger: {
           trigger: titleRef.current,
           start: "top 80%",
           toggleActions: "play none none none",
-        },
-      }
-    );
+        }
+      });
     }
 
     // Animar informações de contato com efeito de cascata
@@ -138,23 +183,23 @@ const ContactSection = () => {
         contactInfoRef.current.querySelectorAll(".contact-info-item");
 
       if (contactItems.length > 0) {
-    gsap.fromTo(
+        gsap.fromTo(
           contactItems,
-          { opacity: 0, x: -40, scale: 0.95 },
-      {
-        opacity: 1,
-        x: 0,
+          { opacity: 0, x: -40, scale: 0.9 },
+          {
+            opacity: 1,
+            x: 0,
             scale: 1,
-            stagger: 0.15,
-            duration: 0.7,
-            ease: "back.out(1.4)",
-        scrollTrigger: {
-          trigger: contactInfoRef.current,
-          start: "top 75%",
-          toggleActions: "play none none none",
-        },
-      }
-    );
+            stagger: 0.2,
+            duration: 0.8,
+            ease: "back.out(1.7)",
+            scrollTrigger: {
+              trigger: contactInfoRef.current,
+              start: "top 75%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
       }
     }
 
@@ -171,14 +216,25 @@ const ContactSection = () => {
             opacity: 1,
             scale: 1,
             rotation: 0,
-            stagger: 0.1,
-            duration: 0.5,
-            ease: "back.out(2)",
+            stagger: 0.15,
+            duration: 0.7,
+            ease: "elastic.out(1.2, 0.5)",
             scrollTrigger: {
               trigger: socialLinks[0],
               start: "top 85%",
               toggleActions: "play none none none",
             },
+            onComplete: () => {
+              // Adicionar pequena animação de pulso nos ícones
+              gsap.to(socialLinks, {
+                scale: 1.1,
+                duration: 0.3,
+                stagger: 0.1,
+                repeat: 1,
+                yoyo: true,
+                ease: "power1.inOut"
+              });
+            }
           }
         );
       }
@@ -186,22 +242,34 @@ const ContactSection = () => {
 
     // Animar formulário com efeito de deslizamento e destaque
     if (formRef.current) {
-    gsap.fromTo(
-      formRef.current,
-        { opacity: 0, y: 40, scale: 0.98 },
-      {
-        opacity: 1,
-        y: 0,
+      gsap.fromTo(
+        formRef.current,
+        { opacity: 0, y: 60, scale: 0.95 },
+        {
+          opacity: 1,
+          y: 0,
           scale: 1,
-          duration: 0.8,
-          ease: "power2.out",
-        scrollTrigger: {
-          trigger: formRef.current,
-          start: "top 70%",
-          toggleActions: "play none none none",
-        },
-      }
-    );
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: formRef.current,
+            start: "top 70%",
+            toggleActions: "play none none none",
+          },
+          onComplete: () => {
+            // Adicionar efeito de brilho ao redor do formulário
+            gsap.fromTo(
+              formRef.current,
+              { boxShadow: "0 0 0 rgba(108, 92, 231, 0)" },
+              { 
+                boxShadow: "0 0 20px rgba(108, 92, 231, 0.15)",
+                duration: 1.5,
+                ease: "power2.inOut"
+              }
+            );
+          }
+        }
+      );
     }
 
     // Animar campos do formulário sequencialmente
@@ -209,22 +277,23 @@ const ContactSection = () => {
       const formGroups = formRef.current.querySelectorAll(".form-group");
 
       if (formGroups.length > 0) {
-    gsap.fromTo(
+        gsap.fromTo(
           formGroups,
-      { opacity: 0, y: 20 },
-      {
-        opacity: 1,
-        y: 0,
-        stagger: 0.1,
-            duration: 0.6,
-            ease: "power2.out",
-        scrollTrigger: {
-          trigger: formRef.current,
-          start: "top 70%",
-          toggleActions: "play none none none",
-        },
-      }
-    );
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.15,
+            duration: 0.7,
+            delay: 0.3,
+            ease: "back.out(1.4)",
+            scrollTrigger: {
+              trigger: formRef.current,
+              start: "top 70%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
       }
     }
   }, []);
@@ -239,6 +308,24 @@ const ContactSection = () => {
       ...prev,
       [name]: "active",
     }));
+    
+    // Adicionar efeito de destaque ao campo focado
+    gsap.to(e.target, {
+      borderColor: 'rgb(108, 92, 231)',
+      borderWidth: '2px',
+      duration: 0.3,
+      ease: "power2.out"
+    });
+    
+    // Efeito de entrada do ícone ao lado
+    const iconContainer = e.target.parentElement?.querySelector('div');
+    if (iconContainer) {
+      gsap.fromTo(
+        iconContainer,
+        { opacity: 0.4, scale: 1, x: 0 },
+        { opacity: 0, scale: 0.8, x: -5, duration: 0.3, ease: "back.in(1.5)" }
+      );
+    }
   };
 
   // Manipular perda de foco dos campos
@@ -249,16 +336,37 @@ const ContactSection = () => {
     setFocusedField(null);
 
     // Definir estado do campo com base no valor e erros
+    let newState = "";
     if (value.trim()) {
-      setFieldActivity((prev) => ({
-        ...prev,
-        [name]: formErrors[name as keyof FormErrors] ? "error" : "filled",
-      }));
-    } else {
-      setFieldActivity((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
+      newState = formErrors[name as keyof FormErrors] ? "error" : "filled";
+    }
+    
+    setFieldActivity((prev) => ({
+      ...prev,
+      [name]: newState,
+    }));
+    
+    // Animação para o campo quando não está mais focado
+    const hasError = formErrors[name as keyof FormErrors];
+    gsap.to(e.target, {
+      borderColor: hasError ? 'rgba(239, 68, 68, 0.5)' : 
+                   value.trim() ? 'rgba(108, 92, 231, 0.5)' : 
+                   'rgba(75, 85, 99, 0.2)',
+      borderWidth: '2px',
+      duration: 0.3,
+      ease: "power2.out"
+    });
+    
+    // Reaparecer o ícone se o campo estiver vazio
+    if (!value.trim()) {
+      const iconContainer = e.target.parentElement?.querySelector('div');
+      if (iconContainer) {
+        gsap.fromTo(
+          iconContainer,
+          { opacity: 0, scale: 0.8, x: -5 },
+          { opacity: 0.4, scale: 1, x: 0, duration: 0.3, ease: "back.out(1.5)" }
+        );
+      }
     }
   };
 
@@ -286,10 +394,17 @@ const ContactSection = () => {
 
     // Atualizar estado do campo
     if (value.trim()) {
+      const newState = fieldError ? "error" : "filled";
       setFieldActivity((prev) => ({
         ...prev,
-        [name]: fieldError ? "error" : "filled",
+        [name]: newState,
       }));
+      
+      // Atualizar cor da borda com base no estado
+      gsap.to(e.target, {
+        borderColor: fieldError ? 'rgba(239, 68, 68, 0.5)' : 'rgba(108, 92, 231, 0.7)',
+        duration: 0.2
+      });
     }
 
     // Limpar mensagens de status quando o usuário edita o formulário
@@ -359,10 +474,20 @@ const ContactSection = () => {
     if (!validateForm()) return;
 
     setIsSubmitting(true);
+    
+    // Animar botão quando estiver enviando
+    const submitButton = e.currentTarget.querySelector('button[type="submit"]');
+    if (submitButton) {
+      gsap.to(submitButton, {
+        scale: 0.98,
+        boxShadow: '0 0 15px rgba(108, 92, 231, 0.5)',
+        duration: 0.2
+      });
+    }
 
     try {
       // Simular envio para uma API (substituir por chamada real para API)
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1800));
 
       // Limpar formulário após envio bem-sucedido
       setFormData({
@@ -386,30 +511,74 @@ const ContactSection = () => {
         message: "Mensagem enviada com sucesso! Entrarei em contato em breve.",
       });
 
-      // Animação de sucesso mais elaborada
+      // Animar todos os campos para mostrar que foram limpos
       if (formRef.current) {
-        // Efeito de "pulse" no formulário
+        const inputs = formRef.current.querySelectorAll('input, textarea');
+        gsap.fromTo(
+          inputs,
+          { borderColor: 'rgba(108, 92, 231, 0.7)' },
+          { 
+            borderColor: 'rgba(75, 85, 99, 0.2)', 
+            duration: 0.5,
+            stagger: 0.1
+          }
+        );
+        
+        // Efeito de confete para sucesso
+        const confettiColors = ['#6c5ce7', '#a29bfe', '#9b59b6', '#8e44ad', '#FFFFFF'];
+        const confettiContainer = document.createElement('div');
+        confettiContainer.className = 'absolute inset-0 overflow-hidden pointer-events-none';
+        formRef.current.appendChild(confettiContainer);
+        
+        // Criar confetes
+        for (let i = 0; i < 50; i++) {
+          const confetti = document.createElement('div');
+          confetti.className = 'absolute rounded-sm';
+          confetti.style.width = `${Math.random() * 8 + 5}px`;
+          confetti.style.height = `${Math.random() * 4 + 3}px`;
+          confetti.style.background = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+          confetti.style.left = `${Math.random() * 100}%`;
+          confetti.style.top = '0';
+          confetti.style.opacity = '1';
+          confettiContainer.appendChild(confetti);
+          
+          // Animar confete
+          gsap.to(confetti, {
+            y: `${100 + Math.random() * 150}%`,
+            x: `${(Math.random() - 0.5) * 80}px`,
+            rotation: Math.random() * 360,
+            opacity: 0,
+            duration: 1.5 + Math.random(),
+            ease: "power1.out",
+            onComplete: () => confetti.remove()
+          });
+        }
+        
+        // Remover o container após a animação
+        setTimeout(() => confettiContainer.remove(), 3000);
+
+        // Animação de sucesso mais elaborada no formulário
         gsap.fromTo(
           formRef.current,
           { boxShadow: "0 0 0 rgba(155, 89, 182, 0)" },
           {
             boxShadow:
               "0 0 30px rgba(155, 89, 182, 0.3), 0 0 10px rgba(155, 89, 182, 0.2)",
-            duration: 0.5,
+            duration: 0.7,
             repeat: 1,
             yoyo: true,
           }
         );
 
         // Animar mensagem de status
-      gsap.fromTo(
-        ".status-message",
-          { opacity: 0, y: -20, scale: 0.9 },
+        gsap.fromTo(
+          ".status-message",
+          { opacity: 0, y: -20, scale: 0.95 },
           {
             opacity: 1,
             y: 0,
             scale: 1,
-            duration: 0.5,
+            duration: 0.6,
             ease: "back.out(1.7)",
           }
         );
@@ -423,14 +592,31 @@ const ContactSection = () => {
 
       // Animação para erro
       if (formRef.current) {
+        // Efeito de "shake" no formulário para erro
+        gsap.fromTo(
+          formRef.current,
+          { x: -10 },
+          { x: 10, duration: 0.1, repeat: 3, yoyo: true, ease: "power2.inOut" }
+        );
+        
+        // Animar mensagem de status
         gsap.fromTo(
           ".status-message",
-          { opacity: 0, x: 20 },
-          { opacity: 1, x: 0, duration: 0.4 }
+          { opacity: 0, x: 20, scale: 0.95 },
+          { opacity: 1, x: 0, scale: 1, duration: 0.5, ease: "power3.out" }
         );
       }
     } finally {
       setIsSubmitting(false);
+      
+      // Restaurar o botão
+      if (submitButton) {
+        gsap.to(submitButton, {
+          scale: 1,
+          boxShadow: '0 0 0 rgba(108, 92, 231, 0)',
+          duration: 0.2
+        });
+      }
     }
   };
 
@@ -480,7 +666,7 @@ const ContactSection = () => {
                   <div>
                     <h4 className="text-sm text-text-light mb-1">Email</h4>
                     <a
-                      href="mailto:contato@luiscarlos.dev"
+                      href="mailto:luizcarlosvitoriano@gmail.com"
                       className="text-white hover:text-primary transition-colors"
                     >
                       luizcarlosvitoriano@gmail.com
@@ -495,7 +681,7 @@ const ContactSection = () => {
                   <div>
                     <h4 className="text-sm text-text-light mb-1">Telefone</h4>
                     <a
-                      href="tel:+5511999999999"
+                      href="tel:+5535997080310"
                       className="text-white hover:text-primary transition-colors"
                     >
                       +55 35 99708-0310
@@ -538,7 +724,7 @@ const ContactSection = () => {
                     <FaLinkedin className="text-text-light hover:text-primary transition-colors" />
                 </a>
                 <a
-                    href="https://twitter.com/"
+                    href="https://x.com/luiscarlosdev"
                   target="_blank"
                   rel="noopener noreferrer"
                     className="social-icon w-10 h-10 rounded-full bg-card-bg flex items-center justify-center border border-border hover:bg-primary/10 hover:border-primary transition-all duration-300"
@@ -560,18 +746,19 @@ const ContactSection = () => {
             >
               {/* Efeito decorativo */}
               <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+              <div className="absolute bottom-0 left-0 w-60 h-60 bg-primary/5 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3 pointer-events-none"></div>
 
               <h3 className="text-xl font-bold text-white mb-6 relative inline-block">
                 Envie uma Mensagem
                 <span className="absolute bottom-0 left-0 w-12 h-[2px] bg-primary"></span>
               </h3>
 
-                {submitStatus.type && (
-                  <div
-                    className={`status-message mb-6 p-4 rounded-lg ${
-                      submitStatus.type === "success"
-                        ? "bg-green-500/10 text-green-400"
-                        : "bg-red-500/10 text-red-400"
+              {submitStatus.type && (
+                <div
+                  className={`status-message mb-6 p-4 rounded-lg ${
+                    submitStatus.type === "success"
+                      ? "bg-green-500/10 text-green-400 border border-green-500/20"
+                      : "bg-red-500/10 text-red-400 border border-red-500/20"
                   } flex items-start space-x-3`}
                 >
                   {submitStatus.type === "success" ? (
@@ -580,8 +767,8 @@ const ContactSection = () => {
                     <FaExclamationCircle className="flex-shrink-0 mt-1" />
                   )}
                   <span>{submitStatus.message}</span>
-                  </div>
-                )}
+                </div>
+              )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div
@@ -745,10 +932,13 @@ const ContactSection = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`flex items-center justify-center w-full md:w-auto md:inline-flex px-8 py-4 bg-primary text-white rounded-lg font-medium transition-all duration-300 hover:bg-primary-dark hover:shadow-lg disabled:opacity-70 ${
-                      isSubmitting ? "relative overflow-hidden" : ""
+                    className={`group flex items-center justify-center w-full md:w-auto md:inline-flex px-8 py-4 bg-primary text-white rounded-lg font-medium transition-all duration-300 hover:bg-primary-dark hover:shadow-lg disabled:opacity-70 relative overflow-hidden ${
+                      isSubmitting ? "cursor-wait" : ""
                     }`}
                   >
+                    {/* Efeito de onda ao hover */}
+                    <span className="absolute inset-0 w-full h-full bg-white/10 wave-effect"></span>
+                    
                     {isSubmitting ? (
                       <>
                         <span className="inline-block h-5 w-5 rounded-full border-2 border-white/30 border-t-white animate-spin mr-2"></span>
@@ -756,7 +946,7 @@ const ContactSection = () => {
                       </>
                     ) : (
                       <>
-                        <FaPaperPlane className="mr-2 group-hover:translate-x-1 group-hover:translate-y-1 transition-transform" />
+                        <FaPaperPlane className="mr-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
                         <span>Enviar Mensagem</span>
                       </>
                     )}
@@ -767,6 +957,89 @@ const ContactSection = () => {
           </div>
         </div>
       </div>
+
+      {/* Adicionar animações CSS para partículas */}
+      <style>{`
+        .particle {
+          animation: float 20s infinite ease-in-out;
+          transform: translate3d(0, 0, 0);
+          will-change: transform, opacity;
+          transition: all 0.5s ease;
+        }
+        
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0) translateX(0) scale(1);
+          }
+          25% {
+            transform: translateY(calc(-15px * var(--random, 0.5))) translateX(calc(20px * var(--random, 0.5))) scale(0.95);
+          }
+          50% {
+            transform: translateY(calc(15px * var(--random, 0.5))) translateX(calc(-20px * var(--random, 0.5))) scale(1.05);
+          }
+          75% {
+            transform: translateY(calc(-10px * var(--random, 0.5))) translateX(calc(15px * var(--random, 0.5))) scale(1);
+          }
+        }
+        
+        /* Efeito de pulsação para input em foco */
+        input:focus, textarea:focus {
+          animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+          0% {
+            box-shadow: 0 0 0 0 rgba(108, 92, 231, 0.1);
+          }
+          70% {
+            box-shadow: 0 0 0 5px rgba(108, 92, 231, 0);
+          }
+          100% {
+            box-shadow: 0 0 0 0 rgba(108, 92, 231, 0);
+          }
+        }
+        
+        /* Efeito de onda para o botão de enviar */
+        .wave-effect {
+          position: absolute;
+          transform: translateY(100%);
+          transition: transform 0.5s ease;
+        }
+        
+        button:hover .wave-effect {
+          transform: translateY(0);
+          animation: wave 1.5s linear infinite;
+        }
+        
+        @keyframes wave {
+          0% {
+            top: 0%;
+            transform: translateX(-50%) scaleY(0.1);
+          }
+          50% {
+            top: -5%;
+            transform: translateX(-25%) scaleY(0.3);
+          }
+          100% {
+            top: 0%;
+            transform: translateX(0%) scaleY(0.1);
+          }
+        }
+        
+        /* Efeito sutil de destaque nos campos do formulário */
+        input, textarea {
+          transition: all 0.3s ease;
+        }
+        
+        input:hover, textarea:hover {
+          box-shadow: 0 0 0 1px rgba(108, 92, 231, 0.1);
+        }
+        
+        /* Melhorar a aparência do texto no hover */
+        .hover\:text-primary:hover {
+          text-shadow: 0 0 8px rgba(108, 92, 231, 0.3);
+        }
+      `}</style>
     </div>
   );
 };

@@ -1,36 +1,48 @@
-import { useState, useEffect, useRef, useLayoutEffect } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   FaGraduationCap,
   FaBriefcase,
   FaAward,
-  FaDownload,
-  FaArrowRight,
   FaBuilding,
-  FaCalendarAlt,
   FaMapMarkerAlt,
   FaCheckCircle,
-} from "react-icons/fa";
+  FaDownload,
+  FaArrowRight,
+  FaLaptop,
+  FaUniversity,
+  FaCode,
+  FaReact, 
+  FaHtml5,
+  FaJs,
+  FaTimesCircle,
+  FaLightbulb,
+  FaCertificate,
+  FaBolt,
+  FaCalendarAlt
+} from 'react-icons/fa';
 
-// Registrar ScrollTrigger
+// Registrando o plugin ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
 
-// Tipo para informações de educação e experiência
+// Interface para os itens do currículo
 interface ResumeItem {
-  id: number;
+  id: string;
   title: string;
   organization: string;
   period: string;
   description: string;
   location?: string;
   achievements?: string[];
+  icon?: string;
+  color?: string;
 }
 
 // Dados de educação
 const educationData: ResumeItem[] = [
   {
-    id: 1,
+    id: "1",
     title: "Técnico em Informática",
     organization: "SENAI",
     period: "Concluído",
@@ -38,9 +50,11 @@ const educationData: ResumeItem[] = [
     description:
       "Formação técnica com foco em redes de computadores, lógica de programação, sistemas operacionais, desenvolvimento de sistemas web e manutenção de computadores.",
     achievements: [],
+    icon: "laptop",
+    color: "#9c27b0",
   },
   {
-    id: 2,
+    id: "2",
     title: "Técnico em Eletrotécnica",
     organization: "SENAI",
     period: "Concluído",
@@ -48,9 +62,11 @@ const educationData: ResumeItem[] = [
     description:
       "Curso técnico voltado para projetos, instalação e manutenção de sistemas elétricos industriais, automação predial e comandos elétricos.",
     achievements: [],
+    icon: "bolt",
+    color: "#ba68c8",
   },
   {
-    id: 3,
+    id: "3",
     title: "Graduação em Automação Industrial",
     organization: "Unicesumar",
     period: "Cursando",
@@ -58,9 +74,11 @@ const educationData: ResumeItem[] = [
     description:
       "Curso superior com foco em controle de processos industriais, sistemas automatizados, CLPs, instrumentação, redes industriais e robótica.",
     achievements: [],
+    icon: "university",
+    color: "#8e24aa",
   },
   {
-    id: 4,
+    id: "4",
     title: "Formações Complementares em Programação",
     organization: "IFRS, Udemy, Estudonauta, Curso em Vídeo",
     period: "2022 - Atual",
@@ -68,6 +86,8 @@ const educationData: ResumeItem[] = [
     description:
       "Conjunto de formações práticas nas áreas de Front-End, JavaScript, HTML, CSS, lógica de programação e automação de sistemas. Destaques para os cursos:\n- HTML5 e CSS3 (Curso em Vídeo - Gustavo Guanabara)\n- Lógica de Programação (IFRS)\n- JavaScript Moderno (Udemy)\n- Desenvolvimento Web (Estudonauta)\n- Automação de Sistemas Industriais (IFRS)",
     achievements: [],
+    icon: "code",
+    color: "#9c27b0",
   },
 ];
 
@@ -75,7 +95,7 @@ const educationData: ResumeItem[] = [
 // Dados de experiência
 const experienceData: ResumeItem[] = [
   {
-    id: 1,
+    id: "1",
     title: "Programador Front-End Júnior",
     organization: "iPass/Climax",
     period: "2024 - Presente",
@@ -87,9 +107,11 @@ const experienceData: ResumeItem[] = [
       "Implementação de funcionalidades interativas com React e TypeScript",
       "Aprimoramento contínuo do design e da experiência do usuário com foco em boas práticas de UI/UX",
     ],
+    icon: "react",
+    color: "#7b1fa2",
   },
   {
-    id: 2,
+    id: "2",
     title: "Projetos Pessoais em Desenvolvimento Web",
     organization: "Freelancer / Autônomo",
     period: "2023 - 2024",
@@ -101,9 +123,11 @@ const experienceData: ResumeItem[] = [
       "Criação de um portfólio online moderno com animações e transições suaves",
       "Aplicação de boas práticas de acessibilidade e performance em projetos pessoais",
     ],
+    icon: "web",
+    color: "#e74c3c",
   },
   {
-    id: 3,
+    id: "3",
     title: "Iniciação em Desenvolvimento de Sistemas",
     organization: "Cursos Livres e Formação Autodidata",
     period: "2022 - 2023",
@@ -115,6 +139,8 @@ const experienceData: ResumeItem[] = [
       "Aplicação prática dos conhecimentos em pequenos sistemas e automações pessoais",
       "Participação em comunidades de desenvolvedores e fóruns de aprendizado",
     ],
+    icon: "learning",
+    color: "#3498db",
   },
 ];
 
@@ -122,77 +148,129 @@ const experienceData: ResumeItem[] = [
 // Dados de certificações
 const certificationData: ResumeItem[] = [
   {
-    id: 1,
+    id: "1",
     title: "Automação de Sistemas",
     organization: "IFRS - Instituto Federal",
     period: "Jul - Nov 2024",
     description:
       "Carga horária: 30h | Aproveitamento: 81,33%\nConteúdo: Automação, Projeto de Sistemas, Robótica, Máquinas e Redes Industriais.",
+    icon: "automation",
+    color: "#ab47bc",
   },
   {
-    id: 2,
+    id: "2",
     title: "HTML5: Fundamentos para Construção de Páginas Web Modernas",
     organization: "IFRS - Instituto Federal",
     period: "Out - Nov 2024",
     description:
       "Carga horária: 40h | Aproveitamento: 94,00%\nConteúdo: Introdução ao HTML5, Estrutura de Documentos, Imagens, Links, Listas, Tabelas e Formulários.",
+    icon: "html",
+    color: "#e74c3c",
   },
   {
-    id: 3,
+    id: "3",
     title: "JavaScript",
     organization: "IFRS - Instituto Federal",
     period: "Jul - Nov 2024",
     description:
       "Carga horária: 30h | Aproveitamento: 75,00%\nConteúdo: Fundamentos da linguagem, manipulação de DOM, eventos e validação de formulários.",
+    icon: "js",
+    color: "#f1c40f",
   },
   {
-    id: 4,
+    id: "4",
     title: "Lógica de Programação",
     organization: "IFRS - Instituto Federal",
     period: "Jul - Nov 2024",
     description:
       "Carga horária: 20h | Aproveitamento: 88,50%\nConteúdo: Variáveis, operadores, estruturas condicionais e de repetição utilizando Portugol Studio.",
+    icon: "logic",
+    color: "#9b59b6",
   },
   {
-    id: 5,
+    id: "5",
     title: "Curso Completo de JavaScript (do básico ao avançado)",
     organization: "Udemy",
     period: "2023",
     description:
       "Curso com foco prático no desenvolvimento web com JavaScript moderno (ES6+), incluindo manipulação de DOM, APIs, orientação a objetos e lógica.",
+    icon: "js-advanced",
+    color: "#f39c12",
   },
   {
-    id: 6,
+    id: "6",
     title: "Curso Front-End HTML5, CSS3 e JavaScript",
     organization: "Estudonauta",
     period: "2023",
     description:
       "Formação prática para desenvolvimento de interfaces modernas com HTML, CSS e JavaScript. Inclui projetos práticos e fundamentos de UX/UI.",
+    icon: "frontend",
+    color: "#3498db",
   },
   {
-    id: 7,
+    id: "7",
     title: "Curso de HTML5 e CSS3 (Módulo 1 ao 5)",
     organization: "Curso em Vídeo (Gustavo Guanabara)",
     period: "2022 - 2023",
     description:
       "Curso gratuito e completo abordando do básico ao intermediário em HTML e CSS com foco em boas práticas de estrutura, semântica e responsividade.",
+    icon: "web",
+    color: "#2ecc71",
   },
 ];
 
+// Componente para renderizar o ícone baseado no tipo
+const ResumeIcon = ({ type, color }: { type: string; color: string }) => {
+  const iconStyle = { color: color || 'var(--color-primary)' };
+  
+  switch (type) {
+    case 'laptop':
+      return <FaLaptop style={iconStyle} />;
+    case 'bolt':
+      return <FaBolt style={iconStyle} />;
+    case 'university':
+      return <FaUniversity style={iconStyle} />;
+    case 'code':
+      return <FaCode style={iconStyle} />;
+    case 'react':
+      return <FaReact style={iconStyle} />;
+    case 'web':
+      return <FaHtml5 style={iconStyle} />;
+    case 'learning':
+      return <FaLightbulb style={iconStyle} />;
+    case 'automation':
+      return <FaBolt style={iconStyle} />;
+    case 'html':
+      return <FaHtml5 style={iconStyle} />;
+    case 'js':
+      return <FaJs style={iconStyle} />;
+    case 'js-advanced':
+      return <FaJs style={iconStyle} />;
+    case 'logic':
+      return <FaTimesCircle style={iconStyle} />;
+    case 'frontend':
+      return <FaLaptop style={iconStyle} />;
+    default:
+      return <FaCheckCircle style={iconStyle} />;
+  }
+};
 
 const ResumeSection = () => {
   const [activeTab, setActiveTab] = useState<
     "education" | "experience" | "certifications"
   >("experience");
-  const [animatedItems, setAnimatedItems] = useState<number[]>([]);
+  const [animatedItems, setAnimatedItems] = useState<string[]>([]);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [expandedItem, setExpandedItem] = useState<string | null>(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const tabsRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const descriptionRef = useRef<HTMLParagraphElement>(null);
-  const downloadButtonRef = useRef<HTMLButtonElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
+  const timelineItemsRef = useRef<HTMLDivElement[]>([]);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const downloadButtonRef = useRef<HTMLAnchorElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
 
   // Determinar qual conjunto de dados mostrar com base na tab ativa
   const currentData =
@@ -202,510 +280,661 @@ const ResumeSection = () => {
       ? experienceData
       : certificationData;
 
-  // Função para garantir visibilidade dos elementos do Resume
-  const ensureResumeVisibility = () => {
-    console.log("Garantindo visibilidade da seção Resume");
-    const section = document.getElementById("resume");
-    if (!section) return;
-
-    // Tornar a seção principal visível
-    section.style.display = "block";
-    section.style.visibility = "visible";
-    section.style.opacity = "1";
-    section.style.position = "relative";
-    section.style.zIndex = "1";
-
-    // Garantir visibilidade de todos os elementos dentro da seção
-    const allElements = section.querySelectorAll("*");
-    allElements.forEach((el) => {
-      const element = el as HTMLElement;
-      element.style.visibility = "visible";
-      element.style.opacity = "1";
-
-      // Para elementos específicos, definir display apropriado
-      if (
-        element.tagName === "A" ||
-        element.tagName === "BUTTON" ||
-        element.classList.contains("tab-button") ||
-        element.classList.contains("tabs")
-      ) {
-        element.style.display = "flex";
-      } else if (
-        element.tagName === "DIV" ||
-        element.tagName === "P" ||
-        element.tagName === "H2" ||
-        element.tagName === "H3" ||
-        element.tagName === "H4" ||
-        element.tagName === "IMG" ||
-        element.classList.contains("resume-item") ||
-        element.classList.contains("resume-content")
-      ) {
-        element.style.display = "block";
-      }
-    });
-
-    // Verificar problemas específicos
-    const selectors = [
-      "h2.text-4xl.font-bold",
-      "img.w-full",
-      "div.text.text-light",
-      "p.mb-4",
-      "p.mb-8",
-      "a.btn-primary",
-      ".reveal-clip",
-      ".resume-item",
-      ".tab-button",
-    ];
-
-    selectors.forEach((selector) => {
-      const elements = section.querySelectorAll(selector);
-      elements.forEach((element) => {
-        const el = element as HTMLElement;
-        el.style.display = ["A", "BUTTON"].includes(element.tagName)
-          ? "flex"
-          : "block";
-        el.style.visibility = "visible";
-        el.style.opacity = "1";
-        el.style.position = "relative";
-        el.style.zIndex = "10";
-      });
-    });
-  };
-
-  // Aplicar visibilidade na mudança de aba
-  const applyVisibilityForActiveTab = () => {
-    console.log("Aplicando visibilidade para aba:", activeTab);
-    const activeContent = document.querySelector(
-      `.resume-content[data-tab="${activeTab}"]`
-    );
-    if (activeContent) {
-      const el = activeContent as HTMLElement;
-      el.style.display = "block";
-      el.style.visibility = "visible";
-      el.style.opacity = "1";
-
-      // Forçar visibilidade para todos os elementos dentro do conteúdo ativo
-      const elements = el.querySelectorAll("*");
-      elements.forEach((element) => {
-        const elem = element as HTMLElement;
-        elem.style.visibility = "visible";
-        elem.style.opacity = "1";
-        if (["A", "BUTTON"].includes(elem.tagName)) {
-          elem.style.display = "flex";
-        } else {
-          elem.style.display = "block";
-        }
-      });
-    }
-  };
-
-  // UseLayoutEffect para garantir a visibilidade dos elementos antes da renderização
-  useLayoutEffect(() => {
-    // Garantir que a seção esteja visível
-    if (sectionRef.current) {
-      sectionRef.current.style.display = "block";
-      sectionRef.current.style.visibility = "visible";
-      sectionRef.current.style.opacity = "1";
-      sectionRef.current.style.zIndex = "1";
-    }
-
-    // Garantir que o título esteja visível
-    if (titleRef.current) {
-      titleRef.current.style.visibility = "visible";
-      titleRef.current.style.opacity = "1";
-      titleRef.current.style.display = "block";
-    }
-
-    // Garantir que a descrição esteja visível
-    if (descriptionRef.current) {
-      descriptionRef.current.style.visibility = "visible";
-      descriptionRef.current.style.opacity = "1";
-      descriptionRef.current.style.display = "block";
-    }
-
-    // Garantir que o botão de download esteja visível
-    if (downloadButtonRef.current) {
-      downloadButtonRef.current.style.visibility = "visible";
-      downloadButtonRef.current.style.opacity = "1";
-      downloadButtonRef.current.style.display = "flex";
-    }
-
-    // Aplicar força bruta para garantir visibilidade
-    ensureResumeVisibility();
-  }, []);
-
-  // Aplicar visibilidade periódica à seção Resume
-  useLayoutEffect(() => {
-    // Aplicar imediatamente
-    ensureResumeVisibility();
-
-    // E também periodicamente
-    const interval = setInterval(ensureResumeVisibility, 1000);
-
-    // Aplicar após mudança de aba
-    setTimeout(ensureResumeVisibility, 500);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [activeTab]);
-
-  // Garantir visibilidade quando a aba mudar
-  useEffect(() => {
-    // Aplicar após um curto atraso para dar tempo às animações
-    setTimeout(applyVisibilityForActiveTab, 100);
-    setTimeout(applyVisibilityForActiveTab, 500);
-    setTimeout(applyVisibilityForActiveTab, 1000);
-
-    // Garantir que os itens da nova aba estejam visíveis
-    ensureResumeVisibility();
-  }, [activeTab]);
-
-  // Animações ao rolar com garantia de visibilidade
-  useEffect(() => {
-    if (!sectionRef.current) return;
-
-    // Garantir visibilidade inicial
-    ensureResumeVisibility();
-
-    // Garantir visibilidade novamente após animações
-    const timeoutIds = [
-      setTimeout(ensureResumeVisibility, 500),
-      setTimeout(ensureResumeVisibility, 1000),
-      setTimeout(ensureResumeVisibility, 2000),
-    ];
-
-    // Animar título com garantia de visibilidade após
-    gsap.fromTo(
-      titleRef.current,
-      { opacity: 0, y: 50 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        scrollTrigger: {
-          trigger: titleRef.current,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-        onComplete: ensureResumeVisibility,
-      }
-    );
-
-    // Animar tabs com garantia de visibilidade após
-    gsap.fromTo(
-      tabsRef.current?.children || [],
-      { opacity: 0, y: 20 },
-      {
-        opacity: 1,
-        y: 0,
-        stagger: 0.1,
-        duration: 0.5,
-        scrollTrigger: {
-          trigger: tabsRef.current,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-        onComplete: ensureResumeVisibility,
-      }
-    );
-
-    return () => {
-      timeoutIds.forEach((id) => clearTimeout(id));
-    };
-  }, []);
-
-  // Animar itens do currículo quando a tab muda
-  useEffect(() => {
-    if (!contentRef.current) return;
-
-    // Garantir visibilidade antes da animação
-    ensureResumeVisibility();
-
-    // Primeiro, configura todos os itens para opacity: 0
-    gsap.set(contentRef.current.querySelectorAll(".resume-item"), {
-      opacity: 0,
-      y: 20,
-    });
-
-    // Anima a entrada dos itens
-    gsap.to(contentRef.current.querySelectorAll(".resume-item"), {
-      opacity: 1,
-      y: 0,
-      stagger: 0.1,
-      duration: 0.5,
-      ease: "power2.out",
-      onComplete: ensureResumeVisibility,
-    });
-
-    // Garantir visibilidade novamente após animações
-    setTimeout(ensureResumeVisibility, 1000);
-  }, [activeTab]);
-
-  // Adicionar efeito de animação gradual para itens do timeline
-  useEffect(() => {
+  // Animar items quando visíveis
+  const animateItems = useCallback(() => {
     if (!timelineRef.current) return;
-
-    // Limpar animações existentes
-    setAnimatedItems([]);
-
-    // Função para animar um novo item
-    const animateNextItem = (index: number) => {
-      if (index >= currentData.length) return;
-
-      // Adicionar este item à lista de animados
-      setAnimatedItems((prev) => [...prev, currentData[index].id]);
-
-      // Agendar o próximo item para animação
-      setTimeout(() => {
-        animateNextItem(index + 1);
-      }, 300); // Delay entre cada item
-    };
-
-    // Iniciar animação com um pequeno delay
-    setTimeout(() => {
-      animateNextItem(0);
-    }, 200);
-  }, [activeTab, currentData]);
-
-  // Melhorar a animação de scroll para os elementos da timeline
-  useEffect(() => {
-    if (!sectionRef.current || !timelineRef.current) return;
-
-    // Configurar animações para os itens da timeline
-    const timelineItems = timelineRef.current.querySelectorAll(".resume-item");
-
-    if (timelineItems.length) {
-      gsap.fromTo(
-        timelineItems,
-        {
-          opacity: 0,
-          x: (index) => (index % 2 === 0 ? -50 : 50),
-          y: 30,
+    
+    const itemElements = timelineRef.current.querySelectorAll('.resume-timeline-item');
+    
+    // Resetar a animação
+    gsap.set(itemElements, { 
+      opacity: 0, 
+      x: -30,
+      scale: 0.95,
+      transformOrigin: "left center" 
+    });
+    
+    // Criar a timeline para animar os itens
+    const tl = gsap.timeline({
+      defaults: { ease: "power3.out" }
+    });
+    
+    // Animação em cascata dos itens
+    tl.to(itemElements, {
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      stagger: 0.15,
+      duration: 0.7,
+      ease: "back.out(1.4)",
+      onComplete: () => {
+        // Atualizar o estado para mostrar os itens
+        setAnimatedItems(prevItems => {
+          const newItems = [...prevItems];
+          itemElements.forEach((_, index) => {
+            const indexStr = String(index);
+            if (!newItems.includes(indexStr)) {
+              newItems.push(indexStr);
+            }
+          });
+          return newItems;
+        });
+      }
+    });
+    
+    // Animar a linha do tempo com um efeito de desenho
+    if (lineRef.current) {
+      tl.fromTo(
+        lineRef.current,
+        { 
+          height: "0%",
+          opacity: 0.5 
         },
-        {
+        { 
+          height: "100%", 
           opacity: 1,
-          x: 0,
-          y: 0,
-          stagger: 0.2,
-          duration: 0.8,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: timelineRef.current,
-            start: "top 75%",
-            toggleActions: "play none none none",
-          },
-        }
+          duration: 1.2,
+          ease: "power2.inOut" 
+        },
+        0 // Começar ao mesmo tempo que os itens
       );
     }
-  }, [activeTab]);
+    
+    // Animar os círculos na linha do tempo
+    const circles = timelineRef.current.querySelectorAll('.timeline-circle');
+    tl.fromTo(
+      circles,
+      { 
+        scale: 0,
+        opacity: 0 
+      },
+      {
+        scale: 1,
+        opacity: 1,
+        stagger: 0.15,
+        duration: 0.5,
+        ease: "back.out(2)"
+      },
+      0.2 // Começar um pouco depois dos itens
+    );
+  }, []);
 
-  // Mudar de tab
-  const changeTab = (tab: "education" | "experience" | "certifications") => {
-    setActiveTab(tab);
+  // Função para mudar de tab com transição aprimorada
+  const changeTab = useCallback((tab: "education" | "experience" | "certifications") => {
+    if (tab === activeTab) return;
+    
+    // Animar saída dos itens atuais
+    const timeline = timelineRef.current;
+    if (timeline) {
+      const items = timeline.querySelectorAll('.resume-item');
+      const dots = timeline.querySelectorAll('.timeline-dot');
 
-    // Adicionar animação de transição entre tabs
-    if (contentRef.current) {
-      gsap.fromTo(
-        contentRef.current,
+      // Timeline para saída coordenada
+      const exitTl = gsap.timeline({
+        onComplete: () => {
+          setActiveTab(tab);
+          setAnimatedItems([]);
+          
+          // Resetar estados
+          setHoveredItem(null);
+          setExpandedItem(null);
+          
+          // Pequeno timeout para garantir que a DOM foi atualizada
+          setTimeout(() => {
+            animateItems();
+          }, 80);
+        }
+      });
+      
+      // Animação dos itens saindo
+      exitTl.to(items, {
+        opacity: 0,
+        x: tab === "education" 
+          ? -30 
+          : tab === "experience" && activeTab === "education"
+            ? 30
+            : tab === "certifications" && activeTab === "experience"
+              ? 30
+              : -30,
+        stagger: 0.05,
+        duration: 0.4,
+        ease: "power2.in"
+      });
+      
+      // Animação dos dots saindo
+      exitTl.to(dots, {
+        scale: 0,
+        opacity: 0,
+        stagger: 0.03,
+        duration: 0.3
+      }, "-=0.2");
+      
+      // Efeito na linha da timeline
+      if (lineRef.current) {
+        exitTl.to(lineRef.current, {
+          opacity: 0.3,
+          duration: 0.3
+        }, "-=0.4");
+      }
+    } else {
+      setActiveTab(tab);
+      setTimeout(animateItems, 50);
+    }
+
+    // Animar o botão da tab ativa
+    const tabButtons = tabsRef.current?.querySelectorAll('button');
+    if (tabButtons) {
+      const tabIndex = ["experience", "education", "certifications"].indexOf(tab);
+      const tabButtonArray = Array.from(tabButtons);
+      if (tabIndex >= 0 && tabIndex < tabButtonArray.length) {
+        gsap.fromTo(
+          tabButtonArray[tabIndex],
+          { scale: 0.95 },
+          { 
+            scale: 1, 
+            duration: 0.4,
+            ease: "back.out(1.7)"
+          }
+        );
+      }
+    }
+
+  }, [activeTab, animateItems]);
+
+  // Função para baixar o currículo com animação melhorada
+  const handleDownload = () => {
+    const link = document.createElement("a");
+    link.href = "/curriculum.pdf"; // Caminho para o PDF do currículo
+    link.download = "Curriculo-Luis-Carlos.pdf";
+    document.body.appendChild(link);
+    
+    // Efeito visual de feedback
+    if (downloadButtonRef.current) {
+      // Animação mais elaborada
+      gsap.timeline()
+        .to(downloadButtonRef.current, {
+          scale: 0.92,
+          duration: 0.1,
+          ease: "power2.in"
+        })
+        .to(downloadButtonRef.current, {
+          scale: 1.05,
+          duration: 0.3,
+          ease: "back.out(1.7)"
+        })
+        .to(downloadButtonRef.current, {
+          scale: 1,
+          duration: 0.2,
+          ease: "power2.out"
+        });
+      
+      // Animação do ícone
+      const icon = downloadButtonRef.current.querySelector('svg');
+      if (icon) {
+        gsap.fromTo(
+          icon,
+          { y: 0 },
+          { 
+            y: -5, 
+            yoyo: true, 
+            repeat: 1, 
+            duration: 0.3,
+            ease: "power2.inOut"
+          }
+        );
+      }
+    }
+    
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Expandir/contrair item de currículo
+  const toggleExpand = (itemId: string) => {
+    setExpandedItem(prev => prev === itemId ? null : itemId);
+    
+    // Encontrar elementos DOM
+    const itemElement = document.getElementById(`resume-item-${itemId}`);
+    if (!itemElement) return;
+    
+    const contentElement = itemElement.querySelector('.resume-content');
+    const iconElement = itemElement.querySelector('.expand-icon');
+    
+    // Se está expandindo
+    if (expandedItem !== itemId) {
+      // Pequeno delay para permitir a mudança de estado
+      setTimeout(() => {
+        // Animar o conteúdo
+        gsap.timeline()
+          .to(contentElement, {
+            maxHeight: "500px",
+            opacity: 1,
+            duration: 0.6,
+            ease: "power3.out"
+          })
+          .to(iconElement, {
+            rotation: 90,
+            duration: 0.5,
+            ease: "back.out(1.7)"
+          }, "-=0.5");
+
+        // Animação de destaque do card com pulsação sutil
+        const highlightTl = gsap.timeline({repeat: 1, yoyo: true});
+        highlightTl
+          .fromTo(
+            itemElement,
+            { boxShadow: "0 0 0 rgba(147, 51, 234, 0)" },
+            {
+              boxShadow: "0 0 20px rgba(147, 51, 234, 0.3)", 
+              duration: 0.8,
+              ease: "power2.out"
+            }
+          )
+          .to(
+            itemElement,
+            {
+              boxShadow: "0 0 10px rgba(147, 51, 234, 0.2)",
+              duration: 0.8,
+              ease: "power2.in"
+            }
+          );
+        
+        // Scroll suave para o item expandido
+        itemElement?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center'
+        });
+        
+        // Adicionar destaque aos títulos dentro do conteúdo
+        const headings = itemElement.querySelectorAll('.resume-content h4, .resume-content h5');
+        gsap.fromTo(
+          headings,
+          { opacity: 0, y: 10 },
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.1,
+            duration: 0.4,
+            delay: 0.2
+          }
+        );
+        
+        // Animar itens de lista
+        const listItems = itemElement.querySelectorAll('.resume-content li');
+        gsap.fromTo(
+          listItems,
+          { opacity: 0, x: -10 },
+          {
+            opacity: 1,
+            x: 0,
+            stagger: 0.05,
+            duration: 0.3,
+            delay: 0.3
+          }
+        );
+      }, 10);
+    } else {
+      // Animar fechando o item
+      gsap.timeline()
+        .to(contentElement, {
+          maxHeight: "0px",
+          opacity: 0,
+          duration: 0.4,
+          ease: "power3.in"
+        })
+        .to(iconElement, {
+          rotation: 0,
+          duration: 0.3,
+          ease: "back.in(1.7)"
+        }, "-=0.4");
+        
+      // Remover o destaque
+      gsap.to(itemElement, {
+        boxShadow: "0 0 0 rgba(147, 51, 234, 0)",
+        duration: 0.3
+      });
+    }
+  };
+
+  // Configurar animações iniciais com efeitos de entrada aprimorados
+  useEffect(() => {
+    // Garantir visibilidade da seção
+    if (sectionRef.current) {
+      gsap.set(sectionRef.current, { 
+        opacity: 0, 
+        y: 50,
+        visibility: "visible" 
+      });
+    }
+    
+    // Configurar ScrollTrigger para animar a entrada da seção
+    const sectionTrigger = ScrollTrigger.create({
+      trigger: sectionRef.current,
+      start: "top 80%",
+      once: true,
+      onEnter: () => {
+        const mainTl = gsap.timeline({
+          defaults: { ease: "power2.out" }
+    });
+
+        // Animar a entrada da seção
+        mainTl.to(sectionRef.current, {
+      opacity: 1,
+      y: 0,
+          duration: 1
+    });
+
+        // Animar cabeçalho da seção com efeito sequencial
+        if (titleRef.current) {
+          const title = titleRef.current.querySelector('h2');
+          const subtitle = titleRef.current.querySelector('p');
+          const button = titleRef.current.querySelector('a');
+          
+          mainTl.fromTo(
+            title,
+            { opacity: 0, y: -30 },
+            { opacity: 1, y: 0, duration: 0.7 },
+            "-=0.3"
+          );
+          
+          mainTl.fromTo(
+            subtitle,
+            { opacity: 0, y: -20 },
+            { opacity: 1, y: 0, duration: 0.7 },
+            "-=0.5"
+          );
+          
+          mainTl.fromTo(
+            button,
+            { opacity: 0, y: 20, scale: 0.9 },
+        {
+          opacity: 1,
+          y: 0,
+              scale: 1, 
+              duration: 0.7,
+              ease: "back.out(1.7)"
+            },
+            "-=0.4"
+      );
+    }
+        
+        // Animar tabs de navegação
+        if (tabsRef.current) {
+          const tabs = tabsRef.current.querySelectorAll('button');
+          
+          mainTl.fromTo(
+            tabs,
         { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.5,
-          ease: "power2.out",
-        }
-      );
+              stagger: 0.1,
+              duration: 0.5
+            },
+            "-=0.2"
+          );
+          
+          // Destacar a tab ativa
+          const tabIndex = ["experience", "education", "certifications"].indexOf(activeTab);
+          const tabsArray = Array.from(tabs);
+          if (tabIndex >= 0 && tabIndex < tabsArray.length) {
+            const activeTabEl = tabsArray[tabIndex];
+            mainTl.fromTo(
+              activeTabEl,
+              { scale: 0.95 },
+              { 
+                scale: 1.05, 
+                duration: 0.3, 
+                ease: "back.out(1.7)"
+              },
+              "-=0.1"
+            ).to(
+              activeTabEl,
+              { scale: 1, duration: 0.2 },
+              "+=0.2"
+            );
+          }
     }
 
-    // Garantir que a visibilidade seja aplicada
-    setTimeout(applyVisibilityForActiveTab, 100);
-  };
+        // Animar itens do currículo
+        mainTl.add(() => {
+          setIsInitialLoad(false);
+          animateItems();
+        }, "-=0.1");
+      }
+    });
+    
+    // Criar efeito de parallax no fundo da seção
+    if (sectionRef.current) {
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: true,
+        onUpdate: (self) => {
+          // Efeito de parallax na linha do tempo
+          if (lineRef.current) {
+            gsap.to(lineRef.current, {
+              y: self.progress * 50,
+              duration: 0.1,
+              ease: "none"
+            });
+          }
+        }
+      });
+    }
+    
+    // Limpar ScrollTriggers ao desmontar o componente
+    return () => {
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    };
+  }, [animateItems, activeTab]);
 
-  // Download do CV
-  const handleDownload = () => {
-    // Implementação futura para download do CV
-    alert("Funcionalidade de download será implementada em breve!");
+  // Re-animar quando a tab muda
+  useEffect(() => {
+    if (!isInitialLoad) {
+      animateItems();
+    }
+  }, [activeTab, animateItems, isInitialLoad]);
+
+  // Efeito para animação hover nos itens
+  const handleItemHover = (itemId: string, isEntering: boolean) => {
+    setHoveredItem(isEntering ? itemId : null);
+    
+    const item = document.getElementById(`resume-item-${itemId}`);
+    if (!item) return;
+    
+    const icon = item.querySelector('.icon-container');
+    
+    if (isEntering) {
+      // Animar entrada do hover
+      gsap.to(item, {
+        scale: 1.02,
+        duration: 0.3,
+        ease: "power2.out"
+      });
+      
+      gsap.to(icon, {
+        rotation: 10,
+        scale: 1.1,
+        duration: 0.4,
+        ease: "back.out(1.7)"
+      });
+    } else {
+      // Animar saída do hover
+      gsap.to(item, {
+        scale: 1,
+        duration: 0.3,
+        ease: "power2.out"
+      });
+      
+      gsap.to(icon, {
+        rotation: 0,
+        scale: 1,
+        duration: 0.3,
+        ease: "power2.out"
+      });
+    }
   };
 
   return (
     <section
+      ref={sectionRef} 
       id="resume"
-      className="py-20 bg-background section-container overflow-hidden resume-section"
-      ref={sectionRef}
-      style={{ display: "block", visibility: "visible", opacity: 1 }}
+      className="min-h-screen py-20 overflow-hidden text-white bg-gradient-to-b from-gray-900 to-black"
     >
-      <div className="container mx-auto px-4">
-        <h2
-          className="text-4xl font-bold text-center mb-16 text-text-light relative reveal-clip"
+      <div className="container px-4 mx-auto">
+        <div 
+          className="mb-16 text-center"
           ref={titleRef}
-          style={{ display: "block", visibility: "visible", opacity: 1 }}
         >
-          Meu <span className="text-primary">Currículo</span>
-          <div className="absolute w-20 h-1 bg-primary left-1/2 -translate-x-1/2 bottom-0 mt-4"></div>
+          <h2 className="mb-4 text-4xl font-bold text-transparent md:text-5xl bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">
+            Meu Currículo
         </h2>
-
-        <p
-          ref={descriptionRef}
-          className="text-center text-text-light mb-16 max-w-2xl mx-auto section-description"
-          style={{ display: "block", visibility: "visible", opacity: 1 }}
-        >
-          Minha jornada educacional e profissional, mostrando minha evolução e
-          experiência na área de desenvolvimento web.
+          <p className="max-w-3xl mx-auto mb-6 text-xl text-gray-300">
+            Confira minha trajetória profissional, formação acadêmica e certificações.
         </p>
-
-        {/* Botão de Download CV */}
-        <div className="flex justify-center mb-12">
-          <button
+          <a 
             ref={downloadButtonRef}
             onClick={handleDownload}
-            className="btn-primary inline-flex items-center mb-8 group relative overflow-hidden"
-            style={{ display: "flex", visibility: "visible", opacity: 1 }}
+            className="inline-flex items-center gap-2 px-6 py-3 font-medium text-white transition-transform rounded-full cursor-pointer download-button bg-gradient-to-r from-purple-500 to-purple-600 hover:scale-105 hover:shadow-lg"
           >
-            <span className="relative z-10 flex items-center">
-              <FaDownload className="mr-2 group-hover:animate-bounce" />{" "}
-            Download CV
-              <FaArrowRight className="ml-2 opacity-0 -translate-x-3 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0" />
-            </span>
-            <span className="absolute inset-0 bg-primary/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
-          </button>
+            <FaDownload className="text-lg" />
+            <span>Baixar Currículo Completo</span>
+          </a>
         </div>
 
-        {/* Tabs para cada seção do currículo */}
+        <div className="flex flex-col max-w-5xl mx-auto">
+          {/* Tabs de navegação */}
         <div
-          className="tabs flex flex-wrap justify-center gap-4 mb-12"
           ref={tabsRef}
-          style={{ display: "flex", visibility: "visible", opacity: 1 }}
-        >
-          <button
-            className={`tab-button px-6 py-3 rounded-full flex items-center gap-2 text-sm font-medium transition-all duration-300 ${
-              activeTab === "experience"
-                ? "bg-primary text-white shadow-lg shadow-primary/30"
-                : "bg-card-bg text-text-light hover:bg-primary/10"
-            }`}
-            onClick={() => changeTab("experience")}
-            style={{ display: "flex", visibility: "visible", opacity: 1 }}
+            className="flex justify-center mb-10 space-x-1 border-b border-gray-700"
           >
-            <FaBriefcase />
-            Experiência
-          </button>
-
+            {["experience", "education", "certifications"].map((tab) => (
           <button
-            className={`tab-button px-6 py-3 rounded-full flex items-center gap-2 text-sm font-medium transition-all duration-300 ${
-              activeTab === "education"
-                ? "bg-primary text-white shadow-lg shadow-primary/30"
-                : "bg-card-bg text-text-light hover:bg-primary/10"
+                key={tab}
+                onClick={() => changeTab(tab as "experience" | "education" | "certifications")}
+                className={`py-3 px-6 text-lg font-medium transition-all duration-300 relative ${
+                  activeTab === tab
+                    ? "text-purple-400" 
+                    : "text-gray-400 hover:text-gray-200"
             }`}
-            onClick={() => changeTab("education")}
-            style={{ display: "flex", visibility: "visible", opacity: 1 }}
-          >
-            <FaGraduationCap />
-            Educação
-          </button>
-
-          <button
-            className={`tab-button px-6 py-3 rounded-full flex items-center gap-2 text-sm font-medium transition-all duration-300 ${
-              activeTab === "certifications"
-                ? "bg-primary text-white shadow-lg shadow-primary/30"
-                : "bg-card-bg text-text-light hover:bg-primary/10"
-            }`}
-            onClick={() => changeTab("certifications")}
-            style={{ display: "flex", visibility: "visible", opacity: 1 }}
-          >
-            <FaAward />
-            Certificações
-          </button>
-        </div>
-
-        {/* Conteúdo do currículo */}
-        <div
-          className="resume-content"
-          ref={contentRef}
-          data-tab={activeTab}
-          style={{ display: "block", visibility: "visible", opacity: 1 }}
-        >
-          <div className="timeline-container" ref={timelineRef}>
-            {currentData.map((item, index) => (
-              <div
-                key={item.id}
-                className={`resume-item mb-12 lg:mb-0 ${
-                  animatedItems.includes(item.id)
-                    ? "animate-fadeIn"
-                    : "opacity-0"
-                } ${
-                  index % 2 === 0 ? "lg:pr-16" : "lg:pl-16 lg:translate-y-16"
-                }`}
               >
-                <div className="bg-card-bg rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-                  <div className="p-6">
+                <span className="relative z-10">
+                  {tab === "experience" && "Experiência"}
+                  {tab === "education" && "Formação"}
+                  {tab === "certifications" && "Certificações"}
+                </span>
+                {activeTab === tab && (
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-purple-400 transition-all duration-300"></span>
+                )}
+          </button>
+            ))}
+          </div>
+
+          {/* Timeline */}
+          <div 
+            ref={timelineRef} 
+            className="relative space-y-8"
+          >
+            {/* Linha vertical da timeline */}
+            <div 
+              ref={lineRef}
+              className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 top-2 bottom-0 w-0.5 bg-gradient-to-b from-purple-400 to-purple-600 opacity-70"
+            ></div>
+
+            {/* Itens da timeline */}
+            {(activeTab === "experience" 
+              ? experienceData 
+              : activeTab === "education" 
+                ? educationData 
+                : certificationData
+            ).map((item, index) => (
+              <div
+                id={`resume-item-${item.id}`}
+                key={item.id}
+                ref={(el) => el && (timelineItemsRef.current[index] = el as HTMLDivElement)}
+                className={`resume-item relative md:flex items-start ${
+                  index % 2 === 0 ? "md:flex-row-reverse" : ""
+                }`}
+                onMouseEnter={() => handleItemHover(item.id, true)}
+                onMouseLeave={() => handleItemHover(item.id, false)}
+              >
+                {/* Dot no centro */}
+                <div className="absolute z-10 hidden w-4 h-4 transform -translate-x-1/2 bg-purple-500 border-2 border-purple-300 rounded-full timeline-dot md:block left-1/2 shadow-glow-purple"></div>
+
+                {/* Card do conteúdo */}
+                <div 
+                  className={`w-full md:w-1/2 ${index % 2 === 0 ? "md:pl-8" : "md:pr-8"} pb-8 md:pb-0`}
+              >
+                  <div 
+                    className={`
+                      bg-gray-800/80 rounded-xl p-6 border border-gray-700 shadow-lg transition-all duration-300
+                      ${hoveredItem === item.id ? "border-purple-400/50 shadow-glow-sm" : ""}
+                      ${expandedItem === item.id ? "!border-purple-400" : ""}
+                    `}
+                  >
                     <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full icon-container bg-gradient-to-br from-purple-500 to-purple-600">
+                          {ResumeIcon({ type: item.icon || 'default', color: item.color || 'var(--color-primary)' })}
+                        </div>
                       <div>
-                        <h3 className="text-xl font-bold text-white group-hover:text-primary transition-colors">
-                  {item.title}
-                </h3>
-                        <div className="flex flex-wrap items-center text-text-light mt-2">
-                          <div className="flex items-center mr-4 mb-2">
-                            <FaBuilding className="text-primary text-sm mr-2" />
+                          <h3 className="text-xl font-bold text-white">{item.title}</h3>
+                          <div className="flex items-center mt-1 text-gray-300">
+                            <FaBuilding className="mr-2 text-purple-400" size={14} />
                             <span>{item.organization}</span>
-                          </div>
-
-                          {item.location && (
-                            <div className="flex items-center mr-4 mb-2">
-                              <FaMapMarkerAlt className="text-primary text-sm mr-2" />
-                              <span>{item.location}</span>
-                            </div>
-                          )}
-
-                          <div className="flex items-center mb-2">
-                            <FaCalendarAlt className="text-primary text-sm mr-2" />
-                            <span>{item.period}</span>
                           </div>
                         </div>
                       </div>
-
-                      <div
-                        className={`rounded-full p-3 ${
-                          activeTab === "experience"
-                            ? "bg-primary/10 text-primary"
-                            : activeTab === "education"
-                            ? "bg-blue-500/10 text-blue-400"
-                            : "bg-amber-500/10 text-amber-400"
-                        }`}
+                      <button 
+                        onClick={() => toggleExpand(item.id)}
+                        className="text-gray-400 transition-colors hover:text-purple-400"
                       >
-                        {activeTab === "experience" ? (
-                          <FaBriefcase size={20} />
-                        ) : activeTab === "education" ? (
-                          <FaGraduationCap size={20} />
-                        ) : (
-                          <FaAward size={20} />
-                        )}
+                        <div className="toggle-icon">
+                          {expandedItem === item.id ? 
+                            <FaTimesCircle size={16} /> : 
+                            <FaArrowRight size={16} />
+                          }
+                        </div>
+                      </button>
+                    </div>
+
+                    <div className="flex items-center mb-3 space-x-4 text-sm text-gray-400">
+                      <div className="flex items-center">
+                        <FaMapMarkerAlt className="mr-1 text-purple-400" />
+                        <span>{item.location || "Remoto"}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <FaCalendarAlt className="mr-1 text-purple-400" />
+                        <span>{item.period}</span>
                       </div>
                     </div>
 
-                <p className="text-text-light mb-4">{item.description}</p>
+                    <div className={`
+                      content-container overflow-hidden transition-all duration-300 text-gray-300
+                      ${expandedItem === item.id ? "max-h-[500px] opacity-100" : "max-h-[80px] opacity-80"}
+                    `}>
+                      <p className="mb-4">{item.description}</p>
 
                 {item.achievements && item.achievements.length > 0 && (
                       <div className="mt-4">
-                        <h4 className="text-primary font-medium mb-2">
-                          Conquistas:
-                    </h4>
+                          <h4 className="mb-2 font-semibold text-purple-400">Principais realizações:</h4>
                         <ul className="space-y-2">
                           {item.achievements.map((achievement, i) => (
                             <li key={i} className="flex items-start">
-                              <FaCheckCircle className="text-primary mt-1 mr-2 flex-shrink-0" />
-                              <span className="text-text-light">
-                                {achievement}
-                              </span>
+                                <FaCheckCircle className="flex-shrink-0 mt-1 mr-2 text-purple-400" />
+                                <span>{achievement}</span>
                             </li>
                       ))}
                     </ul>
                   </div>
                 )}
+                      
+                      {expandedItem !== item.id && (
+                        <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-gray-800 to-transparent"></div>
+                )}
                   </div>
-
-                  {/* Linha do tempo visual */}
-                  <div className="hidden lg:block absolute top-1/2 -translate-y-1/2 w-16 h-[2px] bg-gradient-to-r from-primary/50 to-primary z-10">
-                    <div className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-primary shadow-lg shadow-primary/30 animate-pulse-slow"></div>
                   </div>
                 </div>
               </div>

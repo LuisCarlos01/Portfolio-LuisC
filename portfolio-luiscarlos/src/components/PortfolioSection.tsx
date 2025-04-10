@@ -518,19 +518,19 @@ const PortfolioSection = () => {
 
     // Número de partículas baseado no tamanho da seção
     const particleCount = Math.min(
-      Math.floor((sectionWidth * sectionHeight) / 40000),
-      20
+      Math.floor((sectionWidth * sectionHeight) / 35000),
+      30
     );
 
     for (let i = 0; i < particleCount; i++) {
       const particle = document.createElement("div");
 
       // Tamanho aleatório
-      const size = Math.random() * 5 + 3;
+      const size = Math.random() * 6 + 3;
 
       // Posição aleatória (evitando bordas)
       const posX = 10 + Math.random() * (sectionWidth - 20);
-      const posY = 100 + Math.random() * (sectionHeight - 200);
+      const posY = 50 + Math.random() * (sectionHeight - 100);
 
       // Variável aleatória para animação
       const randomVar = Math.random();
@@ -541,16 +541,140 @@ const PortfolioSection = () => {
       particle.style.height = `${size}px`;
       particle.style.left = `${posX}px`;
       particle.style.top = `${posY}px`;
-      particle.style.opacity = (0.2 + Math.random() * 0.4).toString();
+      particle.style.opacity = (0.1 + Math.random() * 0.3).toString();
+      particle.style.background = i % 3 === 0 ? 'rgba(108, 92, 231, 0.2)' : 'rgba(255, 255, 255, 0.1)';
       particle.style.setProperty("--random", randomVar.toString());
+      particle.style.boxShadow = i % 5 === 0 ? '0 0 10px 2px rgba(108, 92, 231, 0.1)' : '';
 
       // Adicionar delay aleatório para cada partícula
-      particle.style.animationDelay = `${Math.random() * 5}s`;
+      particle.style.animationDelay = `${Math.random() * 8}s`;
+      particle.style.animationDuration = `${15 + Math.random() * 15}s`;
 
       // Adicionar a partícula ao container
       particlesContainer.appendChild(particle);
     }
+    
+    // Adicionar efeito de movimento parallax suave nas partículas
+    if (sectionRef.current) {
+      const handleMouseMove = (e: MouseEvent) => {
+        const { clientX, clientY } = e;
+        const x = (clientX / window.innerWidth) - 0.5;
+        const y = (clientY / window.innerHeight) - 0.5;
+        
+        const particles = particlesContainer.querySelectorAll('.particle');
+        particles.forEach((particle, index) => {
+          const speed = 0.05 + (index % 4) * 0.01;
+          const elParticle = particle as HTMLElement;
+          gsap.to(elParticle, {
+            x: x * 30 * speed,
+            y: y * 30 * speed,
+            duration: 1,
+            ease: "power1.out"
+          });
+        });
+      };
+      
+      sectionRef.current.addEventListener('mousemove', handleMouseMove);
+      
+      return () => {
+        if (sectionRef.current) {
+          sectionRef.current.removeEventListener('mousemove', handleMouseMove);
+        }
+      };
+    }
   }, [filteredProjects]); // Atualizar quando os projetos filtrados mudarem
+  
+  // Adicionar efeito de paralaxe para os cards de projeto
+  useEffect(() => {
+    if (!projectsRef.current) return;
+    
+    const projectCards = projectsRef.current.querySelectorAll('.project-card');
+    
+    projectCards.forEach((card) => {
+      const handleMouseMove = (e: MouseEvent) => {
+        const cardElement = card as HTMLElement;
+        const cardRect = cardElement.getBoundingClientRect();
+        
+        // Calcular posição relativa do mouse dentro do card (0 a 1)
+        const relX = (e.clientX - cardRect.left) / cardRect.width;
+        const relY = (e.clientY - cardRect.top) / cardRect.height;
+        
+        // Mover imagem e conteúdo levemente (efeito 3D)
+        const imageEl = cardElement.querySelector('img');
+        const contentEl = cardElement.querySelector('.p-5');
+        
+        if (imageEl) {
+          gsap.to(imageEl, {
+            x: (relX - 0.5) * 10,
+            y: (relY - 0.5) * 10,
+            duration: 0.5,
+            ease: "power1.out"
+          });
+        }
+        
+        if (contentEl) {
+          gsap.to(contentEl, {
+            x: (relX - 0.5) * 5,
+            y: (relY - 0.5) * 5,
+            duration: 0.5,
+            ease: "power1.out"
+          });
+        }
+        
+        // Adicionar rotação 3D sutil ao card
+        gsap.to(cardElement, {
+          rotationY: (relX - 0.5) * 5,
+          rotationX: (relY - 0.5) * -5,
+          transformPerspective: 1000,
+          ease: "power1.out",
+          duration: 0.5
+        });
+      };
+      
+      const handleMouseLeave = (e: MouseEvent) => {
+        const cardElement = card as HTMLElement;
+        const imageEl = cardElement.querySelector('img');
+        const contentEl = cardElement.querySelector('.p-5');
+        
+        // Resetar posições
+        if (imageEl) {
+          gsap.to(imageEl, {
+            x: 0,
+            y: 0,
+            duration: 0.5,
+            ease: "power3.out"
+          });
+        }
+        
+        if (contentEl) {
+          gsap.to(contentEl, {
+            x: 0,
+            y: 0,
+            duration: 0.5,
+            ease: "power3.out"
+          });
+        }
+        
+        // Resetar rotação
+        gsap.to(cardElement, {
+          rotationY: 0,
+          rotationX: 0,
+          duration: 0.5,
+          ease: "power3.out"
+        });
+      };
+      
+      card.addEventListener('mousemove', handleMouseMove);
+      card.addEventListener('mouseleave', handleMouseLeave);
+    });
+    
+    return () => {
+      projectCards.forEach(card => {
+        card.removeEventListener('mousemove', (e: Event) => {});
+        card.removeEventListener('mouseleave', (e: Event) => {});
+      });
+    };
+  }, [filteredProjects]);
 
   return (
     <div
@@ -566,13 +690,17 @@ const PortfolioSection = () => {
 
       <div className="max-w-7xl mx-auto relative z-10">
         <h2
-          className="text-4xl font-bold text-center mb-6 text-white relative pb-4 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-20 after:h-1 after:bg-primary"
+          className="text-4xl font-bold text-center mb-6 text-white relative pb-5 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-20 after:h-1 after:bg-primary"
           ref={titleRef}
         >
-          Meus Projetos
+          <span className="relative inline-block">
+            Meus Projetos
+            <span className="absolute -top-6 -right-6 w-12 h-12 rounded-full bg-primary/10 blur-xl"></span>
+            <span className="absolute -bottom-3 -left-3 w-8 h-8 rounded-full bg-primary/20 blur-md"></span>
+          </span>
         </h2>
 
-        <p className="text-center text-text-light mb-10 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-center text-text-light mb-12 max-w-2xl mx-auto leading-relaxed">
           Explore alguns dos meus trabalhos recentes em desenvolvimento web,
           aplicativos e design. Cada projeto representa uma solução única para
           desafios específicos.
@@ -580,16 +708,19 @@ const PortfolioSection = () => {
 
         {/* Filtros de projetos com animação melhorada */}
         <div
-          className="flex flex-wrap justify-center mb-10 gap-3"
+          className="flex flex-wrap justify-center mb-12 gap-3 relative"
           ref={filtersRef}
         >
+          {/* Efeito de brilho por trás dos filtros */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-10 bg-primary/5 blur-xl rounded-full"></div>
+          
           <button
-            className={`px-5 py-2 rounded-full transition-all duration-300 relative overflow-hidden ${
+            className={`px-6 py-2.5 rounded-full transition-all duration-300 relative overflow-hidden ${
               activeFilter === "all"
-                ? "bg-primary text-white shadow-lg shadow-primary/30"
-                : "bg-card-bg text-text-light hover:bg-primary/10"
-            }`}
-            onClick={() => setActiveFilter("all")}
+                ? "bg-primary text-white shadow-lg shadow-primary/30 transform scale-105"
+                : "bg-card-bg text-text-light hover:bg-primary/10 hover:text-white"
+            } focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-bg-dark`}
+            onClick={() => handleFilterChange("all")}
           >
             <span className="relative z-10">Todos</span>
             {activeFilter === "all" && (
@@ -598,12 +729,12 @@ const PortfolioSection = () => {
           </button>
 
           <button
-            className={`px-5 py-2 rounded-full transition-all duration-300 relative overflow-hidden ${
+            className={`px-6 py-2.5 rounded-full transition-all duration-300 relative overflow-hidden ${
               activeFilter === "web"
-                ? "bg-primary text-white shadow-lg shadow-primary/30"
-                : "bg-card-bg text-text-light hover:bg-primary/10"
-            }`}
-            onClick={() => setActiveFilter("web")}
+                ? "bg-primary text-white shadow-lg shadow-primary/30 transform scale-105"
+                : "bg-card-bg text-text-light hover:bg-primary/10 hover:text-white"
+            } focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-bg-dark`}
+            onClick={() => handleFilterChange("web")}
           >
             <span className="relative z-10">Web</span>
             {activeFilter === "web" && (
@@ -612,12 +743,12 @@ const PortfolioSection = () => {
           </button>
 
           <button
-            className={`px-5 py-2 rounded-full transition-all duration-300 relative overflow-hidden ${
+            className={`px-6 py-2.5 rounded-full transition-all duration-300 relative overflow-hidden ${
               activeFilter === "app"
-                ? "bg-primary text-white shadow-lg shadow-primary/30"
-                : "bg-card-bg text-text-light hover:bg-primary/10"
-            }`}
-            onClick={() => setActiveFilter("app")}
+                ? "bg-primary text-white shadow-lg shadow-primary/30 transform scale-105"
+                : "bg-card-bg text-text-light hover:bg-primary/10 hover:text-white"
+            } focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-bg-dark`}
+            onClick={() => handleFilterChange("app")}
           >
             <span className="relative z-10">App</span>
             {activeFilter === "app" && (
@@ -626,18 +757,26 @@ const PortfolioSection = () => {
           </button>
 
           <button
-            className={`px-5 py-2 rounded-full transition-all duration-300 relative overflow-hidden ${
+            className={`px-6 py-2.5 rounded-full transition-all duration-300 relative overflow-hidden ${
               activeFilter === "backend"
-                ? "bg-primary text-white shadow-lg shadow-primary/30"
-                : "bg-card-bg text-text-light hover:bg-primary/10"
-            }`}
-            onClick={() => setActiveFilter("backend")}
+                ? "bg-primary text-white shadow-lg shadow-primary/30 transform scale-105"
+                : "bg-card-bg text-text-light hover:bg-primary/10 hover:text-white"
+            } focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-bg-dark`}
+            onClick={() => handleFilterChange("backend")}
           >
             <span className="relative z-10">Backend</span>
             {activeFilter === "backend" && (
               <span className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary-dark animate-pulse-slow"></span>
             )}
           </button>
+        </div>
+        
+        {/* Contador de projetos */}
+        <div className="flex justify-center items-center mb-8">
+          <div className="bg-card-bg px-4 py-1.5 rounded-full text-sm text-text-light flex items-center gap-2">
+            <span className="inline-block w-2 h-2 bg-primary rounded-full"></span>
+            <span>Mostrando <span className="text-primary font-medium">{filteredProjects.length}</span> {filteredProjects.length === 1 ? 'projeto' : 'projetos'}</span>
+          </div>
         </div>
 
         {/* Grid de projetos com efeitos avançados */}
@@ -648,7 +787,7 @@ const PortfolioSection = () => {
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="project-card group bg-card-bg rounded-xl overflow-hidden transition-all duration-500 hover:shadow-xl hover:shadow-primary/10"
+              className="project-card group bg-card-bg rounded-xl overflow-hidden transition-all duration-500 hover:shadow-xl hover:shadow-primary/20 transform hover:-translate-y-2"
               data-project-id={project.id}
               onClick={() => {
                 setSelectedProject(project);
@@ -661,23 +800,39 @@ const PortfolioSection = () => {
                   alt={project.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-4">
-                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                    <h3 className="text-white text-xl font-bold mb-1">
+                {/* Overlay de gradiente que aparece no hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6">
+                  <div className="transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                    <h3 className="text-white text-xl font-bold mb-2">
                       {project.title}
                     </h3>
-                    <p className="text-white/80 text-sm">
-                      {project.category.charAt(0).toUpperCase() +
-                        project.category.slice(1)}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {project.tags.slice(0, 3).map((tag, index) => (
+                        <span
+                          key={index}
+                          className="text-xs px-2 py-1 rounded-full bg-primary/20 text-white backdrop-blur-sm"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-white/80 text-sm line-clamp-2">
+                      {project.description}
                     </p>
                   </div>
                 </div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-primary rounded-full flex items-center justify-center opacity-0 group-hover:opacity-90 transform scale-0 group-hover:scale-100 transition-all duration-500">
+                {/* Ícone central que aparece no hover */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-primary/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-90 transform scale-0 group-hover:scale-100 transition-all duration-500 shadow-lg shadow-primary/30">
                   <FaSearch className="text-white text-xl" />
                 </div>
+                {/* Adicionando uma borda brilhante que aparece no hover */}
+                <div className="absolute inset-0 border-2 border-primary/0 group-hover:border-primary/30 transition-all duration-500 rounded-t-xl opacity-0 group-hover:opacity-100"></div>
               </div>
 
-              <div className="p-5">
+              <div className="p-5 relative">
+                {/* Linha decorativa animada */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-primary/0 via-primary/80 to-primary/0 group-hover:w-4/5 transition-all duration-700"></div>
+                
                 <h3 className="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors duration-300">
                   {project.title}
                 </h3>
@@ -716,6 +871,7 @@ const PortfolioSection = () => {
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
                         className="w-8 h-8 flex items-center justify-center rounded-full text-text-light hover:bg-primary/10 hover:text-primary transition-colors"
+                        aria-label="GitHub"
                       >
                         <FaGithub />
                       </a>
@@ -727,12 +883,16 @@ const PortfolioSection = () => {
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
                         className="w-8 h-8 flex items-center justify-center rounded-full text-text-light hover:bg-primary/10 hover:text-primary transition-colors"
+                        aria-label="Demo do projeto"
                       >
                         <FaLink />
                       </a>
                     )}
                   </div>
                 </div>
+                
+                {/* Indicador de clique sutil */}
+                <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-primary/30 opacity-0 group-hover:opacity-100 animate-pulse"></div>
               </div>
             </div>
           ))}
@@ -742,92 +902,147 @@ const PortfolioSection = () => {
       {/* Modal com detalhes do projeto e animações aprimoradas */}
       {isModalOpen && selectedProject && (
         <div
-          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 modal-overlay"
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 modal-overlay"
           onClick={() => closeModal()}
         >
           <div
-            className="animate-fadeIn"
+            className="animate-fadeIn max-w-4xl w-full max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
             ref={modalRef}
           >
-            <div className="bg-card-bg rounded-xl overflow-hidden max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl relative">
+            <div className="bg-card-bg rounded-xl overflow-hidden flex flex-col shadow-2xl relative border border-primary/10">
+              {/* Efeito de brilho nos cantos */}
+              <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/20 rounded-full blur-3xl"></div>
+              <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
+              
               <button
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/30 flex items-center justify-center text-white hover:bg-primary transition-colors duration-300 z-10 modal-close-btn"
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-primary transition-colors duration-300 z-10 modal-close-btn"
                 onClick={() => closeModal()}
                 aria-label="Fechar modal"
               >
-                ✕
+                <span className="transform hover:rotate-90 transition-transform duration-300 inline-block">✕</span>
               </button>
 
               <div className="relative h-72 md:h-96 overflow-hidden">
                 <ImageWithFallback
                   src={selectedProject.image}
                   alt={selectedProject.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="text-white text-3xl font-bold mb-2">
-                    {selectedProject.title}
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProject.tags.map((tag, index) => (
-                      <span
-                        key={index}
-                        className="text-xs px-3 py-1 rounded-full bg-primary/20 text-primary backdrop-blur-sm"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-6 overflow-y-auto styled-scrollbar flex-grow">
-                <p className="text-text-light mb-6 leading-relaxed">
-                  {selectedProject.description}
-                </p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <div className="bg-bg-dark rounded-lg p-4">
-                    <h4 className="text-primary font-semibold mb-2">
-                      Tecnologias
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex flex-col justify-end p-6">
+                  <div className="animate-fadeInUp">
+                    <h3 className="text-white text-3xl font-bold mb-3 relative inline-block">
+                      {selectedProject.title}
+                      <span className="absolute bottom-0 left-0 w-1/3 h-1 bg-primary"></span>
+                    </h3>
+                    <div className="flex flex-wrap gap-2 animate-fadeInUp animation-delay-100">
                       {selectedProject.tags.map((tag, index) => (
                         <span
                           key={index}
-                          className="text-sm px-3 py-1 rounded-md bg-card-bg text-text-light"
+                          className="text-xs px-3 py-1 rounded-full bg-primary/20 text-primary backdrop-blur-sm border border-primary/20"
                         >
                           {tag}
                         </span>
                       ))}
                     </div>
                   </div>
+                </div>
+              </div>
 
-                  <div className="bg-bg-dark rounded-lg p-4">
-                    <h4 className="text-primary font-semibold mb-2">Links</h4>
-                    <div className="flex flex-col space-y-2">
-                      {selectedProject.github && (
-                        <a
-                          href={selectedProject.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center text-text-light hover:text-primary transition-colors"
-                        >
-                          <FaGithub className="mr-2" /> Repositório GitHub
-                        </a>
-                      )}
-                      {selectedProject.demo && (
-                        <a
-                          href={selectedProject.demo}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center text-text-light hover:text-primary transition-colors"
-                        >
-                          <FaLink className="mr-2" /> Demo ao vivo
-                        </a>
-                      )}
+              <div className="p-6 md:p-8 overflow-y-auto styled-scrollbar flex-grow bg-card-bg relative">
+                <div className="animate-fadeInUp animation-delay-200">
+                  <p className="text-text-light mb-8 leading-relaxed">
+                    {selectedProject.description}
+                  </p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div className="bg-bg-dark rounded-lg p-5 shadow-inner transform transition-transform hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/5">
+                      <h4 className="text-primary font-semibold mb-3 flex items-center">
+                        <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mr-2">
+                          <span className="w-3 h-3 bg-primary rounded-full"></span>
+                        </span>
+                        Tecnologias
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedProject.tags.map((tag, index) => (
+                          <span
+                            key={index}
+                            className="text-sm px-3 py-1 rounded-md bg-card-bg text-text-light hover:bg-primary/10 hover:text-primary transition-colors duration-300 cursor-default"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
                     </div>
+
+                    <div className="bg-bg-dark rounded-lg p-5 shadow-inner transform transition-transform hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/5">
+                      <h4 className="text-primary font-semibold mb-3 flex items-center">
+                        <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mr-2">
+                          <span className="w-3 h-3 bg-primary rounded-full"></span>
+                        </span>
+                        Links
+                      </h4>
+                      <div className="flex flex-col space-y-3">
+                        {selectedProject.github && (
+                          <a
+                            href={selectedProject.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center text-text-light hover:text-primary transition-colors group"
+                          >
+                            <span className="w-8 h-8 rounded-full bg-card-bg flex items-center justify-center mr-2 group-hover:bg-primary/20 transition-colors">
+                              <FaGithub className="group-hover:scale-110 transition-transform" />
+                            </span>
+                            <span>Repositório GitHub</span>
+                            <FaArrowRight className="ml-2 opacity-0 group-hover:opacity-100 transform translate-x-[-10px] group-hover:translate-x-0 transition-all duration-300" />
+                          </a>
+                        )}
+                        {selectedProject.demo && (
+                          <a
+                            href={selectedProject.demo}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center text-text-light hover:text-primary transition-colors group"
+                          >
+                            <span className="w-8 h-8 rounded-full bg-card-bg flex items-center justify-center mr-2 group-hover:bg-primary/20 transition-colors">
+                              <FaLink className="group-hover:scale-110 transition-transform" />
+                            </span>
+                            <span>Demo ao vivo</span>
+                            <FaArrowRight className="ml-2 opacity-0 group-hover:opacity-100 transform translate-x-[-10px] group-hover:translate-x-0 transition-all duration-300" />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Seção adicional com detalhes */}
+                  <div className="bg-bg-dark rounded-lg p-5 mb-2 shadow-inner">
+                    <h4 className="text-primary font-semibold mb-3 flex items-center">
+                      <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mr-2">
+                        <span className="w-3 h-3 bg-primary rounded-full"></span>
+                      </span>
+                      Destaques do projeto
+                    </h4>
+                    <ul className="space-y-2 text-text-light">
+                      <li className="flex items-start">
+                        <span className="w-4 h-4 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center mt-1 mr-2">
+                          <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
+                        </span>
+                        <span>Interface responsiva adaptada para todos os dispositivos</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="w-4 h-4 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center mt-1 mr-2">
+                          <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
+                        </span>
+                        <span>Animações suaves para melhorar a experiência do usuário</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="w-4 h-4 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center mt-1 mr-2">
+                          <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
+                        </span>
+                        <span>Desempenho otimizado e tempos de carregamento rápidos</span>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -835,6 +1050,81 @@ const PortfolioSection = () => {
           </div>
         </div>
       )}
+      
+      {/* Adicionar animações CSS para a seção de portfólio */}
+      <style jsx>{`
+        .animate-fadeInUp {
+          animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        .animation-delay-100 {
+          animation-delay: 100ms;
+        }
+        
+        .animation-delay-200 {
+          animation-delay: 200ms;
+        }
+        
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .styled-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .styled-scrollbar::-webkit-scrollbar-thumb {
+          background-color: rgba(108, 92, 231, 0.3);
+          border-radius: 3px;
+        }
+        
+        .styled-scrollbar::-webkit-scrollbar-track {
+          background-color: rgba(0, 0, 0, 0.1);
+          border-radius: 3px;
+        }
+        
+        .particle {
+          animation: float 20s infinite ease-in-out;
+          transform: translate3d(0, 0, 0);
+          will-change: transform, opacity;
+          transition: all 0.5s ease;
+        }
+        
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0) translateX(0) scale(1);
+          }
+          25% {
+            transform: translateY(calc(-15px * var(--random, 0.5))) translateX(calc(20px * var(--random, 0.5))) scale(0.95);
+          }
+          50% {
+            transform: translateY(calc(15px * var(--random, 0.5))) translateX(calc(-20px * var(--random, 0.5))) scale(1.05);
+          }
+          75% {
+            transform: translateY(calc(-10px * var(--random, 0.5))) translateX(calc(15px * var(--random, 0.5))) scale(1);
+          }
+        }
+        
+        .animate-pulse-slow {
+          animation: pulse-slow 3s infinite;
+        }
+        
+        @keyframes pulse-slow {
+          0%, 100% {
+            opacity: 0.8;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+      `}</style>
     </div>
   );
 };

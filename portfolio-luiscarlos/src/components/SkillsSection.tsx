@@ -623,8 +623,8 @@ const SkillsSection = () => {
         opacity: 0,
         y: 20,
         scale: 0.95,
-        duration: 0.3,
-        ease: "power2.in",
+        duration: 0.4,
+        ease: "power3.in",
         onComplete: () => {
           setSelectedSkill(null);
           // Restaurar a rolagem normal da página
@@ -827,76 +827,74 @@ const SkillsSection = () => {
         "#skill-detail-modal",
         {
           opacity: 0,
-          y: 20,
-          scale: 0.95,
+          y: 30,
+          scale: 0.92,
         },
         {
           opacity: 1,
           y: 0,
           scale: 1,
-          duration: 0.4,
+          duration: 0.5,
           ease: "back.out(1.7)",
+          clearProps: "transform",
         }
       )
         .fromTo(
-          "#skill-icon",
+          "#skill-detail-modal .bg-black.bg-opacity-30",
           {
             opacity: 0,
-            rotate: -30,
-            scale: 0.5,
+            y: 10,
           },
           {
             opacity: 1,
-            rotate: 0,
-            scale: 1,
+            y: 0,
+            stagger: 0.08,
             duration: 0.4,
-            ease: "back.out(1.7)",
+            ease: "power3.out",
           },
-          "-=0.2"
-        )
-        .fromTo(
-          "#skill-info > *",
-          {
-            opacity: 0,
-            x: -20,
-          },
-          {
-            opacity: 1,
-            x: 0,
-            duration: 0.3,
-            stagger: 0.1,
-            ease: "power2.out",
-          },
-          "-=0.2"
+          "-=0.3"
         )
         .fromTo(
           "#skill-progress",
           {
             width: "0%",
-            opacity: 0,
+            opacity: 0.5,
           },
           {
             width: `${selectedSkill.level}%`,
             opacity: 1,
-            duration: 1,
+            duration: 1.2,
             ease: "power2.inOut",
+            onStart: () => {
+              // Adiciona partículas animadas quando a barra está carregando
+              if (document.querySelector("#skill-progress")) {
+                for (let i = 0; i < 5; i++) {
+                  const particle = document.createElement("div");
+                  particle.className = "absolute w-1 h-1 rounded-full";
+                  particle.style.backgroundColor = selectedSkill.color;
+                  particle.style.top = `${Math.random() * 100}%`;
+                  particle.style.left = `${Math.random() * 100}%`;
+                  particle.style.opacity = "0.7";
+                  particle.style.zIndex = "5";
+                  
+                  document.querySelector("#skill-progress")?.appendChild(particle);
+                  
+                  gsap.to(particle, {
+                    x: Math.random() * 100 - 50,
+                    y: Math.random() * 20 - 10,
+                    opacity: 0,
+                    duration: 0.8 + Math.random() * 0.5,
+                    delay: 0.3 + Math.random() * 0.3,
+                    ease: "power2.out",
+                    onComplete: () => {
+                      particle.remove();
+                    }
+                  });
+                }
+              }
+            }
           },
           "-=0.2"
-        )
-        .fromTo(
-          "#related-projects .project-item",
-          {
-            opacity: 0,
-            y: 20,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            stagger: 0.1,
-            duration: 0.4,
-            ease: "power2.out",
-          },
-          "-=0.5"
         );
 
       // Foca no modal para melhorar acessibilidade
@@ -906,6 +904,15 @@ const SkillsSection = () => {
 
         // Impede scrolling da página principal
         document.body.style.overflow = "hidden";
+
+        // Adiciona efeito de pulsação sutil ao elemento de destaque da tecnologia
+        gsap.to("#skill-detail-modal .p-4.rounded-xl", {
+          boxShadow: `0 8px 20px ${selectedSkill.color}30, inset 0 0 30px ${selectedSkill.color}15`,
+          repeat: -1,
+          yoyo: true,
+          duration: 2,
+          ease: "sine.inOut"
+        });
       }
     }
 
@@ -1022,7 +1029,7 @@ const SkillsSection = () => {
       {/* Modal de detalhes da habilidade - Melhorias na navegação */}
       {selectedSkill && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-70 backdrop-blur-sm modal-overlay overflow-y-auto"
+          className="fixed inset-0 z-50 flex items-center justify-center p-0 bg-black bg-opacity-80 backdrop-blur-sm modal-overlay overflow-y-auto"
           onClick={(e) => {
             // Fechar o modal ao clicar fora dele
             if ((e.target as Element).classList.contains("modal-overlay")) {
@@ -1032,42 +1039,69 @@ const SkillsSection = () => {
         >
           <div
             id="skill-detail-modal"
-            className="bg-card-bg rounded-2xl p-8 max-w-4xl w-full opacity-0 transform styled-scrollbar shadow-xl border border-primary/10 my-10 relative"
+            className="bg-card-bg rounded-xl p-4 max-w-4xl w-full opacity-0 transform styled-scrollbar shadow-2xl border border-primary/20 my-0 relative overflow-hidden"
             style={{
               maxHeight: "80vh",
               overflowY: "auto",
-              background: `linear-gradient(135deg, var(--color-card-bg), var(--color-card-bg) 60%, ${selectedSkill.color}10, var(--color-card-bg))`,
-              boxShadow: `0 20px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px ${selectedSkill.color}20, 0 0 20px ${selectedSkill.color}15`,
+              background: `linear-gradient(135deg, var(--color-card-bg), var(--color-card-bg) 70%, ${selectedSkill.color}10, var(--color-card-bg))`,
+              boxShadow: `0 20px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px ${selectedSkill.color}30, 0 0 30px ${selectedSkill.color}20`,
             }}
           >
-            {/* Elementos decorativos - Restaurados */}
-            <div
-              className="absolute top-0 right-0 w-40 h-40 opacity-10 rounded-full pointer-events-none"
-              style={{
-                background: `radial-gradient(circle, ${selectedSkill.color}, transparent 70%)`,
-                filter: "blur(30px)",
-              }}
-            ></div>
-            <div
-              className="absolute bottom-0 left-10 w-60 h-60 opacity-5 rounded-full pointer-events-none"
-              style={{
-                background: `radial-gradient(circle, ${selectedSkill.color}, transparent 70%)`,
-                filter: "blur(40px)",
-              }}
-            ></div>
+            {/* Elementos decorativos melhorados */}
+            <div className="absolute top-0 right-0 w-full h-full pointer-events-none">
+              <div
+                className="absolute top-0 right-0 w-40 h-40 opacity-10 rounded-full"
+                style={{
+                  background: `radial-gradient(circle, ${selectedSkill.color}, transparent 70%)`,
+                  filter: "blur(30px)",
+                }}
+              ></div>
+              <div
+                className="absolute bottom-0 left-10 w-60 h-60 opacity-5 rounded-full"
+                style={{
+                  background: `radial-gradient(circle, ${selectedSkill.color}, transparent 70%)`,
+                  filter: "blur(40px)",
+                }}
+              ></div>
+              
+              {/* Padrão de grid para background */}
+              <div 
+                className="absolute inset-0 opacity-5"
+                style={{
+                  backgroundImage: `linear-gradient(${selectedSkill.color}10 1px, transparent 1px), linear-gradient(90deg, ${selectedSkill.color}10 1px, transparent 1px)`,
+                  backgroundSize: '20px 20px'
+                }}
+              ></div>
+              
+              {/* Linha decorativa superior */}
+              <div 
+                className="absolute top-0 left-0 h-1 w-full opacity-30"
+                style={{
+                  background: `linear-gradient(90deg, transparent, ${selectedSkill.color}, transparent)`,
+                }}
+              ></div>
+            </div>
 
-            {/* Indicador de rolagem para melhorar a usabilidade */}
+            {/* Indicador de rolagem estilizado */}
             <div
-              className="absolute bottom-4 right-4 text-text-light text-xs scroll-indicator opacity-70 z-10 cursor-pointer hover:opacity-100 transition-opacity"
+              className="absolute bottom-3 right-3 text-text-light text-xs scroll-indicator opacity-80 z-10 cursor-pointer hover:opacity-100 transition-all hover:transform hover:scale-105"
               onClick={handleScrollDown}
+              style={{
+                backgroundColor: `rgba(0, 0, 0, 0.6)`,
+                borderRadius: '12px',
+                padding: '5px 10px',
+                backdropFilter: 'blur(5px)',
+                border: `1px solid ${selectedSkill.color}30`,
+                boxShadow: `0 2px 8px rgba(0, 0, 0, 0.2), 0 0 0 1px ${selectedSkill.color}10`
+              }}
             >
-              <div className="flex flex-col items-center p-2 bg-gray-800 bg-opacity-50 rounded-full hover:bg-opacity-70 transition-all">
+              <div className="flex items-center gap-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 mb-1 animate-bounce"
+                  className="h-4 w-4 animate-bounce"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor"
+                  stroke={selectedSkill.color}
                 >
                   <path
                     strokeLinecap="round"
@@ -1076,22 +1110,27 @@ const SkillsSection = () => {
                     d="M19 14l-7 7m0 0l-7-7m7 7V3"
                   />
                 </svg>
-                <span>Rolar para ver mais</span>
+                <span className="text-xs" style={{color: `${selectedSkill.color}`}}>Rolar para ver mais</span>
               </div>
             </div>
 
-            {/* Botão flutuante para fechar o modal - mais visível */}
+            {/* Botão de fechar estilizado */}
             <button
               onClick={handleCloseModal}
-              className="modal-close-btn fixed top-4 right-4 z-50"
+              className="modal-close-btn fixed top-4 right-4 z-50 backdrop-blur-md"
               aria-label="Fechar modal"
+              style={{
+                background: `rgba(0, 0, 0, 0.6)`,
+                border: `1px solid ${selectedSkill.color}30`,
+                boxShadow: `0 2px 8px rgba(0, 0, 0, 0.2), 0 0 5px ${selectedSkill.color}30`
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
+                className="h-5 w-5"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
+                stroke={selectedSkill.color}
               >
                 <path
                   strokeLinecap="round"
@@ -1102,229 +1141,241 @@ const SkillsSection = () => {
               </svg>
             </button>
 
-            {/* Cabeçalho do modal */}
-            <div className="flex flex-col md:flex-row items-start md:items-center mb-8 gap-6 relative z-10">
-              {/* Ícone da habilidade */}
-              <div
-                id="skill-icon"
-                className="p-6 rounded-2xl shadow-xl relative w-24 h-24 flex items-center justify-center"
+            {/* Conteúdo do modal - redesenhado */}
+            <div className="pt-2 pb-2 relative z-10">
+              {/* Cabeçalho do modal - estilizado */}
+              <div className="bg-black bg-opacity-30 rounded-xl p-4 mb-4 backdrop-blur-sm border border-gray-800"
                 style={{
-                  backgroundColor: `${selectedSkill.color}15`,
-                  border: `1px solid ${selectedSkill.color}40`,
-                  boxShadow: `0 5px 15px ${selectedSkill.color}20, inset 0 0 20px ${selectedSkill.color}10`,
-                }}
-              >
-                {/* Efeito de brilho animado */}
-                <div className="absolute inset-0 rounded-2xl overflow-hidden">
+                  borderLeft: `3px solid ${selectedSkill.color}`,
+                  boxShadow: `0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px ${selectedSkill.color}20 inset`
+                }}>
+                <div className="flex items-center gap-4">
+                  {/* Ícone da tecnologia */}
                   <div
-                    className="absolute inset-0"
+                    className="p-4 rounded-xl relative min-w-[60px] h-[60px] flex items-center justify-center"
                     style={{
-                      background: `radial-gradient(circle at 30% 30%, ${selectedSkill.color}30, transparent 70%)`,
-                      animation: "pulse 3s infinite ease-in-out",
-                    }}
-                  ></div>
-
-                  {/* Reflexo na borda */}
-                  <div
-                    className="absolute inset-0 opacity-50"
-                    style={{
-                      background: `linear-gradient(135deg, ${selectedSkill.color}30, transparent 50%)`,
-                      filter: "blur(5px)",
-                    }}
-                  ></div>
-                </div>
-
-                {/* Partículas decorativas dentro do ícone */}
-                <div className="absolute inset-0 overflow-hidden rounded-2xl">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div
-                      key={i}
-                      className="absolute w-1.5 h-1.5 rounded-full animate-ping-slow"
-                      style={{
-                        backgroundColor: selectedSkill.color,
-                        left: `${Math.random() * 80 + 10}%`,
-                        top: `${Math.random() * 80 + 10}%`,
-                        animationDelay: `${i * 0.5}s`,
-                        opacity: 0.7,
-                        filter: `blur(${Math.random() > 0.7 ? 1 : 0}px)`,
-                      }}
-                    ></div>
-                  ))}
-                </div>
-
-                <div
-                  className="text-4xl relative z-10"
-                  style={{ color: selectedSkill.color }}
-                >
-                  {selectedSkill.icon}
-                </div>
-              </div>
-
-              <div className="flex-1">
-                <h3 className="text-2xl font-bold mb-3 flex items-center">
-                  {selectedSkill.name}
-                  <span
-                    className="ml-3 text-xs px-3 py-1 rounded-full text-white inline-flex items-center"
-                    style={{
-                      background: `linear-gradient(135deg, ${selectedSkill.color}, ${selectedSkill.color}80)`,
+                      background: `linear-gradient(135deg, ${selectedSkill.color}20, ${selectedSkill.color}05)`,
+                      border: `1px solid ${selectedSkill.color}40`,
+                      boxShadow: `0 5px 15px ${selectedSkill.color}15, inset 0 0 20px ${selectedSkill.color}10`,
                     }}
                   >
-                    {selectedSkill.category === "frontend"
-                      ? "Frontend"
-                      : selectedSkill.category === "backend"
-                      ? "Backend"
-                      : "Outras Ferramentas"}
-                  </span>
-                </h3>
-
-                {/* Barra de progresso extremamente aprimorada */}
-                <div className="mb-8">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-text-light font-medium">
-                      Nível de Proficiência
-                    </span>
-                    <div className="flex items-center">
-                      <div
-                        className="w-3 h-3 rounded-full mr-2"
-                        style={{ backgroundColor: selectedSkill.color }}
-                      ></div>
-                      <span
-                        className="font-bold text-lg"
-                        style={{ color: selectedSkill.color }}
-                      >
-                        {selectedSkill.level}%
-                      </span>
-                    </div>
-                  </div>
-                  <div className="h-3 bg-gray-700 rounded-full overflow-hidden">
                     <div
-                      id="skill-progress"
-                      className="h-full rounded-full"
-                      style={{
-                        backgroundColor: selectedSkill.color,
-                        width: "0%", // Inicialmente com largura 0, será animado pelo GSAP
-                      }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Descrição da habilidade */}
-            <div className="mb-10 skill-content-section">
-              <h4 className="text-lg font-semibold mb-3 flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2 text-primary"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Descrição
-              </h4>
-              <div className="p-5 rounded-xl bg-gray-800 bg-opacity-30 border border-gray-700">
-                <p
-                  className="text-text-light leading-relaxed"
-                  style={{ textShadow: "0 1px 2px rgba(0,0,0,0.2)" }}
-                >
-                  {selectedSkill.description}
-                </p>
-              </div>
-            </div>
-
-            {/* Áreas de aplicação */}
-            <div className="mb-10 skill-content-section">
-              <h4 className="text-lg font-semibold mb-4 flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2 text-primary"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z" />
-                </svg>
-                Áreas de Aplicação
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {getApplicationAreas(selectedSkill).map((area, index) => (
-                  <div
-                    key={index}
-                    className="p-4 rounded-xl border border-gray-700 bg-gray-800 bg-opacity-30 hover:border-primary/30 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg group"
-                    style={{
-                      borderLeft: `3px solid ${selectedSkill.color}`,
-                    }}
-                  >
-                    <div className="text-lg font-medium mb-1 group-hover:text-primary transition-colors">
-                      {area.title}
-                    </div>
-                    <p className="text-text-light text-sm">
-                      {area.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Projetos Relacionados */}
-            {selectedSkill.relatedProjects &&
-              selectedSkill.relatedProjects.length > 0 && (
-                <div className="skill-content-section">
-                  <h4 className="text-lg font-semibold mb-4 flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 mr-2 text-primary"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
+                      className="text-3xl"
+                      style={{ color: selectedSkill.color }}
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Projetos Relacionados
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {selectedSkill.relatedProjects.map((project) => (
-                      <div
-                        key={project.id}
-                        className="group relative overflow-hidden rounded-xl border border-gray-700 bg-gray-800 bg-opacity-20 transition-all duration-300 hover:border-primary/30 hover:shadow-xl cursor-pointer transform hover:-translate-y-1"
-                        onClick={() => navigateToProject(project.id)}
+                      {selectedSkill.icon}
+                    </div>
+                    <div className="absolute inset-0 rounded-xl overflow-hidden">
+                      {[1, 2, 3].map((i) => (
+                        <div
+                          key={i}
+                          className="absolute w-1 h-1 rounded-full animate-ping-slow"
+                          style={{
+                            backgroundColor: selectedSkill.color,
+                            left: `${Math.random() * 80 + 10}%`,
+                            top: `${Math.random() * 80 + 10}%`,
+                            animationDelay: `${i * 0.5}s`,
+                            opacity: 0.7,
+                          }}
+                        ></div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Detalhes da tecnologia */}
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold flex items-center gap-2 mb-2">
+                      {selectedSkill.name}
+                      <span
+                        className="text-xs px-2 py-1 rounded-full text-white inline-flex items-center"
+                        style={{
+                          background: `linear-gradient(135deg, ${selectedSkill.color}, ${selectedSkill.color}80)`,
+                          boxShadow: `0 2px 5px ${selectedSkill.color}40`,
+                        }}
                       >
-                        <div className="aspect-video overflow-hidden">
-                          <ImageWithFallback
-                            src={project.image}
-                            alt={project.title}
-                            fallbackSrc="/assets/placeholder.jpg"
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
-                        </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent opacity-90"></div>
-                        <div className="absolute bottom-0 left-0 p-4 w-full">
-                          <h5 className="text-white font-bold mb-2 group-hover:text-primary transition-colors duration-300">
-                            {project.title}
-                          </h5>
-                          <p className="text-gray-300 text-sm line-clamp-2 mb-3">
-                            {project.description}
-                          </p>
-                          <div
-                            className="flex items-center justify-center text-xs font-medium px-3 py-1.5 rounded-full w-max text-white transition-transform duration-300 group-hover:scale-105"
-                            style={{ backgroundColor: selectedSkill.color }}
+                        {selectedSkill.category === "frontend"
+                          ? "Frontend"
+                          : selectedSkill.category === "backend"
+                          ? "Backend"
+                          : "Outras Ferramentas"}
+                      </span>
+                    </h3>
+                    
+                    {/* Barra de progresso redesenhada */}
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-text-light font-medium text-sm">
+                          Nível de Proficiência
+                        </span>
+                        <div className="flex items-center">
+                          <span
+                            className="font-bold text-lg"
+                            style={{ color: selectedSkill.color }}
                           >
-                            Ver Projeto{" "}
-                            <FaChevronRight className="ml-1.5" size={8} />
+                            {selectedSkill.level}%
+                          </span>
+                        </div>
+                      </div>
+                      <div className="h-2 bg-black bg-opacity-50 rounded-full overflow-hidden border border-gray-800">
+                        <div
+                          id="skill-progress"
+                          className="h-full rounded-full relative"
+                          style={{
+                            width: "0%", // Inicialmente com largura 0, será animado
+                          }}
+                        >
+                          <div className="absolute inset-0"
+                            style={{
+                              background: `linear-gradient(90deg, ${selectedSkill.color}, ${selectedSkill.color}80)`,
+                              boxShadow: `0 0 8px ${selectedSkill.color}`
+                            }}>
+                          </div>
+                          <div className="absolute inset-0 opacity-50"
+                            style={{
+                              background: `linear-gradient(90deg, transparent, ${selectedSkill.color}40, transparent)`,
+                              backgroundSize: '200% 100%',
+                              animation: 'progressBarShine 2s linear infinite'
+                            }}>
                           </div>
                         </div>
                       </div>
-                    ))}
+                    </div>
                   </div>
                 </div>
-              )}
+              </div>
+
+              {/* Descrição da habilidade */}
+              <div className="mb-4">
+                <div className="flex items-center mb-2">
+                  <h4 className="text-base font-semibold flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill={selectedSkill.color}
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span style={{color: selectedSkill.color}}>Descrição</span>
+                  </h4>
+                </div>
+                <div className="p-4 rounded-xl bg-black bg-opacity-30 backdrop-blur-sm border border-gray-800"
+                  style={{
+                    boxShadow: `0 4px 12px rgba(0, 0, 0, 0.1), 0 0 0 1px ${selectedSkill.color}10 inset`
+                  }}>
+                  <p className="text-text-light text-sm leading-relaxed">
+                    {selectedSkill.description}
+                  </p>
+                </div>
+              </div>
+
+              {/* Áreas de aplicação */}
+              <div className="mb-4">
+                <div className="flex items-center mb-2">
+                  <h4 className="text-base font-semibold flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill={selectedSkill.color}
+                    >
+                      <path d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z" />
+                    </svg>
+                    <span style={{color: selectedSkill.color}}>Áreas de Aplicação</span>
+                  </h4>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {getApplicationAreas(selectedSkill).map((area, index) => (
+                    <div
+                      key={index}
+                      className="p-3 rounded-xl border border-gray-800 bg-black bg-opacity-30 backdrop-blur-sm hover:bg-opacity-40 transition-all duration-300 group"
+                      style={{
+                        borderLeft: `3px solid ${selectedSkill.color}`,
+                        boxShadow: `0 4px 12px rgba(0, 0, 0, 0.1), 0 0 0 1px ${selectedSkill.color}05 inset`
+                      }}
+                    >
+                      <div 
+                        className="text-sm font-semibold mb-1 group-hover:text-white transition-colors"
+                        style={{color: selectedSkill.color}}
+                      >
+                        {area.title}
+                      </div>
+                      <p className="text-text-light text-xs">
+                        {area.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Projetos Relacionados */}
+              {selectedSkill.relatedProjects &&
+                selectedSkill.relatedProjects.length > 0 && (
+                  <div>
+                    <div className="flex items-center mb-2">
+                      <h4 className="text-base font-semibold flex items-center gap-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill={selectedSkill.color}
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <span style={{color: selectedSkill.color}}>Projetos Relacionados</span>
+                      </h4>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {selectedSkill.relatedProjects.map((project) => (
+                        <div
+                          key={project.id}
+                          className="group relative overflow-hidden rounded-xl border border-gray-800 bg-black bg-opacity-30 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:shadow-xl cursor-pointer transform hover:-translate-y-1"
+                          onClick={() => navigateToProject(project.id)}
+                          style={{
+                            boxShadow: `0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px ${selectedSkill.color}10 inset`
+                          }}
+                        >
+                          <div className="aspect-video overflow-hidden">
+                            <ImageWithFallback
+                              src={project.image}
+                              alt={project.title}
+                              fallbackSrc="/assets/placeholder.jpg"
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            />
+                          </div>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent opacity-90"></div>
+                          <div className="absolute bottom-0 left-0 p-3 w-full">
+                            <h5 className="text-white text-sm font-bold mb-1 group-hover:text-primary transition-colors duration-300">
+                              {project.title}
+                            </h5>
+                            <p className="text-gray-300 text-xs line-clamp-2 mb-2">
+                              {project.description}
+                            </p>
+                            <div
+                              className="flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full w-max text-white transition-all duration-300 group-hover:scale-105"
+                              style={{ 
+                                background: `linear-gradient(135deg, ${selectedSkill.color}, ${selectedSkill.color}80)`,
+                                boxShadow: `0 2px 5px ${selectedSkill.color}40`
+                              }}
+                            >
+                              Ver Projeto
+                              <FaChevronRight size={8} />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+            </div>
           </div>
         </div>
       )}
