@@ -77,7 +77,7 @@ Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes
 
 ## 📬 Contato
 
-- **Email**: contato@luiscarlos.dev
-- **LinkedIn**: https://linkedin.com/in/luiscarlos
-- **GitHub**: https://github.com/luiscarlos
+- **Email**: Luizcarlosvitorianoneto@gmail.com
+- **LinkedIn**: [https://linkedin.com/in/luiscarlos](https://www.linkedin.com/in/luis-carlos-vitoriano-neto-56a58321b/)
+- **GitHub**: [https://github.com/luiscarlos](https://github.com/LuisCarlos01)
 - **Twitter**: https://twitter.com/luiscarlos
