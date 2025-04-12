@@ -1,0 +1,164 @@
+/* ==== ESTILOS DE MODAIS ==== */
+/* Este arquivo contém estilos específicos para modais e diálogos */
+
+/* === MODAL OVERLAY === */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: var(--z-overlay);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: backdropFadeIn var(--transition-normal);
+}
+
+/* === MODAL CONTAINER === */
+.modal-container {
+  background-color: var(--color-card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 90%;
+  max-width: var(--modal-width-md);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  z-index: var(--z-modal);
+  animation: modalFadeIn var(--transition-normal);
+}
+
+/* Diferentes tamanhos de modal */
+.modal-sm {
+  max-width: var(--modal-width-sm);
+}
+
+.modal-lg {
+  max-width: var(--modal-width-lg);
+}
+
+.modal-fullscreen {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 0;
+}
+
+/* === MODAL CONTENT === */
+.modal-header {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-body {
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+/* === BOTÃO CLOSE === */
+.modal-close {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  background: transparent;
+  border: none;
+  color: var(--color-text-light);
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: var(--transition-fast);
+  z-index: var(--z-above);
+}
+
+.modal-close:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: var(--color-text-dark);
+}
+
+/* === ESTILIZAÇÃO DO SCROLLBAR === */
+.modal-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) var(--color-card-bg);
+}
+
+.modal-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-container::-webkit-scrollbar-track {
+  background: var(--color-card-bg);
+  border-radius: 4px;
+}
+
+.modal-container::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+  border-radius: 4px;
+  border: 2px solid var(--color-card-bg);
+}
+
+/* === MODAL DE CONFIRMAÇÃO === */
+.modal-confirm .modal-body {
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-lg);
+}
+
+.modal-confirm .modal-icon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.modal-confirm .icon-warning {
+  color: var(--color-warning);
+}
+
+.modal-confirm .icon-error {
+  color: var(--color-error);
+}
+
+.modal-confirm .icon-success {
+  color: var(--color-success);
+}
+
+.modal-confirm .icon-info {
+  color: var(--color-info);
+}
+
+/* === TRANSIÇÃO E ANIMAÇÃO === */
+.modal-transition {
+  transition: background 0.3s ease-in-out;
+}
+
+.modal-transition * {
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* === RESPONSIVIDADE === */
+@media (max-width: 640px) {
+  .modal-container {
+    width: 95%;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: var(--spacing-sm);
+  }
+}

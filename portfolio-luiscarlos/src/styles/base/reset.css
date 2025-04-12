@@ -1,0 +1,114 @@
+/* ==== RESET DE ESTILOS ==== */
+/* Este arquivo contém os estilos de reset para normalizar o comportamento entre navegadores */
+
+/* Reset básico */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Reset de elementos específicos */
+html {
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Imagens e mídia */
+img,
+picture,
+svg,
+video {
+  max-width: 100%;
+  display: block;
+  height: auto;
+}
+
+/* Formulários */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+
+/* Remover estilo de lista */
+ol,
+ul {
+  list-style: none;
+}
+
+/* Links */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Tabelas */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Remover focus padrão dos elementos */
+:focus {
+  outline: none;
+}
+
+/* Melhorando acessibilidade de foco */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Evitar que o conteúdo ultrapasse os limites */
+.overflow-hidden {
+  overflow: hidden;
+}
+
+/* Ajustar o modelo de box das bordas */
+html {
+  box-sizing: border-box;
+}
+
+/* Acessibilidade - esconder visualmente */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Normalização de headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+}

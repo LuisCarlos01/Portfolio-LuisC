@@ -1,0 +1,225 @@
+/* Estilos para a seção de linha do tempo (timeline) */
+
+.timeline-container {
+  position: relative !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 20px 0 !important;
+}
+
+/* Marcas temporais */
+.timeline-marker {
+  position: absolute !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  background-color: var(--color-primary) !important;
+  transform: translateX(-50%) !important;
+  z-index: 10 !important;
+}
+
+/* Gradiente para o fundo da timeline */
+.timeline-background {
+  position: relative !important;
+  overflow: hidden !important;
+  border-radius: 8px !important;
+}
+
+.timeline-background::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--color-primary-rgb), 0.05),
+    transparent
+  ) !important;
+  z-index: 0 !important;
+}
+
+/* Animações de destaque ao passar o mouse */
+.timeline-item:hover .timeline-card {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-5px) !important;
+}
+
+/* Estilos para os cartões de timeline */
+.timeline-card {
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+/* Indicadores coloridos para diferentes tipos de itens */
+.timeline-card-education {
+  border-left: 3px solid #4285f4 !important;
+}
+
+.timeline-card-experience {
+  border-left: 3px solid var(--color-primary) !important;
+}
+
+.timeline-card-certification {
+  border-left: 3px solid #fbbc05 !important;
+}
+
+/* Efeito de brilho para itens destacados */
+.timeline-item.featured::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--color-primary-rgb), 0.2) 0%,
+    transparent 70%
+  ) !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+}
+
+/* Customização para dispositivos móveis */
+@media (max-width: 768px) {
+  .timeline-left,
+  .timeline-right {
+    padding-left: 60px !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .timeline-item::before {
+    left: 30px !important;
+    transform: none !important;
+  }
+
+  .timeline-item::after {
+    left: 26px !important;
+    transform: none !important;
+  }
+
+  /* Ajuste para linha central em dispositivos móveis */
+  .timeline-item .absolute.left-1\/2 {
+    left: 30px !important;
+    transform: none !important;
+  }
+
+  /* Ajuste para conectores horizontais */
+  .timeline-item .absolute.top-8.h-0\.5 {
+    left: 30px !important;
+    width: 30px !important;
+    right: auto !important;
+  }
+
+  /* Ajuste para o marco temporal */
+  .timeline-item .absolute.top-0 {
+    left: 0 !important;
+    right: auto !important;
+    text-align: left !important;
+  }
+}
+
+/* Efeitos de animação para os cartões */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(var(--color-primary-rgb), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0);
+  }
+}
+
+.timeline-pulse {
+  animation: pulse 2s infinite !important;
+}
+
+/* Estilo para a animação da linha destacada */
+.timeline-progress {
+  height: 100% !important;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--color-primary-rgb), 0.2) 0%,
+    rgba(var(--color-primary-rgb), 0.6) 50%,
+    rgba(var(--color-primary-rgb), 0.2) 100%
+  ) !important;
+  width: 30% !important;
+  animation: moveProgress 8s infinite linear !important;
+}
+
+@keyframes moveProgress {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+/* Conectores animados */
+.timeline-connector {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 0 !important;
+  height: 2px !important;
+  background-color: var(--color-primary) !important;
+  transition: width 0.5s ease !important;
+}
+
+.timeline-item:hover .timeline-connector {
+  width: 100px !important;
+}
+
+/* Ajustes específicos para o modo claro */
+.light .resume-section {
+  background: var(--color-bg-dark) !important;
+}
+
+.light .resume-section h2.text-white,
+.light .resume-section h3.text-white,
+.light .resume-section h4.text-white {
+  color: var(--color-text-dark) !important;
+}
+
+.light .timeline-item .bg-card-bg {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.light .resume-section select,
+.light .resume-section input,
+.light .resume-section button.bg-bg-dark {
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Melhorar o contraste do texto no modo claro */
+.light .resume-section .text-text-light {
+  color: var(--color-text-light) !important;
+  opacity: 0.9 !important;
+}
+
+/* Garantir que os conectores da timeline sejam visíveis no modo claro */
+.light .timeline-item .bg-primary\/30,
+.light .timeline-item .absolute.top-8.h-0\.5.bg-primary\/30 {
+  background-color: rgba(var(--color-primary-rgb), 0.4) !important;
+}
+
+/* Melhorar a aparência dos botões no modo claro */
+.light .resume-section button.text-text-light:hover {
+  background-color: rgba(var(--color-primary-rgb), 0.1) !important;
+}
+
+/* Garantir que os ícones sejam visíveis no modo claro */
+.light .resume-section .text-primary {
+  color: var(--color-primary) !important;
+  opacity: 1 !important;
+}

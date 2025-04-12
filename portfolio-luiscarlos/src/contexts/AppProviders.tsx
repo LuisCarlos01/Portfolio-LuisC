@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect } from "react";
 import { SectionProvider } from "./SectionContext";
 import { DarkModeProvider } from "./DarkModeContext";
-import ErrorBoundary from "../components/ErrorBoundary";
+import ErrorBoundary from "../components/feedback/ErrorBoundary";
 
 interface AppProvidersProps {
   children: ReactNode;

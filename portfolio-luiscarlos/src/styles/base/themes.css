@@ -1,0 +1,79 @@
+/* ==== TEMAS DO PROJETO ==== */
+/* Este arquivo define os temas claro e escuro */
+
+/* ==== TEMA ESCURO (PADRÃO) ==== */
+.dark,
+:root {
+  /* Cores do tema escuro */
+  --color-bg-dark: #0a0a0a;
+  --color-bg-light: #121212;
+  --color-card-bg: #161616;
+  --color-text-light: #a3abb9;
+  --color-text-dark: #ffffff;
+  --color-border: #2a2a2a;
+  --color-shadow: rgba(0, 0, 0, 0.2);
+
+  /* Cores específicas para elementos */
+  --color-header-bg: rgba(10, 10, 10, 0.8);
+  --color-footer-bg: #0a0a0a;
+  --color-input-bg: #1e1e1e;
+  --color-input-border: #333333;
+  --color-input-text: #ffffff;
+  --color-button-hover: #8e44ad;
+  --color-card-hover: #1d1d1d;
+  --color-divider: #333333;
+
+  /* Sombras específicas para o tema escuro */
+  --shadow-card: 0 4px 6px rgba(0, 0, 0, 0.2);
+  --shadow-button: 0 4px 6px rgba(155, 89, 182, 0.3);
+
+  /* Cores específicas para componentes */
+  --color-tooltip-bg: #2a2a2a;
+  --color-tooltip-text: #ffffff;
+  --color-dropdown-bg: #1e1e1e;
+  --color-dropdown-hover: #252525;
+  --color-menu-active: #333333;
+  --color-code-bg: #1e1e1e;
+  --color-code-text: #e0e0e0;
+  --color-code-comment: #6a9955;
+  --color-code-string: #ce9178;
+  --color-code-keyword: #569cd6;
+}
+
+/* ==== TEMA CLARO ==== */
+.light {
+  /* Cores do tema claro */
+  --color-bg-dark: #f2f2f2;
+  --color-bg-light: #ffffff;
+  --color-card-bg: #ffffff;
+  --color-text-light: #4a5568;
+  --color-text-dark: #1a202c;
+  --color-border: #e0e0e0;
+  --color-shadow: rgba(0, 0, 0, 0.1);
+
+  /* Cores específicas para elementos */
+  --color-header-bg: rgba(249, 249, 249, 0.8);
+  --color-footer-bg: #f2f2f2;
+  --color-input-bg: #ffffff;
+  --color-input-border: #e0e0e0;
+  --color-input-text: #1a202c;
+  --color-button-hover: #8e44ad;
+  --color-card-hover: #f7f7f7;
+  --color-divider: #e0e0e0;
+
+  /* Sombras específicas para o tema claro */
+  --shadow-card: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-button: 0 4px 6px rgba(155, 89, 182, 0.2);
+
+  /* Cores específicas para componentes */
+  --color-tooltip-bg: #333333;
+  --color-tooltip-text: #ffffff;
+  --color-dropdown-bg: #ffffff;
+  --color-dropdown-hover: #f7f7f7;
+  --color-menu-active: #f0f0f0;
+  --color-code-bg: #f5f5f5;
+  --color-code-text: #333333;
+  --color-code-comment: #008000;
+  --color-code-string: #a31515;
+  --color-code-keyword: #0000ff;
+}

@@ -1,0 +1,65 @@
+/* ==== ARQUIVO PRINCIPAL DE ESTILOS ==== */
+/* Este arquivo importa todos os outros arquivos de estilo em ordem apropriada */
+
+/* Importação de fontes */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap");
+
+/* === IMPORTAÇÃO DE BASE === */
+@import "./base/variables.css";
+@import "./base/themes.css";
+@import "./base/reset.css";
+@import "./base/layout.css";
+
+/* === IMPORTAÇÃO DE UTILITÁRIOS === */
+@import "./utils/theme-utils.css";
+
+/* === IMPORTAÇÃO DE ANIMAÇÕES === */
+@import "./animations/index.css";
+
+/* === IMPORTAÇÃO DE COMPONENTES === */
+@import "./components/buttons.css";
+@import "./components/modal.css";
+@import "./components/projeto.css";
+
+/* === IMPORTAÇÃO DE ESTILOS ESPECÍFICOS === */
+@import "./resume.css";
+
+/* Suporte para Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* === DOCUMENTAÇÃO === */
+/*
+  Este sistema de design segue uma abordagem modular e escalável:
+  
+  1. Variáveis base: Define todas as variáveis CSS do projeto.
+  2. Temas: Define os temas claro e escuro.
+  3. Reset: Normaliza os estilos entre navegadores.
+  4. Layout: Define as classes base de layout.
+  5. Utilitários: Fornece classes utilitárias para o tema.
+  6. Animações: Importa as animações e suas classes.
+  7. Componentes: Importa os estilos de componentes específicos.
+  8. Estilos específicos: Importa estilos para casos particulares.
+  
+  Para adicionar novos componentes:
+  1. Crie um arquivo CSS na pasta apropriada
+  2. Adicione a importação aqui mantendo a ordem de cascata
+*/
+
+/* Animação de destaque para a navegação entre seções */
+@keyframes section-highlight-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(155, 89, 182, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 20px rgba(155, 89, 182, 0.3);
+  }
+}
+
+.section-highlight {
+  animation: section-highlight-pulse 1.5s ease-in-out;
+  z-index: 2 !important;
+  position: relative;
+}

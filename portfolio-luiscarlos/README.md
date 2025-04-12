@@ -56,24 +56,72 @@ npm run build
 
 ## 📁 Estrutura do Projeto
 
+A estrutura do projeto foi completamente refatorada para uma arquitetura modular e mais organizada:
+
 ```
 portfolio-luiscarlos/
-├── public/               # Arquivos públicos
-├── src/                  # Código fonte
-│   ├── components/       # Componentes React
-│   ├── pages/            # Páginas da aplicação
-│   ├── contexts/         # Contextos React
-│   ├── utils/            # Funções utilitárias
-│   ├── App.tsx           # Componente principal
-│   ├── index.css         # Estilos globais
-│   └── main.tsx          # Ponto de entrada
-├── index.html            # Arquivo HTML principal
-├── package.json          # Dependências e scripts
-├── tailwind.config.js    # Configuração do Tailwind
-└── tsconfig.json         # Configuração do TypeScript
+├── public/                 # Arquivos públicos
+├── src/                    # Código fonte
+│   ├── components/         # Componentes React
+│   │   ├── common/         # Componentes compartilhados
+│   │   ├── sections/       # Seções do portfólio
+│   │   │   ├── about/      # Componentes da seção Sobre
+│   │   │   ├── contact/    # Componentes da seção Contato
+│   │   │   ├── hero/       # Componentes da seção Hero
+│   │   │   ├── portfolio/  # Componentes da seção Portfólio
+│   │   │   ├── resume/     # Componentes da seção Currículo
+│   │   │   ├── skills/     # Componentes da seção Habilidades
+│   │   │   └── testimonials/ # Componentes da seção Depoimentos
+│   │   ├── Footer.tsx      # Componente de rodapé
+│   │   └── Header.tsx      # Componente de cabeçalho
+│   ├── contexts/           # Contextos React
+│   │   ├── section/        # Contexto para gerenciamento de seções
+│   │   └── DarkModeContext.tsx # Contexto para tema escuro/claro
+│   ├── data/               # Arquivos de dados separados da lógica
+│   │   ├── aboutData.ts    # Dados da seção Sobre
+│   │   ├── contactData.ts  # Dados da seção Contato
+│   │   ├── heroData.ts     # Dados da seção Hero
+│   │   ├── portfolioData.ts # Dados da seção Portfólio
+│   │   ├── resumeData.ts   # Dados da seção Currículo
+│   │   ├── skillsData.ts   # Dados da seção Habilidades
+│   │   └── testimonialsData.ts # Dados da seção Depoimentos
+│   ├── hooks/              # Hooks personalizados
+│   ├── pages/              # Páginas da aplicação
+│   ├── types/              # Definições de tipos TypeScript
+│   ├── utils/              # Funções utilitárias
+│   ├── styles/             # Estilos globais e compartilhados
+│   ├── App.tsx             # Componente principal
+│   ├── index.css           # Estilos globais
+│   └── main.tsx            # Ponto de entrada
+├── index.html              # Arquivo HTML principal
+├── package.json            # Dependências e scripts
+├── tailwind.config.js      # Configuração do Tailwind
+└── tsconfig.json           # Configuração do TypeScript
 ```
 
 ## 🔄 Atualizações Recentes
+
+### Refatoração Completa da Arquitetura
+
+- **Estrutura Modular**: Todo o projeto foi reorganizado para seguir uma arquitetura modular e de fácil manutenção
+- **Separação de Responsabilidades**: Componentes divididos em arquivos menores e mais focados
+- **Padrão de Dados**: Separação completa dos dados da lógica da interface, facilitando atualizações
+- **Sistema de Tipos**: Criação de interfaces TypeScript para todos os componentes, melhorando a tipagem
+- **Componentes Reutilizáveis**: Implementação de componentes menores e mais específicos para maior reuso
+
+### Melhorias na Performance
+
+- **Carregamento Otimizado**: Implementação de lazy loading e precarregamento inteligente das seções
+- **Renderização Condicional**: Componentes só são renderizados quando necessário, melhorando a performance
+- **Memoização**: Uso extensivo de React.memo e useCallback para evitar renderizações desnecessárias
+- **Animações Otimizadas**: Melhor gerenciamento das animações GSAP para evitar vazamento de memória
+
+### Correções Técnicas
+
+- **Navegação entre Seções**: Corrigido problema na função `showSection`, implementando retrocompatibilidade
+- **IDs das Seções**: Padronizados os IDs das seções para evitar erros na navegação
+- **Transições de Seção**: Melhorado sistema de transição com logs para depuração e melhor recuperação de erros
+- **Precarregamento**: Corrigido caminho de importação dinâmica dos componentes para a nova estrutura
 
 ### Melhorias na Experiência do Usuário
 
@@ -81,13 +129,6 @@ portfolio-luiscarlos/
 - **Seção de Contato**: Aprimorado com animações interativas, feedback visual em tempo real e efeito de partículas
 - **Sistema de Imagens**: Implementado carregamento progressivo de imagens e fallbacks automáticos
 - **Performance**: Otimizadas as animações para melhor desempenho em dispositivos de baixo poder de processamento
-
-### Correções Técnicas
-
-- Corrigida a inconsistência das informações de contato (email, telefone e links sociais)
-- Aprimorado o componente ImageWithFallback para melhor tratamento de erros
-- Otimizadas as animações GSAP para evitar vazamento de memória
-- Corrigido o comportamento responsivo em dispositivos móveis
 
 ## 📝 Licença
 

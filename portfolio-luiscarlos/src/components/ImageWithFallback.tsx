@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect, memo } from "react";
 
 interface ImageWithFallbackProps {
@@ -158,7 +159,7 @@ const ImageWithFallback = ({
         height={height}
         loading={loading}
         onLoad={() => {
-          if (imgSrc !== lowQualitySrc && imgSrc !== fallbackSrc) {
+          if (typeof imgSrc === 'string' && imgSrc !== fallbackSrc) {
             setIsLoaded(true);
           }
         }}

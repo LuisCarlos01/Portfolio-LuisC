@@ -1,0 +1,263 @@
+/* ==== UTILITÁRIOS DE TEMA ==== */
+/* Este arquivo contém classes utilitárias baseadas nas variáveis de tema */
+
+/* === CORES DE TEXTO === */
+.text-primary {
+  color: var(--color-primary) !important;
+}
+.text-primary-dark {
+  color: var(--color-primary-dark) !important;
+}
+.text-light {
+  color: var(--color-text-light) !important;
+}
+.text-dark {
+  color: var(--color-text-dark) !important;
+}
+.text-success {
+  color: var(--color-success) !important;
+}
+.text-warning {
+  color: var(--color-warning) !important;
+}
+.text-error {
+  color: var(--color-error) !important;
+}
+.text-info {
+  color: var(--color-info) !important;
+}
+
+/* === CORES DE FUNDO === */
+.bg-primary {
+  background-color: var(--color-primary) !important;
+}
+.bg-primary-dark {
+  background-color: var(--color-primary-dark) !important;
+}
+.bg-primary-light {
+  background-color: var(--color-primary-light) !important;
+}
+.bg-bg-dark {
+  background-color: var(--color-bg-dark) !important;
+}
+.bg-bg-light {
+  background-color: var(--color-bg-light) !important;
+}
+.bg-card-bg {
+  background-color: var(--color-card-bg) !important;
+}
+.bg-success {
+  background-color: var(--color-success) !important;
+}
+.bg-warning {
+  background-color: var(--color-warning) !important;
+}
+.bg-error {
+  background-color: var(--color-error) !important;
+}
+.bg-info {
+  background-color: var(--color-info) !important;
+}
+
+/* === BORDAS === */
+.border-primary {
+  border-color: var(--color-primary) !important;
+}
+.border-light {
+  border-color: var(--color-border) !important;
+}
+.border-success {
+  border-color: var(--color-success) !important;
+}
+.border-warning {
+  border-color: var(--color-warning) !important;
+}
+.border-error {
+  border-color: var(--color-error) !important;
+}
+.border-info {
+  border-color: var(--color-info) !important;
+}
+
+/* === BORDAS ARREDONDADAS === */
+.rounded-sm {
+  border-radius: var(--radius-sm) !important;
+}
+.rounded-md {
+  border-radius: var(--radius-md) !important;
+}
+.rounded-lg {
+  border-radius: var(--radius-lg) !important;
+}
+.rounded-xl {
+  border-radius: var(--radius-xl) !important;
+}
+.rounded-2xl {
+  border-radius: var(--radius-2xl) !important;
+}
+.rounded-full {
+  border-radius: var(--radius-full) !important;
+}
+
+/* === SOMBRAS === */
+.shadow-sm {
+  box-shadow: var(--shadow-sm) !important;
+}
+.shadow-md {
+  box-shadow: var(--shadow-md) !important;
+}
+.shadow-lg {
+  box-shadow: var(--shadow-lg) !important;
+}
+.shadow-xl {
+  box-shadow: var(--shadow-xl) !important;
+}
+.shadow-primary {
+  box-shadow: var(--shadow-primary) !important;
+}
+.shadow-card {
+  box-shadow: var(--shadow-card) !important;
+}
+.shadow-button {
+  box-shadow: var(--shadow-button) !important;
+}
+.shadow-none {
+  box-shadow: none !important;
+}
+
+/* === TIPOGRAFIA === */
+.font-primary {
+  font-family: var(--font-family-primary) !important;
+}
+.font-secondary {
+  font-family: var(--font-family-secondary) !important;
+}
+
+.font-light {
+  font-weight: var(--font-weight-light) !important;
+}
+.font-regular {
+  font-weight: var(--font-weight-regular) !important;
+}
+.font-medium {
+  font-weight: var(--font-weight-medium) !important;
+}
+.font-semibold {
+  font-weight: var(--font-weight-semibold) !important;
+}
+.font-bold {
+  font-weight: var(--font-weight-bold) !important;
+}
+
+.text-xs {
+  font-size: var(--font-size-xs) !important;
+}
+.text-sm {
+  font-size: var(--font-size-sm) !important;
+}
+.text-base {
+  font-size: var(--font-size-base) !important;
+}
+.text-lg {
+  font-size: var(--font-size-lg) !important;
+}
+.text-xl {
+  font-size: var(--font-size-xl) !important;
+}
+.text-2xl {
+  font-size: var(--font-size-2xl) !important;
+}
+.text-3xl {
+  font-size: var(--font-size-3xl) !important;
+}
+.text-4xl {
+  font-size: var(--font-size-4xl) !important;
+}
+.text-5xl {
+  font-size: var(--font-size-5xl) !important;
+}
+
+/* === ESPAÇAMENTO === */
+.p-xs {
+  padding: var(--spacing-xs) !important;
+}
+.p-sm {
+  padding: var(--spacing-sm) !important;
+}
+.p-md {
+  padding: var(--spacing-md) !important;
+}
+.p-lg {
+  padding: var(--spacing-lg) !important;
+}
+.p-xl {
+  padding: var(--spacing-xl) !important;
+}
+.p-2xl {
+  padding: var(--spacing-2xl) !important;
+}
+.p-3xl {
+  padding: var(--spacing-3xl) !important;
+}
+
+.m-xs {
+  margin: var(--spacing-xs) !important;
+}
+.m-sm {
+  margin: var(--spacing-sm) !important;
+}
+.m-md {
+  margin: var(--spacing-md) !important;
+}
+.m-lg {
+  margin: var(--spacing-lg) !important;
+}
+.m-xl {
+  margin: var(--spacing-xl) !important;
+}
+.m-2xl {
+  margin: var(--spacing-2xl) !important;
+}
+.m-3xl {
+  margin: var(--spacing-3xl) !important;
+}
+
+/* === TRANSIÇÕES === */
+.transition-fast {
+  transition: var(--transition-fast) !important;
+}
+.transition-normal {
+  transition: var(--transition-normal) !important;
+}
+.transition-slow {
+  transition: var(--transition-slow) !important;
+}
+.transition-bounce {
+  transition: var(--transition-bounce) !important;
+}
+
+/* === Z-INDEX === */
+.z-below {
+  z-index: var(--z-below) !important;
+}
+.z-normal {
+  z-index: var(--z-normal) !important;
+}
+.z-above {
+  z-index: var(--z-above) !important;
+}
+.z-header {
+  z-index: var(--z-header) !important;
+}
+.z-modal {
+  z-index: var(--z-modal) !important;
+}
+.z-tooltip {
+  z-index: var(--z-tooltip) !important;
+}
+.z-overlay {
+  z-index: var(--z-overlay) !important;
+}
+.z-max {
+  z-index: var(--z-max) !important;
+}

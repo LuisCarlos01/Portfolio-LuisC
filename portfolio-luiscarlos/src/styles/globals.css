@@ -1,3 +1,144 @@
+/* Importar arquivos de estilo */
+@import "theme.css";
+@import "animations.css";
+
+/* Estilos globais básicos */
+html,
+body {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  overscroll-behavior-y: contain;
+  height: auto;
+  min-height: 100%;
+  font-family: var(--font-family-primary);
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-dark);
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Reset básico */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+img,
+picture,
+svg,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Classes utilitárias */
+.container {
+  width: 100%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Breakpoints do container para responsividade */
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+/* Configurações para as seções */
+.section-container {
+  min-height: 100vh;
+  padding-top: 80px;
+  position: relative;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  visibility: visible !important;
+}
+
+/* Classe para forçar visibilidade das seções */
+.force-section-visibility {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 1 !important;
+}
+
+/* Estilos para overlay de transição entre seções */
+.page-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-bg-dark);
+  opacity: 0;
+  display: none;
+  z-index: var(--z-overlay);
+  pointer-events: none;
+}
+
+/* Animações personalizadas e complementares */
+.transitioning {
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+/* Classe de acessibilidade para esconder elementos visualmente */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Melhorias de acessibilidade para foco */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Classe para permitir rolagem suave quando necessário */
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
 /* Adicionar ao final do arquivo */
 
 /* Estilos para a transição do modal */

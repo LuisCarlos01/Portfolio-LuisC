@@ -1,0 +1,28 @@
+/* ==== ANIMAÇÕES CENTRALIZADAS ==== */
+/* Este arquivo importa todos os arquivos relacionados a animações */
+
+@import "./keyframes.css";
+@import "./utilities.css";
+
+/* ==== DOCUMENTAÇÃO ==== */
+/*
+  Para usar estas animações, siga os padrões abaixo:
+  
+  1. Animações simples:
+     <div class="animate-fadeIn"></div>
+  
+  2. Animações com duração personalizada:
+     <div class="animate-fadeIn duration-1000"></div>
+  
+  3. Animações com atraso:
+     <div class="animate-fadeIn delay-500"></div>
+  
+  4. Animações com easing personalizado:
+     <div class="animate-fadeIn ease-bounce"></div>
+  
+  5. Combinações complexas:
+     <div class="animate-fadeInUp duration-700 delay-300 ease-in-out"></div>
+  
+  6. Para elementos que respeitam a preferência de movimento reduzido:
+     <div class="animate-fadeIn respects-motion-preference"></div>
+*/

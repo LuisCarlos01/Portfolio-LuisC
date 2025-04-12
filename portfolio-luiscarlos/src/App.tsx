@@ -1,15 +1,11 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import LoadingSpinner from "./components/LoadingSpinner";
+import LoadingSpinner from "./components/LoadingSpinner/LoadingSpinner";
 import Preloader from "./components/Preloader";
 import AppProviders from "./contexts/AppProviders";
 
-// Lazy loaded pages com prefetch
-const Home = lazy(() => {
-  // Prefetch do código do componente Home
-  const prefetch = import("./pages/Home");
-  return prefetch;
-});
+// Lazy loaded pages com importação padrão
+const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -47,12 +43,7 @@ function App() {
     if (showPreloader) return; // Não verificar durante o preloader
 
     // Lista de IDs de seção críticas (reduzida para apenas as essenciais)
-    const criticalSectionIds = [
-      "home",
-      "about-section",
-      "skills-section",
-      "portfolio",
-    ];
+    const criticalSectionIds = ["home", "about", "skills-section", "portfolio"];
 
     // Função otimizada para garantir visibilidade apenas das seções críticas
     const ensureCriticalSectionsVisibility = () => {

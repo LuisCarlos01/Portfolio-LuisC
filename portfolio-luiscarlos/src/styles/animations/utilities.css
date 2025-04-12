@@ -1,0 +1,266 @@
+/* ==== CLASSES UTILITÁRIAS DE ANIMAÇÃO ==== */
+/* Este arquivo contém todas as classes utilitárias relacionadas a animações */
+
+/* === CLASSES DE ANIMAÇÃO === */
+.animate-fadeIn {
+  animation: fadeIn var(--duration, 500ms) var(--ease, ease-out)
+    var(--delay, 0ms) var(--direction, normal) var(--fill-mode, forwards);
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp var(--duration, 500ms) var(--ease, ease-out)
+    var(--delay, 0ms) var(--direction, normal) var(--fill-mode, forwards);
+}
+
+.animate-fadeInDown {
+  animation: fadeInDown var(--duration, 500ms) var(--ease, ease-out)
+    var(--delay, 0ms) var(--direction, normal) var(--fill-mode, forwards);
+}
+
+.animate-fadeInLeft {
+  animation: fadeInLeft var(--duration, 500ms) var(--ease, ease-out)
+    var(--delay, 0ms) var(--direction, normal) var(--fill-mode, forwards);
+}
+
+.animate-fadeInRight {
+  animation: fadeInRight var(--duration, 500ms) var(--ease, ease-out)
+    var(--delay, 0ms) var(--direction, normal) var(--fill-mode, forwards);
+}
+
+.animate-fadeInSubtle {
+  animation: fadeInSubtle var(--duration, 800ms) var(--ease, ease-out)
+    var(--delay, 0ms) var(--iteration, 1) var(--fill-mode, forwards);
+}
+
+.animate-bounce {
+  animation: bounce var(--duration, 1s) var(--ease, ease-in-out)
+    var(--delay, 0ms) var(--iteration, infinite) var(--direction, normal);
+}
+
+.animate-pulse-slow {
+  animation: pulse var(--duration, 2s) var(--ease, ease-in-out)
+    var(--delay, 0ms) var(--iteration, infinite) var(--direction, normal);
+}
+
+.animate-bounce-subtle {
+  animation: bounceSubtle var(--duration, 2s) var(--ease, ease-in-out)
+    var(--delay, 0ms) var(--iteration, infinite) var(--direction, normal);
+}
+
+.animate-ping-slow {
+  animation: pingSlow var(--duration, 3s) var(--ease, ease-in-out)
+    var(--delay, 0ms) var(--iteration, infinite) var(--direction, normal);
+}
+
+.animate-glow-pulse {
+  animation: glowPulse var(--duration, 2s) var(--ease, ease-in-out)
+    var(--delay, 0ms) var(--iteration, infinite) var(--direction, normal);
+}
+
+.animate-slide-up-fade {
+  animation: slideUpFade var(--duration, 500ms) var(--ease, ease-out)
+    var(--delay, 0ms) var(--direction, normal) var(--fill-mode, forwards);
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft var(--duration, 500ms) var(--ease, ease-out)
+    var(--delay, 0ms) var(--direction, normal) var(--fill-mode, forwards);
+}
+
+.animate-slide-in-right {
+  animation: slideInRight var(--duration, 500ms) var(--ease, ease-out)
+    var(--delay, 0ms) var(--direction, normal) var(--fill-mode, forwards);
+}
+
+.animate-slide-out-left {
+  animation: slideOutLeft var(--duration, 500ms) var(--ease, ease-in)
+    var(--delay, 0ms) var(--direction, normal) var(--fill-mode, forwards);
+}
+
+.animate-slide-out-right {
+  animation: slideOutRight var(--duration, 500ms) var(--ease, ease-in)
+    var(--delay, 0ms) var(--direction, normal) var(--fill-mode, forwards);
+}
+
+.animate-spin {
+  animation: fullRotation var(--duration, 1s) linear var(--delay, 0ms)
+    var(--iteration, infinite) var(--direction, normal);
+}
+
+.animate-blink {
+  animation: blink var(--duration, 1s) var(--ease, steps(1)) var(--delay, 0ms)
+    var(--iteration, infinite) var(--direction, normal);
+}
+
+.animate-typewriter {
+  animation: typewriter var(--duration, 3s) var(--ease, steps(40))
+    var(--delay, 0ms) 1 var(--direction, normal) var(--fill-mode, forwards);
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.reveal-clip {
+  animation: revealClip var(--duration, 1s) var(--ease, ease-out)
+    var(--delay, 0ms) var(--direction, normal) var(--fill-mode, forwards);
+  overflow: hidden;
+}
+
+/* === CLASSES DE ATRASO === */
+.delay-0 {
+  --delay: 0ms;
+}
+
+.delay-100 {
+  --delay: 100ms;
+}
+
+.delay-200 {
+  --delay: 200ms;
+}
+
+.delay-300 {
+  --delay: 300ms;
+}
+
+.delay-400 {
+  --delay: 400ms;
+}
+
+.delay-500 {
+  --delay: 500ms;
+}
+
+.delay-700 {
+  --delay: 700ms;
+}
+
+.delay-1000 {
+  --delay: 1000ms;
+}
+
+/* === CLASSES DE DURAÇÃO === */
+.duration-300 {
+  --duration: 300ms;
+}
+
+.duration-500 {
+  --duration: 500ms;
+}
+
+.duration-700 {
+  --duration: 700ms;
+}
+
+.duration-1000 {
+  --duration: 1000ms;
+}
+
+.duration-1500 {
+  --duration: 1500ms;
+}
+
+.duration-2000 {
+  --duration: 2000ms;
+}
+
+/* === CLASSES DE EASING === */
+.ease-linear {
+  --ease: linear;
+}
+
+.ease-in {
+  --ease: ease-in;
+}
+
+.ease-out {
+  --ease: ease-out;
+}
+
+.ease-in-out {
+  --ease: ease-in-out;
+}
+
+.ease-bounce {
+  --ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* === CLASSES DE ITERAÇÃO === */
+.iteration-1 {
+  --iteration: 1;
+}
+
+.iteration-2 {
+  --iteration: 2;
+}
+
+.iteration-3 {
+  --iteration: 3;
+}
+
+.iteration-infinite {
+  --iteration: infinite;
+}
+
+/* === CLASSES DE DIREÇÃO === */
+.direction-normal {
+  --direction: normal;
+}
+
+.direction-reverse {
+  --direction: reverse;
+}
+
+.direction-alternate {
+  --direction: alternate;
+}
+
+/* === CLASSES DE FILL MODE === */
+.fill-none {
+  --fill-mode: none;
+}
+
+.fill-forwards {
+  --fill-mode: forwards;
+}
+
+.fill-backwards {
+  --fill-mode: backwards;
+}
+
+.fill-both {
+  --fill-mode: both;
+}
+
+/* === PADRÕES DE ANIMAÇÃO === */
+.stagger-items > * {
+  opacity: 0;
+}
+
+.stagger-items-from-bottom > * {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.stagger-items-from-left > * {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.stagger-items-from-right > * {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.stagger-items-scale > * {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+/* === CLASSE PARA DESATIVAR ANIMAÇÕES === */
+@media (prefers-reduced-motion: reduce) {
+  .respects-motion-preference {
+    animation: none !important;
+    transition: none !important;
+  }
+}

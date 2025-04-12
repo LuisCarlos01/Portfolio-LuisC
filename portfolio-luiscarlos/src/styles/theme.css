@@ -1,0 +1,225 @@
+/* ==== TEMA CENTRALIZADO DO PROJETO ==== */
+/* Este arquivo define todas as variáveis de tema usadas no projeto */
+/* Todos os componentes devem usar estas variáveis para garantir consistência */
+
+:root {
+  /* ==== VARIÁVEIS DE COR PRINCIPAL ==== */
+  --color-primary: #9b59b6;
+  --color-primary-dark: #8e44ad;
+  --color-primary-light: #c39bd3;
+  --color-primary-rgb: 155, 89, 182;
+
+  /* ==== VARIÁVEIS DE ESPAÇAMENTO ==== */
+  --spacing-xs: 0.25rem; /* 4px */
+  --spacing-sm: 0.5rem; /* 8px */
+  --spacing-md: 1rem; /* 16px */
+  --spacing-lg: 1.5rem; /* 24px */
+  --spacing-xl: 2rem; /* 32px */
+  --spacing-2xl: 3rem; /* 48px */
+  --spacing-3xl: 4rem; /* 64px */
+
+  /* ==== VARIÁVEIS DE TIPOGRAFIA ==== */
+  --font-family-primary: "Inter", sans-serif;
+  --font-family-secondary: "Dancing Script", cursive;
+
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
+  --font-size-5xl: 3rem; /* 48px */
+
+  /* ==== VARIÁVEIS DE BORRAIOS ==== */
+  --radius-sm: 0.25rem; /* 4px */
+  --radius-md: 0.5rem; /* 8px */
+  --radius-lg: 0.75rem; /* 12px */
+  --radius-xl: 1rem; /* 16px */
+  --radius-2xl: 1.5rem; /* 24px */
+  --radius-full: 9999px;
+
+  /* ==== VARIÁVEIS DE SOMBRAS ==== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
+  --shadow-primary: 0 0 15px rgba(155, 89, 182, 0.5);
+
+  /* ==== VARIÁVEIS DE TRANSIÇÃO ==== */
+  --transition-fast: 150ms ease;
+  --transition-normal: 300ms ease;
+  --transition-slow: 500ms ease;
+  --transition-bounce: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ==== VARIÁVEIS DE Z-INDEX ==== */
+  --z-below: -1;
+  --z-normal: 1;
+  --z-above: 10;
+  --z-header: 100;
+  --z-modal: 1000;
+  --z-tooltip: 1500;
+  --z-overlay: 2000;
+  --z-max: 9999;
+}
+
+/* ==== TEMA ESCURO (PADRÃO) ==== */
+.dark,
+:root {
+  /* Cores do tema escuro */
+  --color-bg-dark: #0a0a0a;
+  --color-bg-light: #121212;
+  --color-card-bg: #161616;
+  --color-text-light: #a3abb9;
+  --color-text-dark: #ffffff;
+  --color-border: #2a2a2a;
+  --color-shadow: rgba(0, 0, 0, 0.2);
+
+  /* Cores específicas para elementos */
+  --color-header-bg: rgba(10, 10, 10, 0.8);
+  --color-footer-bg: #0a0a0a;
+  --color-input-bg: #1e1e1e;
+  --color-input-border: #333333;
+  --color-input-text: #ffffff;
+  --color-button-hover: #8e44ad;
+  --color-card-hover: #1d1d1d;
+  --color-divider: #333333;
+
+  /* Sombras específicas para o tema escuro */
+  --shadow-card: 0 4px 6px rgba(0, 0, 0, 0.2);
+  --shadow-button: 0 4px 6px rgba(155, 89, 182, 0.3);
+}
+
+/* ==== TEMA CLARO ==== */
+.light {
+  /* Cores do tema claro */
+  --color-bg-dark: #f2f2f2;
+  --color-bg-light: #ffffff;
+  --color-card-bg: #ffffff;
+  --color-text-light: #4a5568;
+  --color-text-dark: #1a202c;
+  --color-border: #e0e0e0;
+  --color-shadow: rgba(0, 0, 0, 0.1);
+
+  /* Cores específicas para elementos */
+  --color-header-bg: rgba(249, 249, 249, 0.8);
+  --color-footer-bg: #f2f2f2;
+  --color-input-bg: #ffffff;
+  --color-input-border: #e0e0e0;
+  --color-input-text: #1a202c;
+  --color-button-hover: #8e44ad;
+  --color-card-hover: #f7f7f7;
+  --color-divider: #e0e0e0;
+
+  /* Sombras específicas para o tema claro */
+  --shadow-card: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-button: 0 4px 6px rgba(155, 89, 182, 0.2);
+}
+
+/* ==== UTILITÁRIOS DE TEMA ==== */
+
+/* Cores de texto */
+.text-primary {
+  color: var(--color-primary) !important;
+}
+.text-primary-dark {
+  color: var(--color-primary-dark) !important;
+}
+.text-light {
+  color: var(--color-text-light) !important;
+}
+.text-dark {
+  color: var(--color-text-dark) !important;
+}
+
+/* Cores de fundo */
+.bg-primary {
+  background-color: var(--color-primary) !important;
+}
+.bg-primary-dark {
+  background-color: var(--color-primary-dark) !important;
+}
+.bg-bg-dark {
+  background-color: var(--color-bg-dark) !important;
+}
+.bg-bg-light {
+  background-color: var(--color-bg-light) !important;
+}
+.bg-card-bg {
+  background-color: var(--color-card-bg) !important;
+}
+
+/* Bordas */
+.border-primary {
+  border-color: var(--color-primary) !important;
+}
+.border-light {
+  border-color: var(--color-border) !important;
+}
+
+/* Sobras */
+.shadow-sm {
+  box-shadow: var(--shadow-sm) !important;
+}
+.shadow-md {
+  box-shadow: var(--shadow-md) !important;
+}
+.shadow-lg {
+  box-shadow: var(--shadow-lg) !important;
+}
+.shadow-xl {
+  box-shadow: var(--shadow-xl) !important;
+}
+.shadow-primary {
+  box-shadow: var(--shadow-primary) !important;
+}
+.shadow-card {
+  box-shadow: var(--shadow-card) !important;
+}
+.shadow-button {
+  box-shadow: var(--shadow-button) !important;
+}
+
+/* Transições */
+.transition-fast {
+  transition: var(--transition-fast) !important;
+}
+.transition-normal {
+  transition: var(--transition-normal) !important;
+}
+.transition-slow {
+  transition: var(--transition-slow) !important;
+}
+.transition-bounce {
+  transition: var(--transition-bounce) !important;
+}
+
+/* Z-index */
+.z-below {
+  z-index: var(--z-below) !important;
+}
+.z-normal {
+  z-index: var(--z-normal) !important;
+}
+.z-above {
+  z-index: var(--z-above) !important;
+}
+.z-header {
+  z-index: var(--z-header) !important;
+}
+.z-modal {
+  z-index: var(--z-modal) !important;
+}
+.z-overlay {
+  z-index: var(--z-overlay) !important;
+}
+.z-max {
+  z-index: var(--z-max) !important;
+}

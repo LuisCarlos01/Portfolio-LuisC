@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap");
+@import "./styles/resume.css";
 
 @tailwind base;
 @tailwind components;
@@ -148,17 +149,14 @@ body {
   }
 }
 @keyframes pulse {
-  0% {
-    opacity: 0.2;
+  0%,
+  100% {
     transform: scale(1);
+    opacity: 0.2;
   }
   50% {
-    opacity: 0.6;
-    transform: scale(1.05);
-  }
-  100% {
-    opacity: 0.2;
-    transform: scale(1);
+    transform: scale(1.5);
+    opacity: 0.7;
   }
 }
 @keyframes bounce {
@@ -827,6 +825,27 @@ body {
   overscroll-behavior-y: contain;
   height: auto;
   min-height: 100%;
+}
+
+/* Animação pulse para partículas decorativas */
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.7;
+  }
+}
+
+/* Garantindo visibilidade da seção de depoimentos */
+#testimonials {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 1 !important;
 }
 
 /* Ajustes para melhorar a navegação entre seções */
